@@ -112,10 +112,10 @@ Browser Web Platform
 - HTML как часть Web Platform
 - Что изменилось за последние десять лет
 
-[📖 Читать главу](./book/preface.md)  
-[📚 Литература](./references/preface.md)  
-[💻 Примеры](./examples/preface.md)
-[🧪 Практика](./exercises/preface.md)
+* [📖 Читать главу](./book/preface.md)  
+* [📚 Литература](./references/preface.md)  
+* [💻 Примеры](./examples/preface.md)
+*  [🧪 Практика](./exercises/preface.md)
 ---
 
 # Часть I. HTML как язык структуры

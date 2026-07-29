@@ -114,6 +114,8 @@ Browser Web Platform
 
 [📖 Читать главу](./book/preface.md)  
 [📚 Литература](./references/preface.md)  
+[💻 Примеры](./examples/preface.md)
+[🧪 Практика](./exercises/preface.md)
 ---
 
 # Часть I. HTML как язык структуры

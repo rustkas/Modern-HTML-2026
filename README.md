@@ -113,6 +113,7 @@ Browser Web Platform
 - Что изменилось за последние десять лет
 
 [📖 Читать главу](./book/preface.md)  
+[📚 Литература](./references/preface.md)  
 ---
 
 # Часть I. HTML как язык структуры

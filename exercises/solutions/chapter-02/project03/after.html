@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Публикация в блоге с комментариями</title>
+    <style>
+        .page-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .company-intro {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        /* Применяем стили напрямую к заголовкам внутри блоков */
+        .company-intro h2,
+        .service-block h3 {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: #111;
+        }
+
+        .services-layout {
+            display: flex;
+            gap: 20px;
+        }
+
+        .service-block {
+            flex: 1;
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- div используется как техническая обертка для CSS-сетки или центрирования -->
+    <div class="page-content">
+
+        <!-- section обозначает смысловой раздел и формирует план документа (outline) -->
+        <section class="company-intro">
+            <h2>О нашей компании</h2>
+            <p>Мы разрабатываем передовые решения для веб-платформы с 2010 года.</p>
+        </section>
+
+        <!-- div используется для управления раскладкой (например, display: flex/grid) -->
+        <div class="services-layout">
+            <section class="service-block">
+                <h3>Веб-дизайн</h3>
+                <p>Создаем доступные и красивые интерфейсы.</p>
+            </section>
+
+            <section class="service-block">
+                <h3>Фронтенд-разработка</h3>
+                <p>Используем современные стандарты HTML и JavaScript.</p>
+            </section>
+        </div>
+    </div>
+
+</body>
+
+</html>

@@ -130,10 +130,10 @@ Browser Web Platform
 - HTML и доступность
 - HTML и SEO
 
-[📖 Читать главу](./book/chapter-01.md)  
-[📚 Литература](./references/chapter-01.md)  
-[💻 Примеры](./examples/chapter-01.md)  
-[🧪 Практика](./exercises/chapter-01.md)
+* [📖 Читать главу](./book/chapter-01.md)  
+* [📚 Литература](./references/chapter-01.md)  
+* [💻 Примеры](./examples/chapter-01.md)  
+* [🧪 Практика](./exercises/chapter-01.md)
 ---
 
 ## Глава 2. Современная семантика
@@ -153,6 +153,11 @@ Browser Web Platform
 - Когда использовать `<div>`
 
 
+* [📖 Читать главу](./book/chapter-02.md)
+* [📚 Литература](./references/chapter-02.md)
+* [💻 Примеры](./examples/chapter-02.md)
+* [🧪 Практика](./exercises/chapter-02.md)
+  
 ---
 
 ## Глава 3. HTML как API браузера
@@ -165,6 +170,11 @@ Browser Web Platform
 - Declarative vs Imperative Programming
 
 
+* [📖 Читать главу](./book/chapter-03.md)
+* [📚 Литература](./references/chapter-03.md)
+* [💻 Примеры](./examples/chapter-03.md)
+* [🧪 Практика](./exercises/chapter-03.md)
+  
 ---
 
 # Часть II. Современные интерактивные элементы
@@ -183,6 +193,11 @@ Browser Web Platform
 - Типичные ошибки
 
 
+* [📖 Читать главу](./book/chapter-04.md)
+* [📚 Литература](./references/chapter-04.md)
+* [💻 Примеры](./examples/chapter-04.md)
+* [🧪 Практика](./exercises/chapter-04.md)
+  
 ---
 
 ## Глава 5. Popover API
@@ -202,6 +217,11 @@ Browser Web Platform
 - Popover + CSS Anchor Positioning
 
 
+* [📖 Читать главу](./book/chapter-05.md)
+* [📚 Литература](./references/chapter-05.md)
+* [💻 Примеры](./examples/chapter-05.md)
+* [🧪 Практика](./exercises/chapter-05.md)
+  
 ---
 
 ## Глава 6. `<details>` и `<summary>`
@@ -215,6 +235,11 @@ Browser Web Platform
 - Анимации
 
 
+* [📖 Читать главу](./book/chapter-06.md)
+* [📚 Литература](./references/chapter-06.md)
+* [💻 Примеры](./examples/chapter-06.md)
+* [🧪 Практика](./exercises/chapter-06.md)
+  
 ---
 
 # Часть III. Формы нового поколения
@@ -229,6 +254,11 @@ Browser Web Platform
 - Progressive Enhancement
 
 
+* [📖 Читать главу](./book/chapter-07.md)
+* [📚 Литература](./references/chapter-07.md)
+* [💻 Примеры](./examples/chapter-07.md)
+* [🧪 Практика](./exercises/chapter-07.md)
+  
 ---
 
 ## Глава 8. Новые атрибуты форм
@@ -246,6 +276,11 @@ Browser Web Platform
 - `inert`
 
 
+* [📖 Читать главу](./book/chapter-08.md)
+* [📚 Литература](./references/chapter-08.md)
+* [💻 Примеры](./examples/chapter-08.md)
+* [🧪 Практика](./exercises/chapter-08.md)
+  
 ---
 
 ## Глава 9. Формы и Accessibility
@@ -260,6 +295,11 @@ Browser Web Platform
 - Keyboard Navigation
 
 
+* [📖 Читать главу](./book/chapter-09.md)
+* [📚 Литература](./references/chapter-09.md)
+* [💻 Примеры](./examples/chapter-09.md)
+* [🧪 Практика](./exercises/chapter-09.md)
+  
 ---
 
 # Часть IV. Производительность начинается с HTML
@@ -277,6 +317,11 @@ Browser Web Platform
 - Speculation Rules API
 
 
+* [📖 Читать главу](./book/chapter-10.md)
+* [📚 Литература](./references/chapter-10.md)
+* [💻 Примеры](./examples/chapter-10.md)
+* [🧪 Практика](./exercises/chapter-10.md)
+  
 ---
 
 ## Глава 11. Приоритеты загрузки
@@ -291,6 +336,10 @@ Browser Web Platform
 - Приоритеты браузера
 
 
+* [📖 Читать главу](./book/chapter-11.md)
+* [📚 Литература](./references/chapter-11.md)
+* [💻 Примеры](./examples/chapter-11.md)
+* [🧪 Практика](./exercises/chapter-11.md)
 ---
 
 ## Глава 12. Современная работа с изображениями
@@ -308,6 +357,10 @@ Browser Web Platform
 - Responsive Images
 
 
+* [📖 Читать главу](./book/chapter-12.md)
+* [📚 Литература](./references/chapter-12.md)
+* [💻 Примеры](./examples/chapter-12.md)
+* [🧪 Практика](./exercises/chapter-12.md)
 ---
 
 # Часть V. HTML и современные браузерные API
@@ -325,6 +378,10 @@ Browser Web Platform
 - Интеграция с CSS
 
 
+* [📖 Читать главу](./book/chapter-13.md)
+* [📚 Литература](./references/chapter-13.md)
+* [💻 Примеры](./examples/chapter-13.md)
+* [🧪 Практика](./exercises/chapter-13.md)
 ---
 
 ## Глава 14. Navigation API
@@ -337,6 +394,11 @@ Browser Web Platform
 - MPA
 - HTML Navigation
 
+
+* [📖 Читать главу](./book/chapter-14.md)
+* [📚 Литература](./references/chapter-14.md)
+* [💻 Примеры](./examples/chapter-14.md)
+* [🧪 Практика](./exercises/chapter-14.md)
 
 ---
 
@@ -353,6 +415,11 @@ Browser Web Platform
 - Практические сценарии
 
 
+* [📖 Читать главу](./book/chapter-15.md)
+* [📚 Литература](./references/chapter-15.md)
+* [💻 Примеры](./examples/chapter-15.md)
+* [🧪 Практика](./exercises/chapter-15.md)
+* 
 ---
 
 # Часть VI. Web Components
@@ -368,6 +435,11 @@ Browser Web Platform
 - Events
 
 
+* [📖 Читать главу](./book/chapter-16.md)
+* [📚 Литература](./references/chapter-16.md)
+* [💻 Примеры](./examples/chapter-16.md)
+* [🧪 Практика](./exercises/chapter-16.md)
+
 ---
 
 ## Глава 17. Shadow DOM
@@ -381,6 +453,12 @@ Browser Web Platform
 - Accessibility
 
 
+
+* [📖 Читать главу](./book/chapter-17.md)
+* [📚 Литература](./references/chapter-17.md)
+* [💻 Примеры](./examples/chapter-17.md)
+* [🧪 Практика](./exercises/chapter-17.md)
+
 ---
 
 ## Глава 18. HTML Templates
@@ -393,6 +471,12 @@ Browser Web Platform
 - Клонирование
 - Серверный рендеринг
 
+
+
+* [📖 Читать главу](./book/chapter-18.md)
+* [📚 Литература](./references/chapter-18.md)
+* [💻 Примеры](./examples/chapter-18.md)
+* [🧪 Практика](./exercises/chapter-18.md)
 
 ---
 
@@ -408,6 +492,12 @@ Browser Web Platform
 - Stencil
 - Межфреймворковое взаимодействие
 
+
+
+* [📖 Читать главу](./book/chapter-19.md)
+* [📚 Литература](./references/chapter-19.md)
+* [💻 Примеры](./examples/chapter-19.md)
+* [🧪 Практика](./exercises/chapter-19.md)
 
 ---
 
@@ -425,6 +515,12 @@ Browser Web Platform
 - Composite
 
 
+
+* [📖 Читать главу](./book/chapter-20.md)
+* [📚 Литература](./references/chapter-20.md)
+* [💻 Примеры](./examples/chapter-20.md)
+* [🧪 Практика](./exercises/chapter-20.md)
+
 ---
 
 ## Глава 21. HTML как инструмент оптимизации
@@ -439,6 +535,12 @@ Browser Web Platform
 - Partial Hydration
 
 
+
+* [📖 Читать главу](./book/chapter-21.md)
+* [📚 Литература](./references/chapter-21.md)
+* [💻 Примеры](./examples/chapter-21.md)
+* [🧪 Практика](./exercises/chapter-21.md)
+
 ---
 
 ## Глава 22. Progressive Enhancement
@@ -451,6 +553,12 @@ Browser Web Platform
 - JavaScript Last
 - Graceful Degradation
 
+
+
+* [📖 Читать главу](./book/chapter-22.md)
+* [📚 Литература](./references/chapter-22.md)
+* [💻 Примеры](./examples/chapter-22.md)
+* [🧪 Практика](./exercises/chapter-22.md)
 
 ---
 
@@ -466,6 +574,11 @@ Browser Web Platform
 - API компонентов
 
 
+* [📖 Читать главу](./book/chapter-23.md)
+* [📚 Литература](./references/chapter-23.md)
+* [💻 Примеры](./examples/chapter-23.md)
+* [🧪 Практика](./exercises/chapter-23.md)
+
 ---
 
 ## Глава 24. HTML и Design Systems
@@ -476,6 +589,12 @@ Browser Web Platform
 - Семантическая структура
 - Переиспользуемые шаблоны
 - Accessibility by Design
+
+
+* [📖 Читать главу](./book/chapter-24.md)
+* [📚 Литература](./references/chapter-24.md)
+* [💻 Примеры](./examples/chapter-24.md)
+* [🧪 Практика](./exercises/chapter-24.md)
 
 
 ---
@@ -491,6 +610,11 @@ Browser Web Platform
 - Hydration
 - Islands Architecture
 
+
+* [📖 Читать главу](./book/chapter-25.md)
+* [📚 Литература](./references/chapter-25.md)
+* [💻 Примеры](./examples/chapter-25.md)
+* [🧪 Практика](./exercises/chapter-25.md)
 
 ---
 
@@ -508,6 +632,11 @@ Browser Web Platform
 - View Transition API
 - Progressive Enhancement
 
+
+* [📖 Читать главу](./book/chapter-26.md)
+* [📚 Литература](./references/chapter-26.md)
+* [💻 Примеры](./examples/chapter-26.md)
+* [🧪 Практика](./exercises/chapter-26.md)
 
 ---
 

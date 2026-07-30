@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Нативная доступность против имитации</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 40px;
+        }
+
+        .container {
+            margin-bottom: 20px;
+        }
+
+        /* Имитированная кнопка из Варианта А */
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .btn:hover {
+            background-color: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Сравнение доступности кнопок</h1>
+
+    <!-- Вариант А: Имитация (недоступна с клавиатуры «из коробки») -->
+    <div class="container">
+        <h3>Вариант А (div с классами и скриптом)</h3>
+        <div class="btn" onclick="doSomething('Вариант А')">Нажми меня</div>
+    </div>
+
+    <!-- Вариант Б: Нативный элемент (полностью доступен) -->
+    <div class="container">
+        <h3>Вариант Б (нативный button)</h3>
+        <button onclick="doSomething('Вариант Б')">Нажми меня</button>
+    </div>
+
+    <script>
+        function doSomething(variant) {
+            alert('Событие сработало от: ' + variant);
+        }
+    </script>
+
+</body>
+</html>

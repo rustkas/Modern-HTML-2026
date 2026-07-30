@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль автора — Структурированные данные</title>
+
+    <!-- Основное задание: Разметка JSON-LD в секции <head> -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Алексей Петров",
+      "jobTitle": "Фронтенд-разработчик",
+      "url": "https://example.com/alex",
+      "sameAs": [
+        "https://github.com/alex-dev",
+        "https://linkedin.com/in/alex-petrov"
+      ]
+    }
+    </script>
+</head>
+<body>
+
+    <main>
+        <h1>Статья о веб-разработке</h1>
+        <p>Здесь располагается основной контент страницы...</p>
+    </main>
+
+    <!-- Видимый контент страницы, консистентный с разметкой -->
+    <footer>
+        <h2>Об авторе</h2>
+        <p>Автор статьи: <span class="name">Алексей Петров</span></p>
+        <p>Должность: <span class="job">Фронтенд-разработчик</span></p>
+        <p>Персональный сайт: <a href="https://example.com/alex">https://example.com/alex</a></p>
+        <p>Профили: 
+            <a href="https://github.com/alex-dev">GitHub</a>, 
+            <a href="https://linkedin.com/in/alex-petrov">LinkedIn</a>
+        </p>
+    </footer>
+
+    <!-- Дополнительное задание: Преобразование в Microdata -->
+    <section itemscope itemtype="https://schema.org/Person" style="margin-top: 40px; border-top: 1px solid #ccc; padding-top: 20px;">
+        <h3>Альтернативная разметка (Microdata)</h3>
+        <p>Имя: <span itemprop="name">Алексей Петров</span></p>
+        <p>Должность: <span itemprop="jobTitle">Фронтенд-разработчик</span></p>
+        <p>Сайт: <a itemprop="url" href="https://example.com/alex">https://example.com/alex</a></p>
+        <p>Социальные сети: 
+            <a itemprop="sameAs" href="https://github.com/alex-dev">GitHub</a>, 
+            <a itemprop="sameAs" href="https://linkedin.com/in/alex-petrov">LinkedIn</a>
+        </p>
+    </section>
+
+</body>
+</html>

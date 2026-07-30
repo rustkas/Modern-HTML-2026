@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Статья об авторе</title>
+</head>
+<body>
+
+    <main>
+        <article>
+            <h1>Заголовок статьи</h1>
+            <p>Здесь располагается основной текст статьи...</p>
+
+            <!-- Блок с микроразметкой автора -->
+            <section itemscope itemtype="http://schema.org/Person">
+                <h2 itemprop="name">Иван Иванов</h2>
+                <p itemprop="jobTitle">Фронтенд-разработчик</p>
+                <a href="mailto:ivan@example.com" itemprop="email">ivan@example.com</a>
+            </section>
+        </article>
+    </main>
+
+</body>
+</html>

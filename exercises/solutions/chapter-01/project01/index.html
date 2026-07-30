@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Исследование DOM: childNodes vs children</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+            line-height: 1.5;
+        }
+        .container {
+            border: 2px dashed #007bff;
+            padding: 15px;
+            margin-top: 20px;
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Изучение дерева узлов (DOM)</h1>
+    <p>Откройте консоль разработчика (F12 -> Консоль), чтобы увидеть результат работы скрипта.</p>
+
+    <!-- Пример контейнера с пробелами и комментариями для демонстрации -->
+    <div id="test-container" class="container">
+        <!-- Это комментарий -->
+        <p>Первый параграф</p>
+        <span>Текст внутри span</span>
+        <!-- Еще один комментарий -->
+    </div>
+
+    <script>
+        const container = document.getElementById('test-container');
+
+        console.group("=== Сравнение childNodes и children для #test-container ===");
+
+        // 1. Все узлы (включая текст и комментарии)
+        console.log("childNodes (всего узлов):", container.childNodes);
+        container.childNodes.forEach((node, index) => {
+            console.log(`Узел ${index}: nodeType = ${node.nodeType}, nodeName = ${node.nodeName}`);
+        });
+
+        console.log("--------------------------------------------------");
+
+        // 2. Только элементы-теги
+        console.log("children (только элементы):", container.children);
+        
+        console.groupEnd();
+    </script>
+
+</body>
+</html>

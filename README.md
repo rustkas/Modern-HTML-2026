@@ -130,7 +130,10 @@ Browser Web Platform
 - HTML и доступность
 - HTML и SEO
 
-
+[📖 Читать главу](./book/chapter-01.md)  
+[📚 Литература](./references/chapter-01.md)  
+[💻 Примеры](./examples/chapter-01.md)  
+[🧪 Практика](./exercises/chapter-01.md)
 ---
 
 ## Глава 2. Современная семантика

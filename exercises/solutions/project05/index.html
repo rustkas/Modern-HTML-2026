@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Семантика и доступность</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        .filter-demo-container {
+            position: relative;
+            background: #1a202c;
+            padding: 2rem;
+            border-radius: 8px;
+            color: #fff;
+            text-align: center;
+            overflow: hidden;
+        }
+        
+        .distorted-element {
+            font-size: 2.5rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            filter: url(#turbulent-disp);
+            margin: 1rem 0;
+        }
+
+        .blurred-box {
+            width: 100%;
+            height: 120px;
+            background: linear-gradient(45deg, #ff6b6b, #48dbfb, #1dd1a1);
+            filter: url(#heavy-blur);
+            border-radius: 6px;
+            margin-top: 1rem;
+        }
+
+        .responsive-figure {
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+
+        .responsive-figure img {
+            width: 100%;
+            height: auto;
+            border-radius: 6px;
+            display: block;
+        }
+
+        /* Стили для нативного элемента <details> */
+        details {
+            background: #2d3748;
+            color: #fff;
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+        }
+
+        summary {
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SVG-контейнер с тяжелыми фильтрами -->
+    <svg style="display: none;" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <filter id="turbulent-disp">
+                <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="4" result="noise" />
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="25" xChannelSelector="R" yChannelSelector="G" />
+            </filter>
+
+            <filter id="heavy-blur">
+                <feGaussianBlur stdDeviation="12" />
+            </filter>
+        </defs>
+    </svg>
+
+    <!-- Заменено на семантический тег header -->
+    <header class="site-header">
+        <h1>Стресс-тест производительности браузера</h1>
+        <p>Использование тяжелых SVG-фильтров и нативных элементов доступности</p>
+        
+        <!-- Навигация вынесена в тег nav -->
+        <nav aria-label="Основная навигация">
+            <button type="button">Главная</button>
+            <button type="button">Галерея</button>
+            <button type="button">Контакты</button>
+        </nav>
+    </header>
+
+    <!-- Основное содержимое страницы -->
+    <main class="content-wrapper">
+        <section class="hero-section">
+            <h2>Главный экран (LCP + GPU нагрузка)</h2>
+            <p>Элемент ниже использует тяжелую матрицу искажения <code>feDisplacementMap</code>.</p>
+            
+            <div class="filter-demo-container">
+                <div class="distorted-element">EFFICIENCY & RENDER TEST</div>
+                <p>Анимация или статичный пересчет пикселей фильтра нагружает поток отрисовки.</p>
+                <div class="blurred-box"></div>
+            </div>
+        </section>
+
+        <!-- Использование нативного элемента <details> вместо JS-аккордеонов -->
+        <section class="accordion-section">
+            <h3>Справка по элементам интерфейса</h3>
+            <details>
+                <summary>Как работает тег &lt;details&gt;?</summary>
+                <p>Он позволяет создавать встроенные раскрывающиеся блоки без использования JavaScript, обеспечивая полную доступность с клавиатуры и для скринридеров.</p>
+            </details>
+        </section>
+
+        <section class="article-section">
+            <h3>Адаптивные изображения под любые экраны (&lt;picture&gt;)</h3>
+            
+            <figure class="responsive-figure">
+                <picture>
+                    <source media="(max-width: 600px)" srcset="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='300'><rect width='100%' height='100%' fill='%232b6cb0'/><text x='50%' y='50%' fill='%23ffffff' font-family='sans-serif' font-size='20' text-anchor='middle' dominant-baseline='middle'>Mobile Picture View</text></svg>">
+                    
+                    <img 
+                        src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='450'><rect width='100%' height='100%' fill='%233182ce'/><text x='50%' y='50%' fill='%23ffffff' font-family='sans-serif' font-size='24' text-anchor='middle' dominant-baseline='middle'>Desktop Picture View</text></svg>" 
+                        alt="Пример адаптивного изображения" 
+                        width="800" 
+                        height="450" 
+                        loading="lazy"
+                    >
+                </picture>
+                <figcaption>Демонстрация работы тега &lt;picture&gt;</figcaption>
+            </figure>
+        </section>
+
+        <section class="gallery-section">
+            <h3>Галерея с отложенной загрузкой (loading="lazy")</h3>
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='300'><rect width='100%' height='100%' fill='%234a5568'/><text x='50%' y='50%' fill='%23ffffff' font-family='sans-serif' font-size='18' text-anchor='middle' dominant-baseline='middle'>Lazy Item 1</text></svg>" alt="Lazy 1" width="400" height="300" loading="lazy">
+                    <p>Элемент 1</p>
+                </div>
+                <div class="gallery-item">
+                    <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='300'><rect width='100%' height='100%' fill='%232d3748'/><text x='50%' y='50%' fill='%23ffffff' font-family='sans-serif' font-size='18' text-anchor='middle' dominant-baseline='middle'>Lazy Item 2</text></svg>" alt="Lazy 2" width="400" height="300" loading="lazy">
+                    <p>Элемент 2</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Заменено на семантический тег footer -->
+    <footer class="site-footer">
+        <p>&copy; 2026 Тест производительности интерфейсов</p>
+    </footer>
+
+    <script src="script.js" defer></script>
+</body>
+</html>

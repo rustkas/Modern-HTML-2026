@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Popover API Menu</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="menu-container">
+        <!-- Кнопка управления поповером через popovertarget -->
+        <button popovertarget="navPopover" class="menu-btn">Меню навигации</button>
+
+        <!-- Всплывающий элемент с атрибутом popover -->
+        <div id="navPopover" popover="auto" class="nav-popover">
+            <ul class="nav-list">
+                <li><a href="#profile">Профиль</a></li>
+                <li><a href="#settings">Настройки</a></li>
+                <li><a href="#help">Помощь</a></li>
+                <li><a href="#logout">Выйти</a></li>
+            </ul>
+        </div>
+    </div>
+
+</body>
+</html>

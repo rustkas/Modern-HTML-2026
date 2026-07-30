@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Веб-компонент user-card</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Шаблон для веб-компонента -->
+    <template id="user-card-template">
+        <style>
+            /* Стили изолированы внутри Shadow DOM и не влияют на страницу */
+            :host {
+                display: block;
+                font-family: Arial, sans-serif;
+                max-width: 300px;
+                border-radius: 12px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                background-color: #ffffff;
+                overflow: hidden;
+                border: 1px solid #e0e0e0;
+            }
+
+            .card-header {
+                background-color: #007bff;
+                color: white;
+                padding: 16px;
+                text-align: center;
+            }
+
+            .card-body {
+                padding: 16px;
+                color: #333;
+                font-size: 14px;
+            }
+
+            .card-body p {
+                margin: 8px 0;
+            }
+
+            /* Стили для слота */
+            ::slotted(.username) {
+                font-weight: bold;
+                font-size: 18px;
+                color: #fff;
+            }
+        </style>
+
+        <div class="card-header">
+            <!-- Слот для передачи имени из основного документа -->
+            <slot name="username">Имя по умолчанию</slot>
+        </div>
+        <div class="card-body">
+            <p><strong>Email:</strong> <slot name="email">user@example.com</slot></p>
+            <p><strong>Роль:</strong> <slot name="role">Разработчик</slot></p>
+        </div>
+    </template>
+
+    <!-- Использование кастомного элемента на странице -->
+    <user-card>
+        <span slot="username" class="username">Алексей Смирнов</span>
+        <span slot="email">alexey.smirnov@example.com</span>
+        <span slot="role">Team Lead</span>
+    </user-card>
+
+    <script src="script.js"></script>
+</body>
+</html>

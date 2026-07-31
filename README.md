@@ -638,6 +638,23 @@ Browser Web Platform
 * [💻 Примеры](./examples/chapter-26.md)
 * [🧪 Практика](./exercises/chapter-26.md)
 
+
+## Глава 27. HTML как основа Web Platform
+
+
+- Living Standard 
+- Новые API 
+- Влияние искусственного интеллекта на веб 
+- Declarative Web 
+- Что, вероятно, появится в HTML к 2030 году 
+
+
+
+* [📖 Читать главу](./book/chapter-27.md)
+* [📚 Литература](./references/chapter-27.md)
+* [💻 Примеры](./examples/chapter-27.md)
+* [🧪 Практика](./exercises/chapter-27.md)
+
 ---
 
 # 📚 Источники

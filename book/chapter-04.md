@@ -1,51 +1,51 @@
-# Часть II. Современные интерактивные элементы
+# Part II. Modern Interactive Elements
 
-## Глава 4. Нативное совершенство модальных интерфейсов: Элемент `<dialog>`
+## Chapter 4. Native Perfection of Modal Interfaces: The `<dialog>` Element
 
-В прошлом создание модальных окон, всплывающих диалогов, алертов и селекторов в веб-разработке было сопряжено с серьезными архитектурными сложностями. Разработчики были вынуждены писать громоздкий JavaScript-код, вручную высчитывать индексы наложения (`z-index`), реализовывать изоляцию фокуса (focus trap), обрабатывать нажатие клавиши `Escape` и заботиться о скринридерах.
+In the past, creating modal windows, popup dialogs, alerts, and selectors in web development was fraught with serious architectural complexities. Developers were forced to write verbose JavaScript code, manually calculate stacking indices (`z-index`), implement focus trapping, handle `Escape` key presses, and ensure screen reader compatibility.
 
-С марта 2022 года элемент `<dialog>` вошел в состав **Baseline**, став стандартом де-факто, поддерживаемым всеми современными браузерами. Он переносит логику управления диалоговыми окнами с уровня пользовательских библиотек на уровень нативного движка браузера.
-
----
-
-## 4.1. Почему модальные окна перестали быть JavaScript-компонентами
-
-До появления `<dialog>` модальные окна создавались внутри общего дерева DOM. Это порождало массу проблем:
-
-- Конфликты `z-index`: если родительский элемент имел фиксированное позиционирование или переопределенный контекст наложения, диалоговое окно могло оказаться перекрыто другими блоками страницы.
-- Необходимость ручной блокировки фона: разработчикам приходилось добавлять полупрозрачные подложки (`overlay`) и блокировать прокрутку (`overflow: hidden`) документа.
-- Сложности с доступностью (A11y): требовалось вручную скрывать фоновый контент от скринридеров через атрибут `aria-hidden="true"`.
-
-Нативный `<dialog>` решает эти архитектурные проблемы на платформенном уровне:
-
-1. **Топ-слой (Top Layer):** Браузер выносит модальное окно в специальный корневой слой, рендерящийся поверх всего остального содержимого документа, полностью игнорируя любые иерархические ограничения `z-index`.
-2. **Инертность основного контента (Inertness):** При открытии модального окна браузер автоматически применяет неявное состояние `inert` ко всем остальным элементам страницы. Пользователь физически не может кликнуть по фону или перевести на него фокус с клавиатуры.
-3. **Встроенное управление доступностью:** Браузер автоматически сообщает вспомогательным технологиям о появлении модального слоя, избавляя от необходимости вручную настраивать ARIA-атрибуты.
+Since March 2022, the `<dialog>` element has been part of **Baseline**, becoming the de-facto standard supported by all modern browsers. It moves dialog management logic from userland libraries to the native browser engine level.
 
 ---
 
-## 4.2. Методы управления: `show()` против `showModal()`
+## 4.1. Why Modal Windows Are No Longer JavaScript Components
 
-Для работы с элементом `<dialog>` в JavaScript предусмотрены два принципиально разных метода открытия, определяющих режим поведения окна:
+Before `<dialog>`, modal windows were created within the common DOM tree. This created numerous problems:
 
-- **`dialog.show()` (Немодальный режим):** Открывает диалог как обычный плавающий элемент. Он не блокирует остальной документ, не создает системный фон (`::backdrop`) и имеет семантическое значение `aria-modal="false"`. Пользователь может параллельно взаимодействовать с остальной страницей.
-- **`dialog.showModal()` (Модальный режим):** Переводит элемент в полноценный модальный режим. Страница блокируется, активируется контекст топ-слоя, а диалог автоматически позиционируется по центру экрана. Устанавливается `aria-modal="true"`.
+- `z-index` conflicts: If a parent element had fixed positioning or an overridden stacking context, the dialog could be obscured by other page blocks.
+- Manual background blocking required: Developers had to add semi-transparent overlays and block document scrolling (`overflow: hidden`).
+- Accessibility (A11y) complexities: It was necessary to manually hide background content from screen readers using the `aria-hidden="true"` attribute.
 
-### Пример программного управления
+Native `<dialog>` solves these architectural problems at the platform level:
+
+1. **Top Layer:** The browser moves the modal window to a special root layer that renders above all other document content, completely ignoring any hierarchical `z-index` constraints.
+2. **Background Content Inertness:** When a modal window opens, the browser automatically applies an implicit `inert` state to all other page elements. The user physically cannot click on the background or move focus to it via keyboard.
+3. **Built-in Accessibility Management:** The browser automatically notifies assistive technologies about the appearance of the modal layer, eliminating the need to manually configure ARIA attributes.
+
+---
+
+## 4.2. Control Methods: `show()` vs. `showModal()`
+
+Two fundamentally different opening methods are available in JavaScript for working with the `<dialog>` element, defining the window's behavior mode:
+
+- **`dialog.show()` (Non-modal Mode):** Opens the dialog as a regular floating element. It does not block the rest of the document, does not create a system backdrop (`::backdrop`), and has the semantic value `aria-modal="false"`. The user can interact with the rest of the page simultaneously.
+- **`dialog.showModal()` (Modal Mode):** Transitions the element to full modal mode. The page is blocked, the top-layer context is activated, and the dialog is automatically centered on the screen. `aria-modal="true"` is set.
+
+### Example of Programmatic Control
 
 ```html
-<button id="open-modal">Открыть модальное окно</button>
-<button id="open-modeless">Открыть немодальную панель</button>
+<button id="open-modal">Open Modal Window</button>
+<button id="open-modeless">Open Non-modal Panel</button>
 
 <dialog id="app-dialog">
   <form method="dialog">
-    <h3>Системное уведомление</h3>
-    <p>Вы действительно хотите применить изменения конфигурации?</p>
+    <h3>System Notification</h3>
+    <p>Are you sure you want to apply the configuration changes?</p>
     <menu
       style="display: flex; gap: 8px; justify-content: flex-end; padding: 0;"
     >
-      <button value="cancel" class="btn-secondary">Отмена</button>
-      <button value="confirm" class="btn-primary">Подтвердить</button>
+      <button value="cancel" class="btn-secondary">Cancel</button>
+      <button value="confirm" class="btn-primary">Confirm</button>
     </menu>
   </form>
 </dialog>
@@ -54,43 +54,43 @@
   const dialog = document.getElementById('app-dialog');
 
   document.getElementById('open-modal').addEventListener('click', () => {
-    dialog.showModal(); // Модальный режим с блокировкой фона
+    dialog.showModal(); // Modal mode with background blocking
   });
 
   document.getElementById('open-modeless').addEventListener('click', () => {
-    dialog.show(); // Немодальный режим
+    dialog.show(); // Non-modal mode
   });
 </script>
 ```
 
 ---
 
-## 4.3. Закрытие диалога и обработка результатов
+## 4.3. Closing the Dialog and Handling Results
 
-Закрыть окно можно как программно через метод `dialog.close()`, так и декларативными средствами HTML.
+You can close the window either programmatically via the `dialog.close()` method or through declarative HTML means.
 
-### Декларативное закрытие через `<form method="dialog">`
+### Declarative Closing via `<form method="dialog">`
 
-Если внутри `<dialog>` поместить форму с атрибутом `method="dialog"`, то любая кнопка отправки (`type="submit"` или обычная кнопка внутри формы) при нажатии автоматически:
+If you place a form with the `method="dialog"` attribute inside `<dialog>`, any submit button (`type="submit"` or a regular button within the form) will, when clicked, automatically:
 
-1. Закроет диалог без написания строк на JavaScript.
-2. Запишет значение атрибута `value` нажатой кнопки в свойство `dialog.returnValue`.
-3. Вызовет событие `close`, позволяя считать результат на клиенте.
+1. Close the dialog without writing a single line of JavaScript.
+2. Write the clicked button's `value` attribute to the `dialog.returnValue` property.
+3. Fire the `close` event, allowing you to read the result on the client.
 
 ```html
 <dialog id="confirm-dialog">
   <form method="dialog">
-    <p>Удалить выбранный объект?</p>
-    <button value="yes">Да, удалить</button>
-    <button value="no">Отмена</button>
+    <p>Delete the selected object?</p>
+    <button value="yes">Yes, delete</button>
+    <button value="no">Cancel</button>
   </form>
 </dialog>
 
 <script>
   const diag = document.getElementById('confirm-dialog');
   diag.addEventListener('close', () => {
-    console.log(`Пользователь выбрал вариант: ${diag.returnValue}`);
-    // Выведет "yes" или "no" в зависимости от нажатой кнопки
+    console.log(`User selected: ${diag.returnValue}`);
+    // Will output "yes" or "no" depending on which button was pressed
   });
 
   diag.showModal();
@@ -99,43 +99,43 @@
 
 ---
 
-## 4.4. Тонкости управления фокусом (Focus Management)
+## 4.4. Focus Management Nuances
 
-Правильное управление фокусом — краеугольный камень интерфейсной доступности. `<dialog>` автоматизирует этот процесс по строгим стандартам спецификации:
+Proper focus management is a cornerstone of interface accessibility. `<dialog>` automates this process according to strict specification standards:
 
-- **При открытии:** Браузер ищет внутри диалога элемент с атрибутом `autofocus` и переносит фокус на него. Если `autofocus` не задан, фокус передается первому интерактивному элементу (ссылке, кнопке, инпуту). Если внутри диалога нет интерактивных элементов, фокус получает сам тег `<dialog>`.
-- **При закрытии:** Браузер безупречно возвращает фокус ровно на тот элемент интерфейса (обычно кнопку), который инициировал открытие диалога, предотвращая «потерю» контекста для пользователей клавиатуры.
+- **On Open:** The browser searches inside the dialog for an element with the `autofocus` attribute and moves focus to it. If `autofocus` is not set, focus is transferred to the first interactive element (link, button, input). If there are no interactive elements inside the dialog, the `<dialog>` tag itself receives focus.
+- **On Close:** The browser flawlessly returns focus exactly to the interface element (usually a button) that initiated the dialog opening, preventing "loss" of context for keyboard users.
 
-> **Важно:** Разработчикам настоятельно рекомендуется явно указывать `autofocus` на первичном поле ввода или ключевой кнопке действия, чтобы пользователь не тратил лишние нажатия клавиши `Tab`.
+> **Important:** Developers are strongly advised to explicitly specify `autofocus` on the primary input field or key action button so that the user doesn't waste extra `Tab` keystrokes.
 
 ---
 
-## 4.5. Доступность (A11y) и стилизация подложки (`::backdrop`)
+## 4.5. Accessibility (A11y) and Backdrop Styling (`::backdrop`)
 
-### Требования доступности
+### Accessibility Requirements
 
-Поскольку `<dialog>` имеет встроенную семантическую роль `dialog`, для соответствия критериям доступности (WCAG) необходимо выполнять базовые правила:
+Since `<dialog>` has the built-in semantic role `dialog`, to meet WCAG accessibility criteria, you must follow basic rules:
 
-1. **Доступное имя:** Каждый диалог должен иметь четкое имя, заданное через атрибуты `aria-labelledby="dialog-title"` или `aria-label="Настройки профиля"`.
-2. **Обработка клавиши `Escape`:** Открытые через `showModal()` окна закрываются по нажатию `Esc` по умолчанию. Если требуется предотвратить случайное закрытие (например, при незаполненной форме), можно перехватить событие `cancel`:
+1. **Accessible Name:** Each dialog must have a clear name, set via the `aria-labelledby="dialog-title"` attribute or `aria-label="Profile Settings"`.
+2. **`Escape` Key Handling:** Dialogs opened via `showModal()` close on `Esc` by default. If you need to prevent accidental closing (for example, with an incomplete form), you can intercept the `cancel` event:
 
 ```javascript
 dialog.addEventListener('cancel', (event) => {
-  event.preventDefault(); // Отменяем стандартное закрытие по Esc
-  alert('Пожалуйста, сохраните или отмените изменения явно.');
+  event.preventDefault(); // Cancels the default Esc closing behavior
+  alert('Please explicitly save or cancel your changes.');
 });
 ```
 
-### Стилизация псевдоэлемента `::backdrop`
+### Styling the `::backdrop` Pseudo-element
 
-Для модальных диалогов браузер автоматически создает подложку позади окна. Вы можете стилизовать ее с помощью CSS-псевдоэлемента `::backdrop`, настраивая цвет затемнения, размытие (`backdrop-filter`) или анимацию появления:
+For modal dialogs, the browser automatically creates a backdrop behind the window. You can style it using the CSS `::backdrop` pseudo-element, customizing dimming color, blur (`backdrop-filter`), or entrance animations:
 
 ```css
 dialog::backdrop {
-  background-color: rgba(15, 23, 42, 0.6); /* Темный полупрозрачный фон */
+  background-color: rgba(15, 23, 42, 0.6); /* Dark semi-transparent background */
   backdrop-filter: blur(
     4px
-  ); /* Эффект размытия заднего плана (Glassmorphism) */
+  ); /* Background blur effect (Glassmorphism) */
   animation: fadeIn 0.3s ease-out;
 }
 
@@ -151,16 +151,16 @@ dialog::backdrop {
 
 ---
 
-## 4.6. Вложенные диалоги и архитектурные антипаттерны
+## 4.6. Nested Dialogs and Architectural Anti-patterns
 
-Спецификация полностью поддерживает **вложенность диалогов**. Вы можете открыть новое модальное окно поверх уже открытого. Браузер автоматически выстроит их в стек в рамках топ-слоя. При нажатии клавиши `Escape` закроется исключительно самый верхний (активный) диалог, не затрагивая фоновые окна.
+The specification fully supports **dialog nesting**. You can open a new modal window on top of an already open one. The browser will automatically stack them within the top layer. When `Escape` is pressed, only the topmost (active) dialog will close, without affecting background windows.
 
-### Типичные ошибки при работе с `<dialog>`
+### Common Mistakes When Working with `<dialog>`
 
-1. **Установка `tabindex` на сам элемент `<dialog>`:** Сам контейнер диалога не предназначен для прямой фокусировки пользователем через табуляцию (в отличие от его интерактивного содержимого). Добавление `tabindex` нарушает логику доступности.
-2. **Ручное удаление атрибута `open`:** Изменение состояния диалога через прямое удаление атрибута в DOM (`dialog.removeAttribute('open')`) вместо вызова метода `.close()` приводит к рассинхронизации внутреннего состояния движка: страница может остаться заблокированной (inert), фокус не вернется на исходный элемент, а событие `close` не сработает.
-3. **Нецелевое использование:** Использование `<dialog>` для реализации контекстных меню, всплывающих подсказок (tooltips) или выпадающих списков. Для таких компонентов на платформе предусмотрен **Popover API**, управляемый атрибутом `popover`.
+1. **Setting `tabindex` on the `<dialog>` element itself:** The dialog container itself is not intended for direct user focus via tabbing (unlike its interactive content). Adding `tabindex` breaks accessibility logic.
+2. **Manually Removing the `open` Attribute:** Changing the dialog state by directly removing the attribute from the DOM (`dialog.removeAttribute('open')`) instead of calling the `.close()` method leads to desynchronization of the engine's internal state: the page may remain blocked (inert), focus won't return to the original element, and the `close` event won't fire.
+3. **Misuse:** Using `<dialog>` for context menus, tooltips, or dropdown lists. For such components, the platform provides the **Popover API**, managed by the `popover` attribute.
 
-### Заключение главы
+### Chapter Conclusion
 
-Нативный элемент `<dialog>` — это яркий пример того, как современный HTML берет на себя тяжелую логику интерфейсов, избавляя разработчиков от необходимости изобретать велосипеды на JavaScript. Понимание его механизмов (топ-слой, управление фокусом, `::backdrop`) позволяет создавать надежные, доступные и высокопроизводительные модальные интерфейсы.
+The native `<dialog>` element is a prime example of how modern HTML takes on heavy interface logic, freeing developers from reinventing the wheel in JavaScript. Understanding its mechanisms (top layer, focus management, `::backdrop`) enables you to create robust, accessible, and high-performance modal interfaces.

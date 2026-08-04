@@ -1,32 +1,32 @@
-# Часть I. HTML как язык структуры
+# Part I. HTML as a Language of Structure
 
-# Глава 2. Современная семантика
+# Chapter 2. Modern Semantics
 
-> **Главная идея главы**
+> **Main Idea of the Chapter**
 >
-> Современный HTML — это не набор "красивых тегов", а язык описания смысла документа.
-> Семантические элементы позволяют браузеру, поисковым системам, технологиям доступности и другим программным агентам понимать структуру страницы без анализа её внешнего вида.
-> Также вы узнаете почему их значение выросло в эпоху SSR, AI, компонентных архитектур и постоянно расширяющейся Web Platform.
+> Modern HTML is not a collection of "pretty tags," but a language for describing the meaning of a document.
+> Semantic elements allow browsers, search engines, accessibility technologies, and other software agents to understand the page's structure without analyzing its appearance.
+> You will also learn why their significance has grown in the era of SSR, AI, component architectures, and the ever-expanding Web Platform.
 
 ---
 
-# Почему эта глава актуальна именно в 2026 году
+# Why This Chapter Is Relevant in 2026
 
-Семантические элементы HTML появились более пятнадцати лет назад. Поэтому может показаться, что тема современной семантики давно исчерпана.
+Semantic HTML elements appeared more than fifteen years ago. So it might seem that the topic of modern semantics has long been exhausted.
 
-На самом деле произошло обратное.
+In fact, the opposite has happened.
 
-Если в эпоху HTML5 семантика воспринималась главным образом как средство повышения доступности и поисковой оптимизации, то в 2026 году она стала фундаментом всей Web Platform.
+If in the HTML5 era semantics were perceived primarily as a means of improving accessibility and search engine optimization, then in 2026 it has become the foundation of the entire Web Platform.
 
-Современный HTML одновременно служит источником данных для браузерного движка, CSS, JavaScript, Accessibility Tree, поисковых систем, генеративного искусственного интеллекта, Server-Side Rendering, потокового рендеринга и компонентных архитектур.
+Modern HTML simultaneously serves as a data source for the browser engine, CSS, JavaScript, the Accessibility Tree, search engines, generative artificial intelligence, Server-Side Rendering, streaming rendering, and component architectures.
 
-Именно поэтому сегодня вопрос выбора между `<article>` и `<div>` — это уже не вопрос стиля программирования. Это архитектурное решение, влияющее на взаимодействие страницы с множеством подсистем веб-платформы.
+That is why today the choice between `<article>` and `<div>` is no longer a matter of programming style. It is an architectural decision that affects how the page interacts with numerous web platform subsystems.
 
-В этой главе мы будем рассматривать семантические элементы не как «новые теги HTML5», а как язык описания предметной модели современного веб-приложения.
+In this chapter, we will examine semantic elements not as "new HTML5 tags," but as a language for describing the domain model of a modern web application.
 
-# Зачем появилась семантика
+# Why Semantics Emerged
 
-До появления HTML5 большинство сайтов выглядело примерно одинаково.
+Before the advent of HTML5, most websites looked roughly the same.
 
 ```html
 <div id="header">
@@ -40,72 +40,72 @@
 </div>
 ```
 
-Такой подход получил название **div soup**.
+This approach came to be known as **div soup**.
 
-Для браузера все эти элементы были абсолютно одинаковыми.
+For the browser, all these elements were completely identical.
 
-Невозможно было определить:
+It was impossible to determine:
 
-- где начинается основное содержимое;
-- где располагается навигация;
-- где находится статья;
-- где заканчивается документ.
+- where the main content began;
+- where the navigation was located;
+- where the article was;
+- where the document ended.
 
-Похожую проблему испытывали:
+A similar problem was experienced by:
 
-- поисковые системы;
-- программы экранного доступа;
-- браузерные расширения;
-- голосовые помощники;
-- системы машинного анализа.
+- search engines;
+- screen reader programs;
+- browser extensions;
+- voice assistants;
+- machine analysis systems.
 
-HTML5 решил эту проблему, введя **семантические элементы**.
+HTML5 solved this problem by introducing **semantic elements**.
 
-Теперь разработчик может явно сообщить браузеру назначение каждого блока страницы.
+Now developers can explicitly tell the browser the purpose of each block on the page.
 
 ---
 
-# Семантика как контракт
+# Semantics as a Contract
 
-Когда разработчик пишет
+When a developer writes
 
 ```html
 <nav></nav>
 ```
 
-он сообщает браузеру:
+they are telling the browser:
 
-> Этот раздел содержит навигацию.
+> This section contains navigation.
 
-Когда используется
+When
 
 ```html
 <main></main>
 ```
 
-браузер понимает:
+is used, the browser understands:
 
-> Здесь находится основной контент страницы.
+> This is where the main content of the page is located.
 
-При использовании
+When
 
 ```html
 <article></article>
 ```
 
-становится понятно:
+is used, it becomes clear:
 
-> Это самостоятельная публикация.
+> This is an independent publication.
 
-HTML перестал быть просто языком отображения.
+HTML has ceased to be merely a display language.
 
-Он стал языком описания предметной области.
+It has become a language for describing the domain.
 
 ---
 
-# Семантика и Accessibility Tree
+# Semantics and the Accessibility Tree
 
-Современный браузер строит несколько моделей документа одновременно.
+The modern browser builds multiple document models simultaneously.
 
 ```
 HTML
@@ -123,68 +123,68 @@ Accessibility Tree
 Screen Reader
 ```
 
-Именно семантические элементы позволяют браузеру автоматически создать корректное дерево доступности.
+It is precisely semantic elements that allow the browser to automatically create a correct accessibility tree.
 
-Например,
+For example,
 
 ```html
 <nav></nav>
 ```
 
-становится Landmark Navigation.
+becomes Landmark Navigation.
 
 ```
 Navigation
 
 ↓
 
-Главное меню сайта
+Main site menu
 ```
 
-А
+And
 
 ```html
 <main></main>
 ```
 
-превращается в
+becomes
 
 ```
 Main Landmark
 ```
 
-Благодаря этому пользователь программы экранного доступа может мгновенно перейти к основному содержимому страницы, пропустив меню и боковые панели.
+Thanks to this, a screen reader user can instantly jump to the main content of the page, skipping menus and sidebars.
 
 ---
 
 # Landmarks
 
-Одной из важнейших возможностей современной семантики являются **ориентиры (Landmarks)**.
+One of the most important features of modern semantics is **Landmarks**.
 
-Они позволяют пользователю перемещаться по странице не по порядку элементов, а между логическими областями документа.
+They allow users to navigate the page not by element order, but between logical areas of the document.
 
-К таким элементам относятся:
+These elements include:
 
-| Элемент    | Landmark                    |
-| ---------- | --------------------------- |
-| `<header>` | Banner (при верхнем уровне) |
-| `<nav>`    | Navigation                  |
-| `<main>`   | Main                        |
-| `<aside>`  | Complementary               |
-| `<footer>` | Contentinfo (для документа) |
-| `<form>`   | Form                        |
-| `<search>` | Search                      |
+| Element    | Landmark                   |
+| ---------- | -------------------------- |
+| `<header>` | Banner (when top-level)    |
+| `<nav>`    | Navigation                 |
+| `<main>`   | Main                       |
+| `<aside>`  | Complementary              |
+| `<footer>` | Contentinfo (for document) |
+| `<form>`   | Form                       |
+| `<search>` | Search                     |
 
-Именно Landmarks являются одной из причин появления большинства современных семантических элементов.
+Landmarks are one of the primary reasons for the introduction of most modern semantic elements.
 
 ---
 
-# Структурные элементы документа
+# Document Structural Elements
 
 ## `<header>`
 
-- `<header>`: Представляет собой группу вводных или навигационных средств. Обычно он содержит заголовки (`<h1>`–`<h6>`), логотипы, навигационные меню или формы поиска.
-- _Важно помнить:_ `<header>` не является контентом разделения (`sectioning content`) и не создает новый раздел в логическом плане документа (`outline`). Он может использоваться многократно (например, в шапке сайта, шапке статьи и т.д.).
+- `<header>`: Represents a group of introductory or navigational aids. It typically contains headings (`<h1>`–`<h6>`), logos, navigation menus, or search forms.
+- _Important to remember:_ `<header>` is not sectioning content and does not create a new section in the document outline. It can be used multiple times (for example, in the site header, article header, etc.).
 
 ```
 <header>
@@ -202,28 +202,28 @@ Accessibility Tree
 
 ## `<main>`
 
-Очень важно понимать, что
+It is very important to understand that
 
 ```
 <main>
 ```
 
-не означает
+does not mean
 
-> Центральная колонка сайта.
+> The central column of the site.
 
-Он означает
+It means
 
-> Основное содержимое данного документа.
+> The main content of this document.
 
-На странице должен присутствовать только один активный `<main>`.
+There should be only one active `<main>` on a page.
 
 ---
 
 ## `<footer>`
 
-- `<footer>`: Содержит информацию о ближайшем предке — разделе или всем документе (авторство, ссылки на связанные документы, юридические уведомления, авторские права).
-- _Особенности:_ Как и `<header>`, он не создает нового подраздела. Подвал не обязательно должен находиться в самом конце раздела или страницы, хотя чаще всего располагается именно там.
+- `<footer>`: Contains information about the nearest ancestor—a section or the entire document (authorship, links to related documents, legal notices, copyright).
+- _Features:_ Like `<header>`, it does not create a new subsection. A footer does not necessarily have to be at the very end of a section or page, although that is where it is most often placed.
 
 ```
 <footer>
@@ -235,87 +235,79 @@ Content Information
 
 ---
 
-# Семантические разделы
+# Semantic Sections
 
 ## `<article>`
 
-Главное правило.
+The main rule.
 
-Если элемент можно опубликовать отдельно —
+If an element could be published independently—
 
-скорее всего,
+then most likely,
 
-это `<article>`.
+it is `<article>`.
 
-Например:
+For example:
 
-- статья;
-- комментарий;
-- карточка товара;
-- сообщение форума;
-- пост социальной сети.
+- article;
+- comment;
+- product card;
+- forum post;
+- social media post.
 
 ---
 
 ## `<section>`
 
-Очень распространённая ошибка — использовать `<section>` как замену `<div>`. Это неверно. `<section>` — не контейнер, а тематический раздел документа.
-Практическое правило: если раздел имеет собственный заголовок, скорее всего, нужно использовать `<section>`.
+A very common mistake is using `<section>` as a replacement for `<div>`. This is incorrect. `<section>` is not a container, but a thematic section of a document.
+
+A practical rule: if a section has its own heading, you should most likely use `<section>`.
 
 ---
 
 ## `<aside>`
 
-Современный `<aside>` чаще всего используется для:
+Modern `<aside>` is most often used for:
 
-- боковых панелей;
-- дополнительных материалов;
-- рекламы;
-- списка похожих статей;
-- справочной информации.
+- sidebars;
+- supplementary materials;
+- advertisements;
+- lists of related articles;
+- reference information.
 
-При этом его содержимое не должно быть обязательным для понимания основного текста.
+Its content should not be essential for understanding the main text.
 
 ---
 
-# Специализированные элементы
-
-...
-
-Добавить
+# Specialized Elements
 
 ## `<figure>`
 
-Важно понимать, что
+It is important to understand that
 
 ```
 <figure>
 ```
 
-может содержать не только изображение.
+can contain not only images.
 
-Например
+For example:
 
 ```html
 <figure>
   <pre>
-
-код программы
-
-</pre
-  >
-
-  <figcaption>Листинг 2.1</figcaption>
+program code
+  </pre>
+  <figcaption>Listing 2.1</figcaption>
 </figure>
 ```
 
-или
+or
 
 ```html
 <figure>
   <blockquote>...</blockquote>
-
-  <figcaption>Цитата Тима Бернерса-Ли</figcaption>
+  <figcaption>Quote from Tim Berners-Lee</figcaption>
 </figure>
 ```
 
@@ -323,148 +315,148 @@ Content Information
 
 ## `<time>`
 
-Следует всегда использовать атрибут
+You should always use the
 
 ```
 datetime
 ```
 
-именно в формате ISO-8601.
+attribute in the ISO-8601 format.
 
-Это облегчает:
+This facilitates:
 
-- индексацию;
-- машинную обработку;
-- экспорт календарей;
-- анализ данных.
+- indexing;
+- machine processing;
+- calendar export;
+- data analysis.
 
 ---
 
-# Когда использовать `<div>`
+# When to Use `<div>`
 
-Самый важный вопрос современной семантики.
+The most important question in modern semantics.
 
-Правило можно сформулировать очень просто.
+The rule can be stated very simply:
 
 ```
-Существует семантический элемент?
+Does a semantic element exist?
 
 ↓
 
-Да
+Yes
 
 ↓
 
-Используем его.
+Use it.
 
 ↓
 
-Нет
+No
 
 ↓
 
-Используем <div>.
+Use <div>.
 ```
 
-Именно поэтому
+That is why
 
 ```
 <div>
 ```
 
-называют
+is called a
 
 > generic container
 
-или
+or
 
-> элементом последнего выбора.
+> the element of last resort.
 
 ---
 
-# Семантика и современные фреймворки
+# Semantics and Modern Frameworks
 
-Иногда можно услышать мнение:
+Sometimes you may hear the opinion:
 
-> Angular всё равно генерирует HTML.
+> Angular generates HTML anyway.
 
-Это правда.
+That's true.
 
-Но Angular не может самостоятельно определить, что означает ваш компонент.
+But Angular cannot independently determine what your component means.
 
-Например,
+For example,
 
 ```html
 <app-news-list></app-news-list>
 ```
 
-для браузера —
+for the browser—
 
-не статья.
+is not an article.
 
-Если внутри компонента находится
+If inside the component there is
 
 ```html
 <article></article>
 ```
 
-браузер понимает его назначение.
+the browser understands its purpose.
 
-Поэтому современные фреймворки не отменяют необходимость правильной семантики.
+Therefore, modern frameworks do not eliminate the need for proper semantics.
 
-Они лишь помогают генерировать HTML.
+They only help generate HTML.
 
 ---
 
-# Архитектурные рекомендации
+# Architectural Recommendations
 
-При проектировании страницы полезно придерживаться следующего порядка вопросов.
+When designing a page, it is useful to follow this order of questions:
 
 ```
-Что представляет собой данный объект?
+What does this object represent?
 
 ↓
 
-Есть ли для него семантический элемент?
+Is there a semantic element for it?
 
 ↓
 
-Да
+Yes
 
 ↓
 
-Используем его.
+Use it.
 
 ↓
 
-Нет
+No
 
 ↓
 
-Используем div.
+Use div.
 ```
 
 ---
 
-# Как изменилась роль семантики в современной Web Platform?
+# How the Role of Semantics Has Changed in the Modern Web Platform
 
-И вот здесь появилось действительно много нового.
+And here, a lot of truly new things have emerged.
 
 ---
 
-## 1. Семантика перестала быть только про Accessibility
+## 1. Semantics Is No Longer Just About Accessibility
 
-В книгах 2015–2024 годов обычно писали:
+In books from 2015–2024, they typically wrote:
 
-> Используйте `<article>`, потому что это полезно для SEO.
+> Use `<article>` because it's good for SEO.
 
-или
+or
 
-> Используйте `<nav>`, потому что Screen Reader поймёт структуру страницы.
+> Use `<nav>` because Screen Readers will understand the page structure.
 
-В 2026 году это лишь малая часть картины.
+In 2026, this is only a small part of the picture.
 
-Сегодня HTML является **единым источником истины (Single Source of Truth)** сразу для множества подсистем браузера.
+Today, HTML is the **Single Source of Truth** for multiple browser subsystems simultaneously.
 
 ```
 HTML
@@ -488,37 +480,37 @@ HTML
       └────────► Rendering Engine
 ```
 
-То есть семантика стала контрактом сразу для многих потребителей.
+That is, semantics has become a contract for many consumers at once.
 
 ---
 
-## 2. HTML стал языком декларативного программирования
+## 2. HTML Has Become a Declarative Programming Language
 
-Это, наверное, главное изменение последних лет.
+This is perhaps the most significant change in recent years.
 
-Раньше HTML отвечал почти исключительно за структуру документа.
+Previously, HTML was almost exclusively responsible for document structure.
 
-Сегодня HTML всё чаще становится декларативным API браузера.
+Today, HTML is increasingly becoming a declarative browser API.
 
-Например
+For example
 
 ```
 <dialog>
 ```
 
-уже не просто обозначает
+no longer just denotes
 
-> диалог.
+> a dialog.
 
-Он говорит браузеру
+It tells the browser
 
-> Создай полноценное модальное окно.
+> Create a fully functional modal window.
 
-Без JavaScript.
+Without JavaScript.
 
 ---
 
-То же относится к
+The same applies to
 
 ```
 popover
@@ -548,108 +540,108 @@ slot
 shadowrootmode
 ```
 
-HTML постепенно начинает описывать не только структуру документа, но и **поведение интерфейса**.
+HTML is gradually beginning to describe not only document structure but also **interface behavior**.
 
-Это принципиально новая тенденция Web Platform.
+This is a fundamentally new trend in the Web Platform.
 
 ---
 
-## 3. Семантика становится API для искусственного интеллекта
+## 3. Semantics Is Becoming an API for Artificial Intelligence
 
-Раньше HTML анализировали:
+Previously, HTML was analyzed by:
 
-- браузеры;
-- поисковые системы;
-- Screen Reader.
+- browsers;
+- search engines;
+- Screen Readers.
 
-Теперь появились новые потребители.
+Now new consumers have emerged.
 
-Например
+For example:
 
 - AI Search;
-- LLM;
+- LLMs;
 - AI Agents;
-- браузерные ассистенты;
-- автономные веб-агенты.
+- browser assistants;
+- autonomous web agents.
 
-Для них семантическая структура намного важнее CSS.
+For them, semantic structure is much more important than CSS.
 
-Представьте два документа.
+Imagine two documents.
 
-Первый
+The first:
 
 ```html
-<div class="big-title">Новости</div>
+<div class="big-title">News</div>
 ```
 
-Второй
+The second:
 
 ```html
 <article>
-  <h1>Новости</h1>
+  <h1>News</h1>
 </article>
 ```
 
-Для человека оба выглядят одинаково.
+To a human, both look the same.
 
-Для ИИ —
+To AI—
 
-нет.
+they don't.
 
-Во втором случае модель сразу понимает
+In the second case, the model immediately understands:
 
-- это статья;
-- есть главный заголовок;
-- дальше идёт содержание.
+- this is an article;
+- there is a main heading;
+- the content follows.
 
 ---
 
-## 4. Семантика становится частью SSR
+## 4. Semantics Is Becoming Part of SSR
 
-До появления SSR многие страницы полностью генерировались JavaScript.
+Before the advent of SSR, many pages were fully generated by JavaScript.
 
-Сегодня ситуация изменилась.
+Today, the situation has changed.
 
-Практически все современные фреймворки делают ставку на
+Almost all modern frameworks emphasize:
 
 - SSR;
 - Streaming SSR;
 - Partial Hydration;
 - Islands Architecture.
 
-Это означает, что HTML снова становится первым объектом, который получает браузер.
+This means that HTML is once again the first object the browser receives.
 
-Следовательно, качество HTML снова становится критически важным.
+Consequently, the quality of HTML is once again critically important.
 
 ---
 
-## 5. Семантика становится частью производительности
+## 5. Semantics Is Becoming Part of Performance
 
-Кажется, что
+It may seem that
 
 ```
 <article>
 ```
 
-никак не связан с производительностью.
+has nothing to do with performance.
 
-Но связан.
+But it does.
 
-Чем лучше структурирован HTML, тем проще:
+The better structured the HTML, the easier it is to:
 
-- выполнять потоковый рендеринг;
-- разделять страницу на компоненты;
-- выполнять частичную гидратацию;
-- строить Islands;
-- выполнять Server Components.
+- perform streaming rendering;
+- split the page into components;
+- perform partial hydration;
+- build Islands;
+- implement Server Components.
 
-То есть современная архитектура производительности начинается именно с HTML.
+That is, modern performance architecture starts with HTML.
 
 ---
 
-## 6. Семантика стала фундаментом Design Systems
+## 6. Semantics Has Become the Foundation of Design Systems
 
-Раньше Design System состояла примерно из
+Previously, a Design System consisted roughly of:
 
 ```
 Button
@@ -661,114 +653,114 @@ Input
 Modal
 ```
 
-Сегодня хороший Design System начинает задавать вопрос
+Today, a good Design System starts by asking:
 
-> Какой HTML должен генерировать компонент?
+> What HTML should the component generate?
 
-Например
+For example:
 
 ```
 Card
 ```
 
-должен ли рендериться как
+should it render as
 
 ```
 <div>
 ```
 
-или
+or
 
 ```
 <article>
 ```
 
-Если компонент представляет самостоятельный объект,
+If the component represents an independent object,
 
-то
+then
 
 ```
 <article>
 ```
 
-почти всегда правильнее.
+is almost always more correct.
 
-Получается, Design System проектирует не CSS.
+So, a Design System doesn't just design CSS.
 
-Он проектирует HTML.
+It designs HTML.
 
 ---
 
-## 7. Семантика становится частью архитектуры компонентов
+## 7. Semantics Is Becoming Part of Component Architecture
 
-В Angular
+In Angular,
 
 ```
 <app-product-card>
 ```
 
-ничего не говорит браузеру.
+tells the browser nothing.
 
-Но если внутри компонента находится
+But if inside the component there is
 
 ```html
 <article>...</article>
 ```
 
-тогда браузер понимает, что это самостоятельная публикация.
+then the browser understands that this is an independent publication.
 
-Получается интересная мысль.
+This leads to an interesting thought.
 
-Современный компонент имеет **две архитектуры**.
+A modern component has **two architectures**.
 
-Внешнюю
+The external one:
 
 ```
 Angular Component
 ```
 
-и внутреннюю
+and the internal one:
 
 ```
 Semantic HTML
 ```
 
-Именно внутренняя архитектура взаимодействует с Web Platform.
+It is the internal architecture that interacts with the Web Platform.
 
 ---
 
-## 8. HTML становится интерфейсом между человеком и браузером
+## 8. HTML Is Becoming the Interface Between Humans and Browsers
 
-Раньше говорили
+Previously, they said:
 
-> HTML описывает страницу.
+> HTML describes a page.
 
-Сегодня точнее сказать иначе.
+Today, it's more accurate to say:
 
-> HTML описывает предметную модель интерфейса.
+> HTML describes the domain model of the interface.
 
-CSS отвечает за внешний вид.
+CSS is responsible for appearance.
 
-JavaScript — за изменение состояния.
+JavaScript is responsible for state changes.
 
-HTML — за смысл объектов.
+HTML is responsible for the meaning of objects.
 
 ---
 
-# Основные выводы
+# Key Takeaways
 
-После изучения главы необходимо помнить.
+After studying this chapter, remember:
 
-- Семантика описывает смысл, а не оформление.
-- Современный HTML предоставляет десятки специализированных элементов.
-- Семантические элементы автоматически используются Accessibility Tree.
-- Правильная семантика улучшает SEO.
-- Современные фреймворки работают поверх семантического HTML.
-- `<div>` остаётся важным элементом, но только тогда, когда отсутствует более подходящий семантический тег.
+- Semantics describes meaning, not presentation.
+- Modern HTML provides dozens of specialized elements.
+- Semantic elements are automatically used by the Accessibility Tree.
+- Proper semantics improves SEO.
+- Modern frameworks work on top of semantic HTML.
+- `<div>` remains an important element, but only when no more suitable semantic tag exists.
 
-![иллюстрация](images/chapter-02.png)
+---
 
-## Как браузер "видит" страницу
+## How the Browser "Sees" a Page
 
 ```
 HTML
@@ -792,8 +784,8 @@ DOM
 
 ---
 
-# Что дальше
+# What's Next
 
-В следующей главе мы увидим, что современный HTML — это не только язык структуры, но и **декларативный интерфейс браузера**.
+In the next chapter, we will see that modern HTML is not only a language of structure but also a **declarative browser interface**.
 
-Мы познакомимся с концепцией **HTML как API Web Platform** и увидим, почему новые возможности HTML продолжают появляться даже спустя более тридцати лет после создания языка.
+We will explore the concept of **HTML as the Web Platform API** and see why new HTML features continue to emerge even more than thirty years after the language was created.

@@ -1,35 +1,35 @@
-# Часть VIII. Архитектура HTML
+# Part VIII. HTML Architecture
 
-## Глава 25. HTML в эпоху Server-Side Rendering (SSR)
+## Chapter 25. HTML in the Era of Server-Side Rendering (SSR)
 
-В современной веб-разработке маятник архитектуры вновь качнулся от сугубо клиентских одностраничных приложений (_SPA_) в сторону серверного рендеринга (_SSR_). В этой модели **HTML** возвращает себе статус абсолютного центра притяжения всей экосистемы. Такой сдвиг продиктован жесткими требованиями бизнеса и пользователей к максимальной производительности, мгновенной первой отрисовке (_First Paint_) и безупречной поисковой индексации (_SEO_).
-
----
-
-## 25.1. Hydration («Оживление» разметки) и Declarative Shadow DOM
-
-Фундаментальным процессом в парадигме SSR выступает **гидратация** (_Hydration_) — механизм, при котором клиентский JavaScript «подхватывает» уже готовую статическую HTML-разметку, сгенерированную на сервере, навешивает на нее обработчики событий и восстанавливает внутреннее интерактивное состояние.
-
-Исторически создание инкапсулированных веб-компонентов с использованием _Shadow DOM_ на стороне сервера было связано со значительными трудностями: браузеры требовали обязательного выполнения клиентских скриптов для инициализации теневого дерева. Настоящим прорывом стало внедрение **Declarative Shadow DOM (DSD)**:
-
-- Используя атрибут `shadowrootmode` (`open` или `closed`) непосредственно внутри тега `<template>`, сервер может передать полноценную структуру инкапсулированного компонента прямо в первичном потоке HTML.
-- Браузер распаковывает и превращает этот шаблон в теневой корень «на лету» прямо в процессе парсинга разметки.
-- Это позволяет мгновенно отрисовывать сложные компоненты еще до загрузки или исполнения тяжелых JavaScript-файлов, обеспечивая бесшовную и быструю гидратацию на клиенте.
+In modern web development, the architectural pendulum has swung back from purely client-side Single Page Applications (SPAs) toward Server-Side Rendering (SSR). In this model, **HTML** reclaims its status as the absolute center of gravity for the entire ecosystem. This shift is driven by strict business and user requirements for maximum performance, instant First Paint, and flawless search engine indexing (SEO).
 
 ---
 
-## 25.2. Архитектуры и фреймворки нового поколения
+## 25.1. Hydration and Declarative Shadow DOM
 
-Современные серверные фреймворки и архитектурные паттерны предлагают принципиально новые подходы к доставке HTML-кода и минимизации объема клиентского JavaScript:
+A fundamental process in the SSR paradigm is **Hydration** — a mechanism where client-side JavaScript "picks up" already-complete static HTML markup generated on the server, attaches event handlers to it, and restores internal interactive state.
 
-- **React Server Components (RSC):** Революционный подход, разделяющий компоненты на серверные и клиентские. Код серверных компонентов исполняется исключительно на бэкенде, генерируя чистый HTML без отправки исходного кода или зависимостей на устройство пользователя.
-- **Islands Architecture (Архитектура островов):** Концепция (популяризированная экосистемой Astro), при которой страница рендерится как статический, быстрый HTML, внутри которого изолированно вкраплены интерактивные динамические блоки («острова»). Клиентская гидратация выборочно применяется только к этим островам, оставляя остальную часть страницы статической.
-- **Qwik и Resumability (Возобновляемость):** Кардинально иная стратегия, отменяющая классическую гидратацию. Вместо повторного исполнения кода на клиенте, состояние приложения и обработчики сериализуются прямо в HTML на сервере, позволяя браузеру продолжить выполнение логики с того же места мгновенно и без затрат на процессор.
+Historically, creating encapsulated web components using Shadow DOM on the server side was fraught with significant difficulties: browsers required mandatory client-side script execution to initialize the shadow tree. A true breakthrough was the introduction of **Declarative Shadow DOM (DSD)**:
+
+- Using the `shadowrootmode` attribute (`open` or `closed`) directly inside the `<template>` tag, the server can deliver a complete encapsulated component structure directly in the primary HTML stream.
+- The browser unpacks and turns this template into a shadow root "on the fly" during markup parsing.
+- This allows instant rendering of complex components even before heavy JavaScript files load or execute, ensuring seamless and fast client-side hydration.
 
 ---
 
-## 25.3. HTML как фундаментальный контракт SSR
+## 25.2. Next-Generation Architectures and Frameworks
 
-Декларативные стандарты веб-платформы делают SSR-приложения неизмеримо более устойчивыми, быстрыми и прогнозируемыми.
+Modern server frameworks and architectural patterns offer fundamentally new approaches to delivering HTML code and minimizing client-side JavaScript volume:
 
-Возможность браузера обрабатывать и выводить инкапсулированный контент в потоковом режиме непосредственно во время парсинга сети радикально сокращает критический путь рендеринга и полностью избавляет пользователя от неприятных визуальных скачков макета (_Cumulative Layout Shift_). В эпоху развитого SSR язык HTML окончательно перестал быть пассивным инструментом описания текста, превратившись в мощный управляющий контур производительности и жизненного цикла веб-интерфейсов.
+- **React Server Components (RSC):** A revolutionary approach that splits components into server and client components. Server component code executes exclusively on the backend, generating pure HTML without sending source code or dependencies to the user's device.
+- **Islands Architecture:** A concept (popularized by the Astro ecosystem) where the page is rendered as static, fast HTML, within which interactive dynamic blocks ("islands") are isolated and interspersed. Client-side hydration is selectively applied only to these islands, leaving the rest of the page static.
+- **Qwik and Resumability:** A radically different strategy that abandons classic hydration. Instead of re-executing code on the client, application state and handlers are serialized directly into HTML on the server, allowing the browser to continue executing logic from the same point instantly and without CPU overhead.
+
+---
+
+## 25.3. HTML as the Fundamental SSR Contract
+
+The declarative standards of the web platform make SSR applications immeasurably more resilient, faster, and more predictable.
+
+The browser's ability to process and output encapsulated content in streaming mode directly during network parsing radically shortens the critical rendering path and completely frees the user from unpleasant layout shifts (Cumulative Layout Shift). In the era of advanced SSR, the HTML language has finally ceased to be a passive text description tool, transforming into a powerful control circuit for web interface performance and lifecycle.

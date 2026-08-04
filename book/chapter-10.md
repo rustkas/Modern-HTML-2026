@@ -1,64 +1,64 @@
-# Часть IV. Производительность начинается с HTML
+# Part IV. Performance Starts with HTML
 
-## Глава 10. Современная загрузка ресурсов и спекулятивная оптимизация
+## Chapter 10. Modern Resource Loading and Speculative Optimization
 
-Производительность веб-страницы во многом зависит от того, насколько эффективно браузер приоритизирует загрузку ресурсов. Современный HTML предоставляет мощный набор декларативных инструментов для **спекулятивной загрузки** (_speculative loading_) — практики выполнения сетевых действий (DNS-запросов, установки соединений или скачивания файлов) до того, как они фактически потребуются пользователю, на основе прогнозирования его поведения.
+The performance of a web page largely depends on how efficiently the browser prioritizes resource loading. Modern HTML provides a powerful set of declarative tools for **speculative loading** — the practice of performing network actions (DNS queries, connection establishment, or file downloads) before they are actually needed by the user, based on predicting their behavior.
 
 ---
 
-## 10.1. Ранняя подготовка сети: `dns-prefetch` и `preconnect`
+## 10.1. Early Network Preparation: `dns-prefetch` and `preconnect`
 
-Первым этапом любого сетевого запроса к стороннему или основному источнику является разрешение доменного имени и установка безопасного соединения. Преждевременная инициализация этих процессов позволяет сэкономить сотни миллисекунд.
+The first stage of any network request to a third-party or primary origin is resolving the domain name and establishing a secure connection. Premature initialization of these processes can save hundreds of milliseconds.
 
-- **`dns-prefetch`:** Подсказка браузеру заранее выполнить DNS-резолвинг для стороннего домена, с которого в дальнейшем будут запрашиваться ресурсы (например, скрипты аналитики, рекламные сети или сторонние CDN). Это снижает сетевую задержку (_latency_).
-- **`preconnect`:** Более глубокий инструмент подготовки. Он не только выполняет поиск IP-адреса через DNS, но и инициирует полное TCP-рукопожатие (_TCP handshake_), а также TLS-согласование (_TLS negotiation_).
-- _Важно:_ Использовать `preconnect` стоит с осторожностью и только для критически важных доменов (например, шрифтовых хостингов или API-серверов), так как открытие лишних соединений нагружает сетевой стек клиента.
+- **`dns-prefetch`:** A hint to the browser to perform DNS resolution in advance for a third-party domain from which resources will be requested later (for example, analytics scripts, ad networks, or third-party CDNs). This reduces network latency.
+- **`preconnect`:** A deeper preparation tool. It not only performs IP address lookup via DNS but also initiates a full TCP handshake, as well as TLS negotiation.
+- _Important:_ `preconnect` should be used with caution and only for critically important domains (for example, font hosts or API servers), as opening unnecessary connections burdens the client's network stack.
 
-### Пример декларативной подготовки сети в `<head>`
+### Example of Declarative Network Preparation in `<head>`
 
 ```html
 <head>
-  <!-- Предварительное разрешение DNS для CDN изображений -->
+  <!-- Pre-resolve DNS for image CDN -->
   <link rel="dns-prefetch" href="//images.example.com" />
 
-  <!-- Полная подготовка соединения для критического API -->
+  <!-- Full connection preparation for critical API -->
   <link rel="preconnect" href="//api.example.com" crossorigin />
 </head>
 ```
 
 ---
 
-## 10.2. Оптимизация критического пути текущей страницы: `preload` и `modulepreload`
+## 10.2. Optimizing the Critical Path of the Current Page: `preload` and `modulepreload`
 
-Для ресурсов, которые гарантированно понадобятся для рендеринга текущей страницы (например, ключевые шрифты, стили или главный JavaScript-модуль), используются механизмы принудительной предварительной загрузки.
+For resources that are guaranteed to be needed for rendering the current page (for example, key fonts, styles, or the main JavaScript module), forced preloading mechanisms are used.
 
-- **`preload`:** Указывает браузеру начать скачивание ресурса немедленно, с высоким приоритетом, не дожидаясь, пока разметчик дойдет до него в DOM-дереве.
-- _Ключевое правило:_ Обязательно указывать атрибут **`as`** (например, `as="style"`, `as="font"`, `as="image"` или `as="script"`). Без него браузер не сможет правильно расставить приоритеты и применить политику безопасности содержимого (_CSP_), а сам ресурс может быть загружен повторно.
+- **`preload`:** Instructs the browser to start downloading the resource immediately, with high priority, without waiting for the parser to reach it in the DOM tree.
+- _Key rule:_ The **`as`** attribute must be specified (e.g., `as="style"`, `as="font"`, `as="image"`, or `as="script"`). Without it, the browser cannot correctly set priorities and apply Content Security Policy (CSP), and the resource itself may be loaded twice.
 
-- **`modulepreload`:** Специализированный инструмент для современных ECMAScript-модулей (`type="module"`). В отличие от обычного `preload`, который просто помещает файл в сетевой кэш, `modulepreload` сразу передает загруженный модуль во внутреннюю карту модулей документа (_module map_), параллельно запуская процесс скачивания его зависимостей. Это радикально ускоряет старт крупных JavaScript-приложений.
-
----
-
-## 10.3. Подготовка к будущим шагам: `prefetch` и `prerender`
-
-Эти подсказки ориентированы на перспективу — навигацию, которую пользователь, вероятнее всего, совершит на следующем этапе.
-
-- **`prefetch`:** Сигнализирует браузеру, что ресурс или целая веб-страница понадобятся в ближайшем будущем (например, при переходе на следующий слайд или в следующий раздел каталога). Такие запросы выполняются с **низким приоритетом** в фоновом режиме, чтобы гарантированно не создавать конкуренцию за канал связи с ресурсами текущей страницы. Браузер автоматически маркирует такие запросы HTTP-заголовком `Sec-Purpose: prefetch`.
-- **`prerender`:** Самый ресурсозатратный вид сетевой оптимизации, при котором браузер не просто скачивает разметку будущей страницы, но и полностью рендерит её в скрытом фоновом пространстве памяти (включая выполнение скриптов и построение макета). Когда пользователь кликает по ссылке, страница открывается **мгновенно**, создавая ощущение работы локального приложения.
+- **`modulepreload`:** A specialized tool for modern ECMAScript modules (`type="module"`). Unlike regular `preload`, which simply places the file in the network cache, `modulepreload` immediately passes the loaded module to the document's internal module map, simultaneously starting the download of its dependencies. This radically accelerates the startup of large JavaScript applications.
 
 ---
 
-## 10.4. Новое поколение: Speculation Rules API
+## 10.3. Preparing for Future Steps: `prefetch` and `prerender`
 
-Исторические теги `<link rel="...">` обладают определенной жесткостью и не всегда позволяют гибко управлять условиями спекуляций. Им на смену приходит современный стандарт **Speculation Rules API**.
+These hints are oriented toward the future — navigation that the user is most likely to take in the next step.
 
-Правила спекулятивной загрузки описываются внутри элемента `<script type="speculationrules">` в формате JSON. Этот подход предоставляет беспрецедентную гибкость:
+- **`prefetch`:** Signals to the browser that a resource or an entire web page will be needed in the near future (for example, when navigating to the next slide or the next section of a catalog). Such requests are performed with **low priority** in the background to ensure they do not compete for bandwidth with the current page's resources. The browser automatically marks such requests with the HTTP header `Sec-Purpose: prefetch`.
+- **`prerender`:** The most resource-intensive type of network optimization, where the browser not only downloads the markup of the future page but also fully renders it in a hidden background memory space (including executing scripts and building the layout). When the user clicks on the link, the page opens **instantly**, creating the feel of a local application.
 
-- **Декларативная группировка:** Возможность описывать правила для `prefetch` и `prerender` в рамках единого блока конфигурации.
-- **Селекторы и условия:** Настройка правил на основе совпадения путей URL, классов ссылок или вероятности перехода.
-- **Динамическое управление:** JavaScript-код может программно обновлять правила спекуляции в реальном времени, например, активируя предварительный рендеринг в момент, когда курсор пользователя задерживается над ссылкой (_hover_).
+---
 
-### Пример использования Speculation Rules API
+## 10.4. The New Generation: Speculation Rules API
+
+The legacy `<link rel="...">` tags have a certain rigidity and do not always allow flexible management of speculation conditions. They are being replaced by the modern **Speculation Rules API** standard.
+
+Speculative loading rules are described inside the `<script type="speculationrules">` element in JSON format. This approach provides unprecedented flexibility:
+
+- **Declarative grouping:** The ability to describe rules for `prefetch` and `prerender` within a single configuration block.
+- **Selectors and conditions:** Configuring rules based on URL path matching, link classes, or transition probability.
+- **Dynamic management:** JavaScript code can programmatically update speculation rules in real time, for example, activating prerendering when the user's cursor hovers over a link.
+
+### Example Using the Speculation Rules API
 
 ```html
 <script type="speculationrules">
@@ -81,6 +81,8 @@
 </script>
 ```
 
-### Заключение главы
+---
 
-Современные методы управления загрузкой ресурсов переводят HTML из разряда статической разметки в категорию активных инструментов оптимизации производительности. Грамотное сочетание `preconnect`, `preload` и интеллектуальных правил `Speculation Rules API` позволяет полностью ликвидировать сетевые задержки и обеспечить мгновенный отклик интерфейса для пользователя.
+## Chapter Conclusion
+
+Modern resource loading management methods transform HTML from static markup into an active performance optimization tool. A skillful combination of `preconnect`, `preload`, and intelligent `Speculation Rules API` rules can completely eliminate network delays and ensure instant interface response for the user.

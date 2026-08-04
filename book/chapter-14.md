@@ -1,79 +1,78 @@
-# Часть V. HTML и современные браузерные API
+# Part V. HTML and Modern Browser APIs
 
-## Глава 14. Navigation API: Современное управление историей и маршрутизацией
+## Chapter 14. Navigation API: Modern History and Routing Management
 
-Современные веб-приложения требуют принципиально новых, отказоустойчивых и предсказуемых инструментов для управления навигацией, чем те громоздкие и исторически обросшие костылями интерфейсы (`window.location`, `window.history`, события `popstate` и `hashchange`), с которыми разработчикам приходилось работать десятилетиями. **Navigation API** (доступный глобально через объект `navigation`) — это современный стандарт веб-платформы, предоставляющий унифицированную и мощную модель для перехвата переходов, контроля истории сессии и управления состоянием.
-
----
-
-## 14.1. Архитектура современной навигации
-
-В отличие от устаревших подходов, где логика отслеживания кликов, отправки форм и кнопок браузера «Назад/Вперед» была размазана по всему коду приложения, Navigation API предлагает **централизованную точку контроля**.
-
-* **Событие `navigation.onnavigate` (или `navigation.addEventListener('navigate', ...)`):** Это сердце всего API. Оно перехватывает абсолютно любые попытки изменения URL и навигации в текущем контексте (будь то клик по ссылке, программный переход, отправка формы или использование истории браузера).
-* **Единый поток:** Разработчику больше не нужно слушать десяток разных событий. Вся маршрутизация приложения может быть описана в едином обработчике, который анализирует целевой URL и принимает решение о дальнейших действиях.
+Modern web applications require fundamentally new, fault-tolerant, and predictable tools for managing navigation, unlike the cumbersome and historically patched interfaces (`window.location`, `window.history`, `popstate` and `hashchange` events) that developers have had to work with for decades. The **Navigation API** (available globally via the `navigation` object) is a modern web platform standard that provides a unified and powerful model for intercepting transitions, controlling session history, and managing state.
 
 ---
 
-## 14.2. Продвинутая инспекция истории сессии
+## 14.1. Modern Navigation Architecture
 
-Navigation API приносит глубокую прозрачность в работу с историей посещений вкладки, заменяя примитивный `history.length` на детализированные объекты записей.
+Unlike legacy approaches, where logic for tracking clicks, form submissions, and browser Back/Forward buttons was scattered throughout the application code, the Navigation API offers a **centralized control point**.
 
-* **`navigation.entries()`:** Возвращает массив объектов типа `NavigationHistoryEntry`, представляющих всю цепочку истории текущей сессии.
-* **Анатомия записи (`NavigationHistoryEntry`):**
-* **`key`:** Уникальный UUID конкретного состояния сессии. Этот ключ сохраняется даже при перезагрузке страницы или при заменяющих навигациях (`replaceState`). Это позволяет точно возвращать пользователя к сложным состояниям интерфейса (например, к позиции скролла или открытым фильтрам).
-* **`id`:** Внутренний идентификатор конкретной записи в истории.
-* **`getState()`:** Метод, возвращающий пользовательский объект состояния, который надежно сохраняется вместе с записью и переживает перезагрузку страницы.
-
-
+- **The `navigation.onnavigate` Event (or `navigation.addEventListener('navigate', ...)`)**: This is the heart of the entire API. It intercepts absolutely any attempt to change the URL and navigate within the current context (whether it's a link click, a programmatic transition, a form submission, or browser history usage).
+- **Unified Flow:** Developers no longer need to listen to a dozen different events. All application routing can be described in a single handler that analyzes the target URL and decides on further actions.
 
 ---
 
-## 14.3. Революция в Single Page Applications (SPA)
+## 14.2. Advanced Session History Inspection
 
-Для одностраничных приложений Navigation API стал долгожданным стандартом, избавившим от необходимости эмулировать маршрутизацию через хаки с историей. Ключевым инструментом здесь выступает метод **`intercept()`** у объекта события `NavigateEvent`.
+The Navigation API brings deep transparency to working with tab visit history, replacing the primitive `history.length` with detailed entry objects.
 
-* **Перехват навигации:** Позволяет отменить стандартное поведение браузера (полную перезагрузку страницы) и программно превратить переход в «навигацию внутри документа» (*same-document navigation*).
-* **Асинхронность и промисы:** Обработчик внутри `intercept()` может принимать промис. Пока асинхронная операция (например, загрузка данных через fetch или рендеринг компонентов) не завершится, браузер может автоматически отображать встроенный индикатор загрузки, связывая визуальное состояние интерфейса с сетевой активностью.
-* **Свойство `entry.sameDocument`:** Позволяет коду мгновенно определить, остался ли переход в рамках текущего документа или потребовал загрузки новой страницы.
+- **`navigation.entries()`:** Returns an array of `NavigationHistoryEntry` objects representing the entire history chain of the current session.
+- **Anatomy of an Entry (`NavigationHistoryEntry`):**
+  - **`key`:** A unique UUID for a specific session state. This key persists even after page reload or during replacement navigations (`replaceState`). This allows accurately returning the user to complex interface states (for example, scroll position or open filters).
+  - **`id`:** An internal identifier for a specific history entry.
+  - **`getState()`:** A method that returns the user-defined state object, which is reliably stored with the entry and survives page reloads.
 
-### Пример перехвата навигации в SPA
+---
+
+## 14.3. Revolution in Single Page Applications (SPA)
+
+For single-page applications, the Navigation API has become a long-awaited standard, eliminating the need to emulate routing through history hacks. The key tool here is the **`intercept()`** method on the `NavigateEvent` event object.
+
+- **Intercepting Navigation:** Allows canceling the browser's default behavior (full page reload) and programmatically turning the transition into a "same-document navigation."
+- **Asynchronicity and Promises:** The handler inside `intercept()` can accept a promise. While the asynchronous operation (for example, loading data via fetch or rendering components) is not complete, the browser can automatically display a built-in loading indicator, linking the visual interface state to network activity.
+- **The `entry.sameDocument` Property:** Allows the code to instantly determine whether the transition remained within the current document or required loading a new page.
+
+### Example of Intercepting Navigation in an SPA
 
 ```javascript
 navigation.addEventListener('navigate', (event) => {
-  // Проверяем, является ли переход внешним или кросс-доменным
+  // Check if the transition is external or cross-origin
   if (shouldNotIntercept(event)) return;
 
   event.intercept({
     async handler() {
       const url = new URL(event.destination.url);
       
-      // Загружаем данные для нового экрана асинхронно
+      // Load data for the new screen asynchronously
       const pageData = await fetchPageData(url.pathname);
       
-      // Обновляем DOM приложения без перезагрузки страницы
+      // Update the application DOM without reloading the page
       updateApplicationContent(pageData);
     }
   });
 });
-
 ```
 
 ---
 
-## 14.4. Совместимость с Multi Page Applications (MPA)
+## 14.4. Compatibility with Multi Page Applications (MPA)
 
-Хотя API проектировался с оглядкой на SPA, он гармонично функционирует и в традиционных многостраничных приложениях.
+Although the API was designed with SPAs in mind, it harmoniously functions in traditional multi-page applications as well.
 
-* **Метод `navigation.navigate(url, options)`:** Позволяет инициировать программный переход с возможностью сразу передать специфические данные состояния (`state`) или служебную информацию (`info`).
-* **Управление потоком:** Вызовы `navigation.reload()`, `navigation.back()` и `navigation.forward()` предоставляют чистый Promise-ориентированный интерфейс управления историей, а флаги `canGoBack` и `canGoForward` позволяют вовремя блокировать или активировать элементы управления интерфейса.
+- **The `navigation.navigate(url, options)` Method:** Allows initiating a programmatic transition with the ability to immediately pass specific state data (`state`) or additional information (`info`).
+- **Flow Control:** Calls to `navigation.reload()`, `navigation.back()`, and `navigation.forward()` provide a clean Promise-oriented interface for history management, while the `canGoBack` and `canGoForward` flags allow timely blocking or activation of interface controls.
 
 ---
 
-## 14.5. Низкоуровневые концепции: навигабли и траверсабли
+## 14.5. Low-Level Concepts: Navigables and Traversables
 
-В основе спецификации Navigation API лежат фундаментальные спецификации браузерного движка — **навигабли** (*navigables*) и **траверсабли** (*traversables*). Они формализуют иерархию документов, вложенных фреймов (`<iframe>`) и окон, определяя их способность перемещаться по последовательностям истории. Понимание этой модели гарантирует, что даже самые сложные архитектуры с вложенными контекстами будут вести себя предсказуемо при программном изменении URL.
+At the core of the Navigation API specification lie fundamental browser engine specifications — **navigables** and **traversables**. They formalize the hierarchy of documents, nested frames (`<iframe>`), and windows, defining their ability to navigate through history sequences. Understanding this model ensures that even the most complex architectures with nested contexts behave predictably during programmatic URL changes.
 
-### Заключение главы
+---
 
-Navigation API окончательно превращает управление историей и маршрутизацией из набора хрупких хаков в элегантную, высокопроизводительную систему, глубоко встроенную в жизненный цикл современного браузера и готовую к работе как в SPA, так и в MPA-архитектурах.
+## Chapter Conclusion
+
+The Navigation API finally transforms history and routing management from a set of fragile hacks into an elegant, high-performance system deeply embedded in the modern browser lifecycle, ready to work in both SPA and MPA architectures.

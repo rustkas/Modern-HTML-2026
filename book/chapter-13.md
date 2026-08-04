@@ -1,85 +1,85 @@
-# Часть V. HTML и современные браузерные API
+# Part V. HTML and Modern Browser APIs
 
-## Глава 13. View Transition API и бесшовные переходы
+## Chapter 13. View Transition API and Seamless Transitions
 
-**View Transition API** — это современный мощный набор инструментов веб-платформы, который позволяет создавать плавные, кинематографические визуальные переходы между различными состояниями интерфейса или даже между абсолютно разными страницами сайта, делегируя ресурсоемкие задачи по анимации на уровень браузера.
-
----
-
-## 13.1. Эволюция подходов: от императивных хаков к декларативной магии
-
-До появления нативного стандарта разработчикам приходилось реализовывать анимации переходов исключительно императивно. Это требовало громоздких JavaScript-библиотек, ручного вычисления координат элементов (`getBoundingClientRect`), временного замораживания интерфейса и сложных манипуляций с DOM. Такие подходы неизбежно приводили к микролагам, просадкам частоты кадров (_jank_) и проблемам с доступностью.
-
-Современный подход на базе View Transitions полностью меняет парадигму: браузер автоматически делает «снимки» (_snapshots_) старого и нового состояний страницы, после чего плавно трансформирует их друг в друга с помощью аппаратного ускорения.
+**View Transition API** is a modern, powerful set of web platform tools that allows creating smooth, cinematic visual transitions between different interface states or even between completely different pages of a website, delegating the resource-intensive animation tasks to the browser level.
 
 ---
 
-## 13.2. Single Page Applications (SPA): метод `startViewTransition()`
+## 13.1. Evolution of Approaches: From Imperative Hacks to Declarative Magic
 
-Для одностраничных приложений ключевым инструментом в рамках API является метод **`document.startViewTransition()`**. Он берет на себя полное управление жизненным циклом перехода:
+Before the native standard emerged, developers had to implement transition animations exclusively imperatively. This required bulky JavaScript libraries, manual coordinate calculation of elements (`getBoundingClientRect`), temporary interface freezing, and complex DOM manipulations. Such approaches inevitably led to micro-lags, frame rate drops (jank), and accessibility issues.
 
-1. **Захват состояния:** Браузер делает визуальный снимок текущего состояния экрана.
-2. **Обновление DOM:** Выполняется переданный в метод 콜бэк-аргумент, изменяющий структуру DOM.
-3. **Анимация:** Как только DOM обновлен, браузер делает снимок нового состояния, строит дерево псевдоэлементов и запускает плавную CSS-анимацию перехода.
+The modern approach based on View Transitions completely changes the paradigm: the browser automatically takes "snapshots" of the old and new page states, then smoothly morphs them into each other using hardware acceleration.
 
-Этот механизм избавляет разработчика от необходимости вручную синхронизировать тайминги и управлять классами анимации.
+---
 
-### Пример использования в SPA
+## 13.2. Single Page Applications (SPA): The `startViewTransition()` Method
+
+For single-page applications, the key tool within the API is the **`document.startViewTransition()`** method. It takes full control over the transition lifecycle:
+
+1. **State Capture:** The browser takes a visual snapshot of the current screen state.
+2. **DOM Update:** The callback function passed to the method is executed, modifying the DOM structure.
+3. **Animation:** Once the DOM is updated, the browser takes a snapshot of the new state, builds a pseudo-element tree, and starts a smooth CSS transition animation.
+
+This mechanism frees the developer from having to manually synchronize timings and manage animation classes.
+
+### Example Usage in an SPA
 
 ```javascript
-// Перехват клика или изменения маршрута в SPA
+// Intercepting a click or route change in an SPA
 async function updateView(newData) {
-  // Проверяем поддержку API браузером
+  // Check for browser API support
   if (!document.startViewTransition) {
     updateDOM(newData);
     return;
   }
 
-  // Запускаем нативный переход представления
+  // Start the native view transition
   const transition = document.startViewTransition(() => {
     updateDOM(newData);
   });
 
   try {
     await transition.finished;
-    console.log('Анимация перехода успешно завершена');
+    console.log('Transition animation completed successfully');
   } catch (error) {
-    console.error('Переход был прерван', error);
+    console.error('Transition was interrupted', error);
   }
 }
 ```
 
 ---
 
-## 13.3. Multi Page Applications (MPA) и кросс-документные переходы
+## 13.3. Multi Page Applications (MPA) and Cross-Document Transitions
 
-Традиционно плавные переходы были доступны исключительно в пределах одного JavaScript-документа (SPA). Современный стандарт поддерживает **cross-document view-transitions**, стирая грань между многостраничными (MPA) и одностраничными приложениями.
+Traditionally, smooth transitions were available exclusively within a single JavaScript document (SPA). The modern standard supports **cross-document view-transitions**, blurring the line between multi-page (MPA) and single-page applications.
 
-Для реализации плавных переходов между классическими страницами сайта в жизненный цикл навигации были внедрены специализированные события:
+To implement smooth transitions between classic site pages, specialized events have been introduced into the navigation lifecycle:
 
-- **`PageSwapEvent`:** Срабатывает непосредственно перед тем, как текущий документ будет выгружен и заменен новым в процессе навигации. Позволяет передать данные анимации или зафиксировать финальное состояние.
-- **`PageRevealEvent`:** Генерируется на новом документе в момент, когда он становится активным и готовится к первой отрисовке.
+- **`PageSwapEvent`:** Fires just before the current document is unloaded and replaced by a new one during navigation. Allows passing animation data or capturing the final state.
+- **`PageRevealEvent`:** Generated on the new document at the moment it becomes active and is preparing for its first render.
 
-Во время этого процесса браузер применяет механизм **подавления отрисовки** (_rendering suppression_), гарантируя, что пользователь увидит начало анимации перехода синхронно с появлением нового контента, избегая белых вспышек между загрузкой страниц.
-
----
-
-## 13.4. Интеграция с HTML Navigation API
-
-**Navigation API** выступает современным, ориентированным на веб-приложения преемником устаревших интерфейсов `location` и `history`. Он предоставляет централизованную точку контроля над всеми процессами навигации через глобальный объект `navigation`.
-
-- Событие **`navigate`** перехватывает любую попытку пользователя покинуть страницу или изменить состояние.
-- Метод **`intercept({ handler })`** позволяет превратить стандартную межстраничную навигацию в мягкую навигацию внутри документа (_same-document navigation_), бесшовно связывая логику маршрутизации с `document.startViewTransition()`.
+During this process, the browser applies a **rendering suppression** mechanism, ensuring that the user sees the start of the transition animation synchronously with the appearance of new content, avoiding white flashes between page loads.
 
 ---
 
-## 13.5. Общие элементы (_Shared Element Transitions_) и стилизация через CSS
+## 13.4. Integration with the HTML Navigation API
 
-Одной из самых впечатляющих возможностей стандарта является анимация преемственности элементов, когда конкретный блок (например, аватар пользователя, карточка товара или заголовок статьи) плавно перемещается и трансформируется из одного положения в другое при смене экрана.
+The **Navigation API** serves as a modern, web-application-oriented successor to the legacy `location` and `history` interfaces. It provides a centralized control point over all navigation processes through the global `navigation` object.
 
-### Настройка через CSS
+- The **`navigate`** event intercepts any attempt by the user to leave the page or change state.
+- The **`intercept({ handler })`** method allows turning standard cross-page navigation into a smooth same-document navigation, seamlessly connecting routing logic with `document.startViewTransition()`.
 
-View Transition API тесно интегрирован с каскадными таблицами стилей через специальное дерево сгенерированных псевдоэлементов:
+---
+
+## 13.5. Shared Element Transitions and CSS Styling
+
+One of the most impressive features of the standard is the animation of element continuity, where a specific block (for example, a user avatar, a product card, or an article heading) smoothly moves and transforms from one position to another when the screen changes.
+
+### Configuration via CSS
+
+The View Transition API is tightly integrated with cascading style sheets through a special tree of generated pseudo-elements:
 
 ```css
 ::view-transition-old(root),
@@ -87,14 +87,16 @@ View Transition API тесно интегрирован с каскадными 
   animation-duration: 0.3s;
 }
 
-/* Назначение уникального имени для анимации общего элемента */
+/* Assigning a unique name for a shared element animation */
 .product-card {
   view-transition-name: active-product;
 }
 ```
 
-Браузер динамически управляет выполнением ожидающих операций перехода, позволяя разработчику декларативно настраивать длительность, функции плавности (_easing_) и типы трансформаций через обычный CSS, в то время как движок API берет на себя всю вычислительную сложность.
+The browser dynamically manages the execution of pending transition operations, allowing the developer to declaratively configure duration, easing functions, and transformation types through regular CSS, while the API engine handles all the computational complexity.
 
-### Заключение главы
+---
 
-View Transition API радикально меняет пользовательский опыт веб-приложений. Перенос логики анимации переходов на уровень нативного браузерного движка превращает привычный HTML в основу для плавных, отзывчивых и эстетичных интерфейсов, сопоставимых по качеству с нативными мобильными программами.
+## Chapter Conclusion
+
+The View Transition API radically changes the user experience of web applications. Moving transition animation logic to the native browser engine level turns ordinary HTML into the foundation for smooth, responsive, and aesthetically pleasing interfaces, comparable in quality to native mobile applications.

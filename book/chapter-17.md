@@ -1,68 +1,70 @@
-# Часть VI. Web Components
+# Part VI. Web Components
 
-## Глава 17. Shadow DOM и инкапсуляция
+## Chapter 17. Shadow DOM and Encapsulation
 
-**Shadow DOM** является фундаментальной технологией веб-компонентов, предназначенной для создания инкапсулированных структур внутри веб-приложений. Она позволяет прикреплять скрытое дерево DOM к элементу, защищая его внутреннюю реализацию от прямого влияния JavaScript и CSS из основного документа.
-
----
-
-## 17.1. Архитектура и изоляция компонентов
-
-Основная задача Shadow DOM — обеспечить надежную изоляцию, без которой пользовательские элементы были бы крайне уязвимы к случайным изменениям стилей или логики со стороны страницы. В архитектуре этой технологии выделяют следующие ключевые понятия:
-
-- **Shadow host** (теневой хост): узел обычного DOM, к которому прикреплено теневое дерево.
-- **Shadow tree** (теневое дерево): дерево узлов внутри Shadow DOM.
-- **Shadow boundary** (теневая граница): место, где заканчивается Shadow DOM и начинается основной DOM документа.
-- **Shadow root** (теневой корень): корневой узел теневого дерева.
-
-Изоляция работает прозрачно: код внутри теневого дерева не может случайно повлиять на внешние элементы, а глобальные селекторы страницы не проникают внутрь компонента. При создании корня (метод `attachShadow()` или атрибут `shadowrootmode`) разработчик выбирает режим: **`open`** (открытый) позволяет обращаться к корню через свойство `shadowRoot` хоста, тогда как **`closed`** (закрытый) делает его недоступным для внешних скриптов.
+**Shadow DOM** is a fundamental technology of web components, designed to create encapsulated structures within web applications. It allows attaching a hidden DOM tree to an element, protecting its internal implementation from direct influence by JavaScript and CSS from the main document.
 
 ---
 
-## 17.2. Шаблоны (`<template>`) и декларативная тень
+## 17.1. Architecture and Component Isolation
 
-Элемент **`<template>`** служит декларативной основой для структуры компонентов, позволяя описывать фрагменты разметки, которые не рендерятся и не обрабатываются браузером при загрузке страницы. Содержимое шаблона хранится в объекте `DocumentFragment` и остается инертным: скрипты внутри него не выполняются, а изображения не загружаются до тех пор, пока шаблон не будет клонирован и вставлен в живое дерево DOM.
+The main task of Shadow DOM is to provide reliable isolation, without which custom elements would be extremely vulnerable to accidental style or logic changes from the page. The architecture of this technology distinguishes the following key concepts:
 
-Современный стандарт также поддерживает **Declarative Shadow DOM**, используя атрибут **`shadowrootmode`** непосредственно в теге `<template>`. В этом случае браузер при парсинге автоматически превращает шаблон в теневой корень родительского элемента, что критически важно для серверного рендеринга (SSR) и производительности.
+- **Shadow host:** A regular DOM node to which a shadow tree is attached.
+- **Shadow tree:** The tree of nodes inside the Shadow DOM.
+- **Shadow boundary:** The place where the Shadow DOM ends and the main document DOM begins.
+- **Shadow root:** The root node of the shadow tree.
 
----
-
-## 17.3. Механизм слотов (`<slot>`)
-
-Механизм слотов (**`<slot>`**) позволяет гибко комбинировать пользовательскую разметку (Light DOM) со структурой компонента (Shadow DOM).
-
-- **Именованные слоты**: использование атрибута `name` позволяет точно распределять контент пользователя по разным частям компонента. Элементы в Light DOM связываются с ними через глобальный атрибут `slot`.
-- **Слот по умолчанию**: первый встреченный в дереве слот без имени принимает весь контент, для которого не нашлось именованного соответствия.
-- **Управление назначением**: браузер может назначать узлы слотам автоматически на основе имен или вручную через JavaScript API (_manual slot assignment_).
-
-При любом изменении состава узлов в слоте генерируется событие **`slotchange`**, позволяющее вовремя реагировать на обновление внешнего контента.
+Isolation works transparently: code inside the shadow tree cannot accidentally affect external elements, and global page selectors do not penetrate inside the component. When creating the root (using the `attachShadow()` method or the `shadowrootmode` attribute), the developer chooses a mode: **`open`** allows access to the root via the host's `shadowRoot` property, while **`closed`** makes it inaccessible to external scripts.
 
 ---
 
-## 17.4. Изолированная стилизация (Styling)
+## 17.2. Templates (`<template>`) and Declarative Shadow DOM
 
-Стилизация в Shadow DOM строго инкапсулирована, что полностью исключает конфликты имен классов с глобальной таблицей стилей страницы. На практике применяется два основных подхода:
+The **`<template>`** element serves as the declarative foundation for component structure, allowing description of markup fragments that are not rendered or processed by the browser when the page loads. The template's content is stored in a `DocumentFragment` object and remains inert: scripts inside it are not executed, and images are not loaded until the template is cloned and inserted into the live DOM tree.
 
-1. **Декларативный**: размещение тега `<style>` непосредственно внутри `<template>` компонента.
-2. **Программный**: использование **Constructable Stylesheets** через свойство `adoptedStyleSheets` теневого корня, что позволяет эффективно и экономно разделять одну таблицу стилей между множеством экземпляров компонента.
-
-Для контролируемого управления стилями через границу инкапсуляции предусмотрены специальные псевдоклассы и псевдоэлементы:
-
-- **`:host`**: позволяет стилизовать сам хост-элемент изнутри теневого дерева.
-- **`::slotted()`**: используется для стилизации элементов, переданных пользователем в слоты.
-- **`::part()`**: позволяет автору компонента явно открыть конкретные внутренние элементы для внешней стилизации (через атрибут `part`).
+The modern standard also supports **Declarative Shadow DOM** by using the **`shadowrootmode`** attribute directly on the `<template>` tag. In this case, the browser automatically turns the template into a shadow root of the parent element during parsing, which is critically important for Server-Side Rendering (SSR) and performance.
 
 ---
 
-## 17.5. Доступность (Accessibility), события и фокус
+## 17.3. The Slot Mechanism (`<slot>`)
 
-Shadow DOM полностью интегрирован с моделью доступности браузера и механизмами работы с событиями.
+The slot mechanism (**`<slot>`**) allows flexible combination of user markup (Light DOM) with the component's structure (Shadow DOM).
 
-- **Наследование контекста**: Теневое дерево и слоты автоматически наследуют важные глобальные контекстные атрибуты, такие как язык (`lang`) и направление текста (`dir`), непосредственно от своего хоста.
-- **Перенацеливание событий (_Retargeting_):** Когда событие всплывает за пределы теневой границы наружу, его свойство `target` автоматически изменяется на сам хост-элемент, защищая детали внутренней реализации.
-- **Управление фокусом (`delegatesFocus`):** Если этот атрибут активен у теневого корня, то при клике на компонент фокус автоматически переносится на первый доступный интерактивный элемент внутри теневого дерева.
-- **Дерево доступности:** Все узлы внутри Shadow DOM корректно проецируются в общее дерево доступности (_Accessibility Tree_), обеспечивая безупречную работу скринридеров и вспомогательных технологий.
+- **Named slots:** Using the `name` attribute allows precise distribution of user content across different parts of the component. Elements in the Light DOM are connected to them via the global `slot` attribute.
+- **Default slot:** The first slot encountered in the tree without a name accepts all content that has no named match.
+- **Assignment control:** The browser can assign nodes to slots automatically based on names or manually via the JavaScript API (manual slot assignment).
 
-### Заключение главы
+Whenever the composition of nodes in a slot changes, the **`slotchange`** event is generated, allowing timely reaction to external content updates.
 
-Shadow DOM превращает HTML в мощную модульную систему, где каждый компонент является предсказуемым, изолированным и защищенным строительным блоком современной веб-платформы.
+---
+
+## 17.4. Isolated Styling
+
+Styling in Shadow DOM is strictly encapsulated, completely eliminating class name conflicts with the page's global style sheet. In practice, two main approaches are used:
+
+1. **Declarative:** Placing a `<style>` tag directly inside the component's `<template>`.
+2. **Programmatic:** Using **Constructable Stylesheets** via the shadow root's `adoptedStyleSheets` property, which allows efficient and economical sharing of a single style sheet across many component instances.
+
+For controlled style management across the encapsulation boundary, special pseudo-classes and pseudo-elements are provided:
+
+- **`:host`:** Allows styling the host element itself from inside the shadow tree.
+- **`::slotted()`:** Used to style elements passed by the user into slots.
+- **`::part()`:** Allows the component author to explicitly expose specific internal elements for external styling (via the `part` attribute).
+
+---
+
+## 17.5. Accessibility, Events, and Focus
+
+Shadow DOM is fully integrated with the browser's accessibility model and event handling mechanisms.
+
+- **Context Inheritance:** The shadow tree and slots automatically inherit important global context attributes such as language (`lang`) and text direction (`dir`) directly from their host.
+- **Event Retargeting:** When an event bubbles out beyond the shadow boundary, its `target` property is automatically changed to the host element itself, protecting internal implementation details.
+- **Focus Management (`delegatesFocus`):** If this attribute is active on the shadow root, clicking on the component automatically moves focus to the first available interactive element inside the shadow tree.
+- **Accessibility Tree:** All nodes inside Shadow DOM are correctly projected into the overall Accessibility Tree, ensuring flawless operation of screen readers and assistive technologies.
+
+---
+
+## Chapter Conclusion
+
+Shadow DOM transforms HTML into a powerful modular system where each component is a predictable, isolated, and protected building block of the modern web platform.

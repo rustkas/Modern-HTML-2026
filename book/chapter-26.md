@@ -1,70 +1,72 @@
-# Часть VIII. Архитектура HTML
+# Part VIII. HTML Architecture
 
-## Глава 26. Полностью современное приложение
+## Chapter 26. A Fully Modern Application
 
-Создание «полностью современного» веб-приложения базируется на принципиальном смене парадигмы: отказе от избыточных клиентских JavaScript-фреймворков в пользу богатых нативных возможностей современной веб-платформы. Актуальный стандарт HTML предоставляет мощные декларативные инструменты для решения сложных задач, которые еще недавно требовали подключения тяжелых сторонних библиотек и тысяч строк хрупкого кода — от управления модальными окнами и валидации форм до оптимизации сетевого взаимодействия.
-
----
-
-## 26.1. Семантическая структура и нативная доступность
-
-Фундамент современной архитектуры приложений держится на строгой семантической разметке, которая служит не просто визуальным каркасом, а жестким контрактом между разработчиком и браузером. Использование элементов с заложенным «внутренним смыслом» (*intrinsic meaning*) обеспечивает полноценную доступность интерфейса «из коробки»:
-
-* **Ориентиры (`Landmarks`):** Использование специализированных тегов верхнего уровня (`<header>`, `<nav>`, `<main>`, `<footer>`, `<aside>`) позволяет вспомогательным технологиям и скринридерам мгновенно выстраивать карту страницы и обеспечивать быструю навигацию.
-* **Смысловые блоки:** Дробление контента на логические сегменты с помощью тегов `<section>` и `<article>` улучшает индексацию поисковыми роботами и структурирует иерархию данных.
+Building a "fully modern" web application is based on a fundamental paradigm shift: moving away from excessive client-side JavaScript frameworks in favor of the rich native capabilities of the modern web platform. The current HTML standard provides powerful declarative tools for solving complex tasks that, until recently, required heavy third-party libraries and thousands of lines of fragile code — from managing modal windows and form validation to optimizing network interactions.
 
 ---
 
-## 26.2. Веб-компоненты и Declarative Shadow DOM
+## 26.1. Semantic Structure and Native Accessibility
 
-Архитектура интерфейса строится на базе стандарта **Web Components**, гарантирующего создание изолированных, переиспользуемых модулей без привязки к конкретным экосистемам:
+The foundation of modern application architecture rests on strict semantic markup, which serves not merely as a visual framework but as a rigid contract between the developer and the browser. Using elements with built-in "intrinsic meaning" ensures full out-of-the-box interface accessibility:
 
-* **Инкапсулированная регистрация:** Компоненты реализуются как стандартные ES-классы и регистрируются в глобальном пространстве через `customElements.define()`.
-* **Производительность SSR через DSD:** Благодаря интеграции **Declarative Shadow DOM (DSD)** структуру компонента можно передать непосредственно в первичном потоке HTML с помощью тега `<template shadowrootmode="open">`. Браузер преобразует этот шаблон в теневой корень «на лету» в процессе парсинга, обеспечивая мгновенную отрисовку интерфейса без ожидания загрузки скриптов и оптимизируя ключевые метрики производительности (LCP).
-
----
-
-## 26.3. Нативные интерактивные слои: `<dialog>` и Popover API
-
-Для реализации оверлеев, модальных окон и всплывающих подсказок больше не требуется написание кастомных JavaScript-менеджеров геометрии и фокуса:
-
-* **Модальные окна (`<dialog>`):** Метод `showModal()` программно переносит диалоговое окно в системный `top layer`, автоматически делая остальную часть страницы неактивной (`inert`), управляя ловушкой фокуса (*focus trapping*) и закрытием по клавише `Esc`.
-* **Popover API:** Атрибут `popover` превращает любой элемент в легковесный немодальный оверлей. Он автоматически поддерживает концепцию *light dismiss* (закрытие при клике вне области или по `Esc`) на уровне браузера без единой строчки прикладного кода.
+- **Landmarks:** Using specialized top-level tags (`<header>`, `<nav>`, `<main>`, `<footer>`, `<aside>`) allows assistive technologies and screen readers to instantly build a page map and provide fast navigation.
+- **Semantic Blocks:** Breaking content into logical segments using `<section>` and `<article>` tags improves search engine indexing and structures the data hierarchy.
 
 ---
 
-## 26.4. Формы нового поколения и Constraint Validation
+## 26.2. Web Components and Declarative Shadow DOM
 
-Современные формы задействуют встроенный интерфейс **Constraint Validation API**, перекладывая рутинную логику проверки данных на плечи браузера:
+The interface architecture is built on the **Web Components** standard, guaranteeing the creation of isolated, reusable modules without binding to specific ecosystems:
 
-* **Декларативная валидация:** Атрибуты `required`, `pattern`, `minlength` и строгая типизация (`type="email/url"`) позволяют валидировать пользовательский ввод нативно, подсвечивая ошибки через псевдоклассы `:valid` и `:invalid`.
-* **Оптимизация пользовательского опыта:** Атрибуты `inputmode` и `enterkeyhint` точечно настраивают виртуальную клавиатуру мобильных устройств под ожидаемый контекст ввода, а нативный `autocomplete` ускоряет заполнение полей.
-
----
-
-## 26.5. Управление ресурсами через Resource Hints
-
-Современное приложение активно взаимодействует с сетевым окружением браузера, используя системные подсказки в теге `<link>` для оптимизации критического пути загрузки:
-
-* **`preconnect` и `dns-prefetch`:** Заблаговременно устанавливают соединения с критическими внешними доменами (API, CDN), экономя ценные миллисекунды на рукопожатие TLS.
-* **`preload` и `modulepreload`:** Принудительно инициируют раннюю загрузку критических ресурсов и графа JavaScript-модулей, необходимых для текущего экрана.
-* **`prefetch`:** Спекулятивно скачивает ресурсы для потенциальной следующей навигации пользователя в фоновом режиме.
+- **Encapsulated Registration:** Components are implemented as standard ES classes and registered in the global space via `customElements.define()`.
+- **SSR Performance via DSD:** Thanks to the integration of **Declarative Shadow DOM (DSD)**, the component structure can be delivered directly in the primary HTML stream using the `<template shadowrootmode="open">` tag. The browser transforms this template into a shadow root "on the fly" during parsing, ensuring instant interface rendering without waiting for scripts to load and optimizing key performance metrics (LCP).
 
 ---
 
-## 26.6. Бесшовные интерфейсы с View Transition API
+## 26.3. Native Interactive Layers: `<dialog>` and Popover API
 
-Для достижения кинематографического пользовательского опыта используется **View Transition API**, позволяющий плавно анимировать переходы между различными состояниями приложения или документами (*cross-document transitions*). Делегируя расчеты интерполяции анимаций на уровень браузерного движка, этот подход полностью устраняет визуальные «прыжки» при мутациях DOM и делает интерфейс монолитным и отзывчивым.
+Implementing overlays, modal windows, and tooltips no longer requires writing custom JavaScript geometry and focus managers:
+
+- **Modal Windows (`<dialog>`):** The `showModal()` method programmatically moves the dialog window to the system `top layer`, automatically making the rest of the page inactive (`inert`), managing focus trapping, and handling closing via the `Esc` key.
+- **Popover API:** The `popover` attribute turns any element into a lightweight non-modal overlay. It automatically supports the *light dismiss* concept (closing on click outside or via `Esc`) at the browser level without a single line of application code.
 
 ---
 
-## 26.7. Принцип Progressive Enhancement (Прогрессивное улучшение)
+## 26.4. Next-Generation Forms and Constraint Validation
 
-Создание полностью современного приложения невозможно без приверженности методологии прогрессивного улучшения:
+Modern forms leverage the built-in **Constraint Validation API**, shifting routine data validation logic to the browser:
 
-* **HTML First:** Базовые сценарии взаимодействия (навигация, отправка данных, ссылки) обязаны функционировать на уровне стандартной разметки даже в условиях отключенного или не загрузившегося JavaScript.
-* **Инкрементное обновление:** Кастомные элементы изначально присутствуют в документе как декларативные теги и «оживают» по мере загрузки модулей, расширяя свою функциональность, но не ломая базовый опыт взаимодействия.
+- **Declarative Validation:** Attributes such as `required`, `pattern`, `minlength`, and strict typing (`type="email/url"`) allow native user input validation, highlighting errors via `:valid` and `:invalid` pseudo-classes.
+- **User Experience Optimization:** The `inputmode` and `enterkeyhint` attributes finely tune mobile virtual keyboards for the expected input context, while native `autocomplete` speeds up form filling.
 
-### Заключение главы
+---
 
-Полностью современное приложение представляет собой устойчивую, высокопроизводительную систему, которая максимально опирается на стандарты веб-платформы. Минимизируя зависимость от сторонних абстракций и используя нативные возможности браузера, разработчик создает инклюзивные, долговечные и невероятно быстрые цифровые продукты.
+## 26.5. Resource Management via Resource Hints
+
+A modern application actively interacts with the browser's network environment, using system hints in the `<link>` tag to optimize the critical loading path:
+
+- **`preconnect` and `dns-prefetch`:** Establish connections to critical external domains (API, CDN) in advance, saving valuable milliseconds on TLS handshake.
+- **`preload` and `modulepreload`:** Forcefully initiate early loading of critical resources and the JavaScript module graph needed for the current screen.
+- **`prefetch`:** Speculatively downloads resources for potential next-user navigation in the background.
+
+---
+
+## 26.6. Seamless Interfaces with View Transition API
+
+To achieve a cinematic user experience, the **View Transition API** is used, allowing smooth animation of transitions between different application states or documents (*cross-document transitions*). By delegating animation interpolation calculations to the browser engine level, this approach completely eliminates visual "jumps" during DOM mutations and makes the interface cohesive and responsive.
+
+---
+
+## 26.7. The Principle of Progressive Enhancement
+
+Building a fully modern application is impossible without adherence to the progressive enhancement methodology:
+
+- **HTML First:** Basic interaction scenarios (navigation, data submission, links) must function at the standard markup level even when JavaScript is disabled or fails to load.
+- **Incremental Update:** Custom elements are initially present in the document as declarative tags and "come to life" as modules load, expanding their functionality without breaking the basic interaction experience.
+
+---
+
+## Chapter Conclusion
+
+A fully modern application is a resilient, high-performance system that relies as much as possible on web platform standards. By minimizing dependency on third-party abstractions and using native browser capabilities, the developer creates inclusive, durable, and incredibly fast digital products.

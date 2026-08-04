@@ -1,120 +1,122 @@
-# Глава 5. Popover API — архитектура современных всплывающих интерфейсов
+# Chapter 5. Popover API — Architecture of Modern Popup Interfaces
 
-> В современном HTML Popover API — это уже не просто способ открыть всплывающее окно. Это декларативный механизм управления интерактивными слоями браузера, тесно интегрированный с Top Layer, CSS Anchor Positioning, View Transition API и системой состояний HTML. Понимание Popover API означает понимание новой философии Web Platform, где браузер берет на себя все больше обязанностей, ранее реализуемых исключительно JavaScript.
-
----
-
-## 5.1. Почему Popover API появился только сейчас
-
-Появление **Popover API** нативных браузерных средств знаменует собой важнейший сдвиг в веб-разработке. То, что раньше требовало подключения тяжелых сторонних библиотек и сотен строк хрупкого кода, теперь решается на уровне платформы. Чтобы понять, почему это произошло только сейчас, нужно разобрать эволюцию интерфейсов и архитектурные ограничения веба.
+> In modern HTML, the Popover API is no longer just a way to open a popup window. It is a declarative mechanism for managing interactive browser layers, tightly integrated with the Top Layer, CSS Anchor Positioning, View Transition API, and HTML's state system. Understanding the Popover API means understanding the new philosophy of the Web Platform, where the browser takes on more and more responsibilities that were previously implemented exclusively in JavaScript.
 
 ---
 
-### Почему браузеры десятилетиями не имели встроенного popover
+## 5.1. Why the Popover API Emerged Only Now
 
-Исторически HTML создавался как документный язык (для научных статей и текста), а не как среда для создания сложных интерактивных интерфейсов (GUI).
-
-- Концепция «всплывающего окна» (popover, dropdown, tooltip, menu) долгое время вообще не существовала для спецификации.
-- Браузеры предоставляли лишь примитивные элементы вроде `<select>` (выпадающий список) и `<dialog>` (для модальных окон в ранних черновиках, долго шедших к стандартизации), но кастомизировать их дизайн или использовать для произвольных плавающих блоков было невозможно.
+The emergence of the **Popover API** as a native browser capability marks a crucial shift in web development. What previously required heavy third-party libraries and hundreds of lines of fragile code can now be solved at the platform level. To understand why this happened only now, we need to examine the evolution of interfaces and the architectural constraints of the web.
 
 ---
 
-### Почему все пользовались экосистемой библиотек
+### Why Browsers Didn't Have Built-in Popovers for Decades
+
+Historically, HTML was created as a document language (for scientific articles and text), not as an environment for building complex interactive GUI interfaces.
+
+- The concept of a "popup window" (popover, dropdown, tooltip, menu) simply did not exist in the specification for a long time.
+- Browsers provided only primitive elements like `<select>` (dropdown list) and `<dialog>` (for modal windows in early drafts that took years to standardize), but customizing their design or using them for arbitrary floating blocks was impossible.
+
+---
+
+### Why Everyone Used the Library Ecosystem
 
 _(Bootstrap, jQuery UI, Material UI, Popper.js, Floating UI)_
 
-Из-за отсутствия встроенных механизмов разработчики были вынуждены изобретать костыли на JavaScript и CSS. Популярные библиотеки закрывали следующие потребности:
+Due to the lack of built-in mechanisms, developers were forced to invent workarounds in JavaScript and CSS. Popular libraries addressed the following needs:
 
-1. **Bootstrap / jQuery UI:** Брали на себя базовую интерактивность компонентов (модальные окна, тултипы, поповеры), объединяя разметку, стили и JS-логику открытия/закрытия.
-2. **Popper.js / Floating UI:** Решали самую больную математическую и позиционную проблему — **интеллектуальное позиционирование**. Если элемент всплывал у края экрана, библиотеки должны были сами рассчитать его координаты, перевернуть его вверх тормашками или сместить вбок, чтобы он не уходил за пределы видимой области (viewport).
-
----
-
-### Какие архитектурные проблемы они решали
-
-Сторонние библиотеки пытались программно обойти фундаментальные ограничения движка браузера:
-
-- **Проблема `z-index` (The Stack Context War):** В CSS порядок наложения элементов жестко привязан к иерархии DOM-дерева. Если у вас есть выпадающее меню внутри карточки с `overflow: hidden` или сложным позиционированием, поповер гарантированно окажется отрезан или перекрыт соседним блоком. Библиотеки пытались решать это через перенос элементов в корень документа (`document.body`) в момент открытия.
-- **Light Dismiss (Закрытие по клику вне):** Требовалось вешать глобальные слушатели (`event listeners`) на весь документ (`window` или `document`), отслеживать клики, проверять, был ли клик совершен внутри элемента или снаружи, и только тогда закрывать поповер.
-- **Клавиша `Escape` и доступность (a11y):** Разработчики должны были вручную писать код, который слушает нажатие `Esc`, возвращает фокус на кнопку-триггер после закрытия поповера, и корректно проставляет ARIA-атрибуты (`aria-expanded`, `aria-hidden`), чтобы скринридеры для слабовидящих людей понимали состояние интерфейса. Всё это приводило к багам и утечкам памяти при удалении элементов из DOM.
+1. **Bootstrap / jQuery UI:** Handled basic component interactivity (modals, tooltips, popovers), combining markup, styles, and JS open/close logic.
+2. **Popper.js / Floating UI:** Solved the most painful mathematical and positional problem — **intelligent positioning**. If an element popped up near the edge of the screen, libraries had to calculate its coordinates themselves, flip it upside down, or shift it sideways to prevent it from going outside the viewport.
 
 ---
 
-### Почему HTML раньше не мог этого делать
+### What Architectural Problems They Solved
 
-Долгое время спецификация не обладала ключевыми архитектурными примитивами, без которых создание нативного поповера было технически невозможным:
+Third-party libraries attempted to programmatically bypass fundamental browser engine limitations:
 
-1. **Отсутствие концепции «Top Layer» (Верхнего слоя):** Раньше все элементы рендерились в едином потоке контекста наложения. Концепция изолированного `top layer` (где сейчас живут `<dialog>` и `[popover]`) появилась в браузерах относительно недавно. Она заставляет элемент автоматически отрисовываться поверх _всего_ остального контента страницы, полностью игнорируя чужие `z-index`, `transform` и `overflow: hidden`.
-2. **Отсутствие декларативных связей:** Не было способа связать кнопку-триггер и всплывающее окно прямо в разметке без написания JS-контроллеров.
-
----
-
-### Почему именно сейчас браузер способен взять это на себя
-
-Современный веб пришел к концепции **«усиления платформы» (Platform-First)**. Разработчики и производители браузеров (в рамках консорциумов вроде _Open UI_) осознали, что базовые паттерны интерфейсов должны быть стандартизированы.
-
-Браузер смог взять это на себя благодаря синергии нескольких новых возможностей:
-
-- **Нативный Top Layer:** Браузер сам умеет выносить элемент на самый верхний слой экрана без манипуляций с DOM.
-- **Декларативные атрибуты:** Появились стандартизированные атрибуты вроде `popover` и `popovertarget`, позволяющие управлять состоянием без единой строчки JavaScript.
-- **Автоматическая доступность (a11y) и фокус:** Браузер сам управляет фокусом клавиатуры, закрытием по поведению по клику снаружи (_light dismiss_), обработкой клавиши `Esc` и синхронизацией состояний доступности.
-
-В результате отпала необходимость подключать килобайты стороннего JS-кода для базовой логики всплывающих окон — платформа закрывает эти задачи из коробки быстрее, безопаснее и с идеальной доступностью.
+- **The `z-index` Problem (The Stack Context War):** In CSS, the stacking order of elements is rigidly tied to the DOM tree hierarchy. If you have a dropdown menu inside a card with `overflow: hidden` or complex positioning, the popover would inevitably be cut off or obscured by a neighboring block. Libraries tried to solve this by moving elements to the document root (`document.body`) when opened.
+- **Light Dismiss (Closing on Outside Click):** It was necessary to attach global event listeners to the entire document (`window` or `document`), track clicks, check whether the click occurred inside or outside the element, and only then close the popover.
+- **`Escape` Key and Accessibility (a11y):** Developers had to manually write code that listens for `Escape` presses, returns focus to the trigger button after closing the popover, and correctly sets ARIA attributes (`aria-expanded`, `aria-hidden`) so that screen readers for visually impaired users could understand the interface state. All of this led to bugs and memory leaks when removing elements from the DOM.
 
 ---
 
-## 5.2. Popover — новый декларативный API HTML
+### Why HTML Couldn't Do This Before
 
-### Что изменилось
+For a long time, the specification lacked key architectural primitives without which creating a native popover was technically impossible:
 
-Появление атрибута `popover` и связанных с ним свойств знаменует собой глубокую смену парадигмы в развитии веба. Раньше HTML был языком _структуры_ и _документа_. Он отвечал исключительно на вопрос: **«Что здесь находится?»** (заголовок, параграф, таблица, кнопка). Вся логика поведения, состояний и интерактивности возлагалась на плечи JavaScript.
+1. **Lack of a "Top Layer" Concept:** Previously, all elements rendered in a single stacking context flow. The concept of an isolated `top layer` (where `<dialog>` and `[popover]` now live) appeared in browsers relatively recently. It forces an element to automatically render above _all_ other page content, completely ignoring other `z-index`, `transform`, and `overflow: hidden`.
+2. **Lack of Declarative Relationships:** There was no way to link a trigger button and a popup window directly in markup without writing JS controllers.
 
-Теперь же HTML делает уверенный шаг в сторону описания **поведения интерфейса** (UI state).
+---
+
+### Why Browsers Can Take This On Now
+
+The modern web has arrived at the concept of **"Platform-First"** or **"Platform Enhancement"**. Developers and browser vendors (within consortiums like _Open UI_) realized that basic interface patterns should be standardized.
+
+The browser was able to take this on thanks to the synergy of several new capabilities:
+
+- **Native Top Layer:** The browser itself can move an element to the topmost screen layer without DOM manipulations.
+- **Declarative Attributes:** Standardized attributes like `popover` and `popovertarget` emerged, allowing state management without a single line of JavaScript.
+- **Automatic Accessibility (a11y) and Focus:** The browser itself manages keyboard focus, closing on outside click behavior (_light dismiss_), `Escape` key handling, and accessibility state synchronization.
+
+As a result, there's no longer a need to include kilobytes of third-party JS code for basic popup logic — the platform handles these tasks out of the box faster, more securely, and with perfect accessibility.
+
+---
+
+## 5.2. Popover — The New Declarative HTML API
+
+### What Has Changed
+
+The introduction of the `popover` attribute and its related properties marks a deep paradigm shift in web development. Previously, HTML was a language of _structure_ and _document_. It exclusively answered the question: **"What is here?"** (heading, paragraph, table, button). All behavior, state, and interactivity logic fell on JavaScript's shoulders.
+
+Now, HTML is making a confident step toward describing **interface behavior (UI state)**.
 
 ```html
-<button popovertarget="my-menu">Открыть меню</button>
+<button popovertarget="my-menu">Open Menu</button>
 
-<div id="my-menu" popover>Содержимое выпадающего списка</div>
+<div id="my-menu" popover>Dropdown content</div>
 ```
 
-Этот фрагмент кода — не просто статическая разметка. Это **декларативная программа**.
+This code fragment is not just static markup. It is a **declarative program**.
 
 ---
 
-### Эволюция философии: от «что нарисовать» к «как этим управлять»
+### Evolution of Philosophy: From "What to Draw" to "How to Control It"
 
-В классическом вебе разработчик описывал элемент пассивно, а всю динамику прописывал императивно:
+In the classic web, a developer described an element passively and wrote all dynamics imperatively:
 
-> **Старый подход:**
-> *«Нарисуй мне `div` (скажи браузеру *что* сделать), а потом напиши 50 строк на JS: найди кнопку по селектору, повесь `addEventListener`, проверь клик, добавь класс `.is-open`, не забудь про обработку `Esc` и кликов вне элемента».*
+> **Old Approach:**
+> *"Draw me a `div` (tell the browser *what* to do), then write 50 lines of JS: find the button by selector, attach `addEventListener`, check the click, add the `.is-open` class, don't forget about `Esc` handling and outside clicks."*
 
-> **Новый подход (Popover API):**
-> _«Управляй состоянием интерфейса декларативно»._
-> Вы говорите браузеру: эта кнопка является **триггером** (`popovertarget`), а этот блок — **поповером** (`popover`). Всё остальное — жизненный цикл, анимации открытия/закрытия, вывод в системный Top Layer, управление фокусом и обработка закрытия кликом вне (`light dismiss`) — браузер берет на себя под капотом.
-
----
-
-### Почему это меняет правила игры
-
-1. **Разделение ответственности на уровне платформы:** Логика «показывать/скрывать оверлей» больше не требует бизнес-логики на JavaScript. Она решается на уровне разметки и нативных возможностей браузера.
-2. **Нулевой порог для базовой интерактивности:** Создать доступное, работающее по всем стандартам accessibility (a11y) всплывающее меню теперь можно вообще без написания скриптов.
-3. **Декларативность против императивности:** Мы описываем _желаемое состояние и связи_ между элементами (элемент А управляет элементом Б), а не расписываем пошаговые инструкции, как именно манипулировать деревом DOM.
-
-HTML перестает быть просто «скелетом» страницы. Он становится полноценным языком описания пользовательских интерфейсов, где элементы наделяются встроенным поведением, привычным для десктопных и мобильных приложений.
-
-## 5.3. Popover как часть Top Layer
-
-Одной из важнейших архитектурных инноваций современной Web Platform стало появление **Top Layer** — специального уровня рендеринга браузера, существующего поверх обычного дерева документа.
-
-Именно благодаря Top Layer такие возможности, как **`<dialog>`**, **Popover API**, полноэкранный режим (Fullscreen API), а также некоторые встроенные элементы браузера перестали зависеть от традиционной модели наложения элементов (`stacking context`).
-
-Понимание Top Layer — один из ключевых моментов современного HTML. Именно здесь становится заметно, что HTML развивается не только как язык разметки, но и как декларативный интерфейс управления механизмами браузера.
+> **New Approach (Popover API):**
+> _"Manage interface state declaratively."_
+> You tell the browser: this button is a **trigger** (`popovertarget`), and this block is a **popover** (`popover`). Everything else — the lifecycle, open/close animations, rendering in the system Top Layer, focus management, and handling outside clicks (`light dismiss`) — the browser handles under the hood.
 
 ---
 
-### Как браузер отображает страницу
+### Why This Changes the Game
 
-Когда браузер получает HTML-документ, он проходит несколько этапов обработки.
+1. **Separation of Responsibilities at the Platform Level:** The logic of "show/hide an overlay" no longer requires business logic in JavaScript. It's solved at the markup level and through native browser capabilities.
+2. **Zero Barrier to Basic Interactivity:** Creating an accessible popup menu that works by all accessibility (a11y) standards is now possible without writing any scripts at all.
+3. **Declarative vs. Imperative:** We describe the _desired state and relationships_ between elements (element A controls element B), rather than spelling out step-by-step instructions on how exactly to manipulate the DOM tree.
+
+HTML is no longer just a "skeleton" of a page. It is becoming a full-fledged language for describing user interfaces, where elements are endowed with built-in behavior familiar from desktop and mobile applications.
+
+---
+
+## 5.3. Popover as Part of the Top Layer
+
+One of the most important architectural innovations of the modern Web Platform is the emergence of the **Top Layer** — a special browser rendering layer that exists above the regular document tree.
+
+Thanks to the Top Layer, features like **`<dialog>`**, the **Popover API**, Fullscreen API, and some built-in browser elements have ceased to depend on the traditional stacking context model.
+
+Understanding the Top Layer is one of the key aspects of modern HTML. This is where it becomes noticeable that HTML is evolving not only as a markup language but also as a declarative interface for managing browser mechanisms.
+
+---
+
+### How the Browser Renders a Page
+
+When the browser receives an HTML document, it goes through several processing stages:
 
 ```
 HTML
@@ -148,33 +150,33 @@ Compositing
 Top Layer
 ```
 
-Большинство элементов страницы участвуют в обычном процессе построения дерева рендеринга.
+Most page elements participate in the normal render tree construction process.
 
-Однако некоторые элементы работают иначе.
+However, some elements work differently.
 
-Если разработчик открывает
+If a developer opens
 
 ```javascript
 dialog.showModal();
 ```
 
-или
+or
 
 ```html
 <div popover></div>
 ```
 
-браузер **не оставляет элемент на прежнем месте дерева рендеринга**.
+the browser **does not leave the element in its original place in the render tree**.
 
-Вместо этого он переносит его в специальный системный слой — **Top Layer**.
+Instead, it moves it to a special system layer — the **Top Layer**.
 
 ---
 
-### Что такое Top Layer
+### What Is the Top Layer
 
-Top Layer — это специальная область, существующая вне обычной модели расположения элементов документа.
+The Top Layer is a special area that exists outside the normal document element positioning model.
 
-Её можно представить следующим образом.
+It can be visualized as follows:
 
 ```
 Browser Window
@@ -192,24 +194,24 @@ Browser Window
       ├── <dialog>
       ├── Popover
       ├── Fullscreen Element
-      └── другие системные интерфейсы
+      └── other system interfaces
 ```
 
-Важно понимать:
+It is important to understand:
 
-Top Layer **не является частью DOM**.
+The Top Layer **is not part of the DOM**.
 
-Элемент продолжает существовать в DOM-дереве, однако отображается браузером в совершенно другом месте своей внутренней архитектуры.
+The element continues to exist in the DOM tree, but the browser renders it in a completely different place in its internal architecture.
 
-Именно поэтому Top Layer нельзя представить как очередной `div` поверх страницы.
+This is why the Top Layer cannot be thought of as just another `div` on top of the page.
 
-Это отдельный уровень рендеринга.
+It is a separate rendering level.
 
 ---
 
-### Почему `z-index` больше не имеет значения
+### Why `z-index` No Longer Matters
 
-До появления Top Layer практически каждый разработчик сталкивался с подобной ситуацией.
+Before the Top Layer existed, virtually every developer encountered situations like this:
 
 ```css
 .modal {
@@ -217,7 +219,7 @@ Top Layer **не является частью DOM**.
 }
 ```
 
-Через некоторое время появлялся ещё один компонент.
+After some time, another component appeared:
 
 ```css
 .tooltip {
@@ -225,7 +227,7 @@ Top Layer **не является частью DOM**.
 }
 ```
 
-Затем ещё один.
+Then another:
 
 ```css
 .dropdown {
@@ -233,15 +235,15 @@ Top Layer **не является частью DOM**.
 }
 ```
 
-Начиналась бесконечная "гонка z-index".
+An endless "z-index race" would begin.
 
-Причина заключалась в том, что все элементы продолжали существовать внутри одного дерева наложения.
+The reason was that all elements continued to exist within a single stacking tree.
 
-Top Layer полностью устраняет эту проблему.
+The Top Layer completely eliminates this problem.
 
-После открытия popover браузер буквально выводит его из обычного дерева отображения.
+After opening a popover, the browser literally removes it from the normal display tree.
 
-Получается примерно следующая архитектура.
+The architecture looks approximately like this:
 
 ```
 Document
@@ -259,19 +261,19 @@ z-index
 Top Layer
 ```
 
-Никакое значение
+No value of
 
 ```css
 z-index: 9999999999;
 ```
 
-не сможет перекрыть элемент, находящийся в Top Layer.
+can cover an element that is in the Top Layer.
 
 ---
 
-### Больше нет зависимости от `overflow`
+### No More Dependency on `overflow`
 
-Рассмотрим распространённую ситуацию.
+Consider a common situation:
 
 ```css
 .container {
@@ -279,7 +281,7 @@ z-index: 9999999999;
 }
 ```
 
-Внутри расположен выпадающий список.
+Inside is a dropdown list:
 
 ```
 ┌─────────────────────┐
@@ -294,14 +296,14 @@ Dropdown
 
 ↓
 
-обрезается
+gets cut off
 ```
 
-До появления Popover API подобная проблема решалась сложными библиотеками позиционирования.
+Before the Popover API, such a problem was solved with complex positioning libraries.
 
-Теперь браузер действует иначе.
+Now the browser acts differently.
 
-После открытия popover элемент отображается уже вне контейнера.
+After opening, the popover element renders outside the container:
 
 ```
 Container
@@ -315,7 +317,7 @@ Popover
 Top Layer
 ```
 
-Поэтому ограничения
+Therefore, restrictions like
 
 ```
 overflow: hidden
@@ -323,15 +325,15 @@ overflow: auto
 overflow: scroll
 ```
 
-на него больше не распространяются.
+no longer apply to it.
 
 ---
 
-### Независимость от Stacking Context
+### Independence from Stacking Context
 
-Stacking Context — одна из самых сложных тем CSS.
+Stacking Context is one of the most complex topics in CSS.
 
-Новый контекст наложения создают, например:
+A new stacking context is created, for example, by:
 
 - `position`
 - `opacity`
@@ -341,17 +343,17 @@ Stacking Context — одна из самых сложных тем CSS.
 - `contain`
 - `will-change`
 
-Поэтому раньше всплывающий элемент мог неожиданно оказаться под соседним блоком.
+Therefore, previously a popup element could unexpectedly end up under a neighboring block.
 
-Popover API полностью устраняет эту проблему.
+The Popover API completely eliminates this problem.
 
-Top Layer располагается **выше любого stacking context**, существующего на странице.
+The Top Layer is positioned **above any stacking context** that exists on the page.
 
 ---
 
-### Независимость от `transform`
+### Independence from `transform`
 
-Рассмотрим пример.
+Consider an example:
 
 ```css
 .sidebar {
@@ -359,15 +361,15 @@ Top Layer располагается **выше любого stacking context**,
 }
 ```
 
-Из-за свойства `transform` внутри создаётся новый контекст координат.
+Due to the `transform` property, a new coordinate context is created inside.
 
-До появления Popover API это часто ломало позиционирование меню.
+Before the Popover API, this would often break menu positioning.
 
-Сегодня браузер делает иначе.
+Today, the browser acts differently.
 
-После открытия Popover элемент отображается в Top Layer.
+After opening, the Popover element renders in the Top Layer.
 
-Он больше не зависит от:
+It is no longer dependent on:
 
 - `transform`
 - `translate`
@@ -375,115 +377,115 @@ Top Layer располагается **выше любого stacking context**,
 - `rotate`
 - `perspective`
 
-родительских контейнеров.
+of parent containers.
 
 ---
 
-### Независимость от позиционирования
+### Independence from Positioning
 
-Раньше всплывающий интерфейс приходилось размещать через
+Previously, a popup interface had to be positioned using
 
 ```css
 position: absolute;
 ```
 
-или
+or
 
 ```css
 position: fixed;
 ```
 
-что порождало множество проблем.
+which created numerous problems.
 
-Например:
+For example:
 
-- изменение размеров окна;
-- масштабирование страницы;
-- прокрутка;
-- вложенные контейнеры;
-- мобильные браузеры.
+- window resizing;
+- page zooming;
+- scrolling;
+- nested containers;
+- mobile browsers.
 
-Теперь положение popover вычисляет сам браузер.
+Now the popover's position is calculated by the browser itself.
 
-Особенно эффективно это работает совместно с **CSS Anchor Positioning**, рассмотренной далее в этой главе.
+This works especially effectively in conjunction with **CSS Anchor Positioning**, which is covered later in this chapter.
 
 ---
 
-### Какие API используют Top Layer
+### Which APIs Use the Top Layer
 
-Popover API — далеко не единственный механизм, использующий Top Layer.
+The Popover API is far from the only mechanism that uses the Top Layer.
 
-Сегодня этот уровень рендеринга применяется также для:
+Today, this rendering level is also used for:
 
-- модальных окон `<dialog>`;
+- `<dialog>` modal windows;
 - Popover API;
 - Fullscreen API;
-- некоторых встроенных элементов браузера;
-- будущих интерфейсных возможностей Web Platform.
+- some built-in browser elements;
+- future interface capabilities of the Web Platform.
 
-Фактически Top Layer становится универсальной системой отображения интерфейсов, которые должны находиться поверх обычного документа.
+In fact, the Top Layer is becoming a universal display system for interfaces that need to appear above the regular document.
 
 ---
 
-### Почему Top Layer стал новой архитектурой браузеров
+### Why the Top Layer Became a New Browser Architecture
 
-До появления Top Layer ответственность за отображение всплывающих интерфейсов практически полностью лежала на JavaScript.
+Before the Top Layer existed, the responsibility for displaying popup interfaces fell almost entirely on JavaScript.
 
-Каждая библиотека самостоятельно решала задачи:
+Each library independently solved problems like:
 
-- вычисления координат;
-- управления `z-index`;
-- обхода `overflow`;
-- обработки вложенности;
-- закрытия интерфейсов;
-- восстановления фокуса.
+- coordinate calculation;
+- `z-index` management;
+- bypassing `overflow`;
+- handling nesting;
+- closing interfaces;
+- restoring focus.
 
-В результате тысячи проектов содержали практически одинаковый код.
+As a result, thousands of projects contained virtually identical code.
 
-Современные браузеры перенесли эту ответственность внутрь платформы.
+Modern browsers have moved this responsibility inside the platform.
 
-Теперь разработчик лишь декларативно сообщает браузеру:
+Now the developer only declaratively tells the browser:
 
 ```html
 <div popover></div>
 ```
 
-или
+or
 
 ```javascript
 dialog.showModal();
 ```
 
-Всё остальное выполняет движок браузера.
+The browser engine does everything else.
 
-Это соответствует одной из главных тенденций развития Web Platform:
+This aligns with one of the main trends in Web Platform development:
 
-> **сложная инфраструктурная логика постепенно переносится из пользовательского JavaScript в нативные механизмы браузера.**
+> **complex infrastructure logic is gradually being moved from user JavaScript to native browser mechanisms.**
 
 ---
 
-### Почему это важно именно в 2026 году
+### Why This Matters in 2026
 
-Top Layer — одна из технологий, изменивших архитектуру современного фронтенда.
+The Top Layer is one of the technologies that has changed modern frontend architecture.
 
-В 2026 году разработчик уже не должен мыслить исключительно категориями:
+In 2026, a developer should no longer think exclusively in terms of:
 
 - `z-index`;
-- абсолютного позиционирования;
-- наложения блоков;
-- борьбы со `stacking context`.
+- absolute positioning;
+- block stacking;
+- fighting the `stacking context`.
 
-Гораздо важнее понимать, **какие элементы становятся частью инфраструктуры браузера**, а не просто очередными DOM-узлами.
+It is much more important to understand **which elements become part of the browser's infrastructure**, rather than just more DOM nodes.
 
-Именно поэтому современные HTML API — `<dialog>`, Popover API, Fullscreen API и будущие интерфейсные возможности платформы — строятся вокруг Top Layer.
+That is why modern HTML APIs — `<dialog>`, Popover API, Fullscreen API, and future platform interface capabilities — are built around the Top Layer.
 
-Это отражает общий вектор развития HTML: браузер перестает быть пассивным интерпретатором разметки и становится активным исполнителем декларативно описанного поведения интерфейса.
+This reflects the overall direction of HTML's evolution: the browser is ceasing to be a passive interpreter of markup and is becoming an active executor of declaratively described interface behavior.
 
 ---
 
-## 5.4. Popover как конечный автомат (State Machine)
+## 5.4. Popover as a State Machine
 
-Большинство разработчиков воспринимают Popover API как три простых метода:
+Most developers perceive the Popover API as three simple methods:
 
 ```javascript
 popover.showPopover();
@@ -491,19 +493,19 @@ popover.hidePopover();
 popover.togglePopover();
 ```
 
-Однако внутри браузера Popover значительно сложнее.
+However, inside the browser, Popover is significantly more complex.
 
-Современные браузеры рассматривают каждый popover как **объект с внутренним состоянием**, жизненным циклом и набором допустимых переходов между состояниями.
+Modern browsers treat every popover as an **object with internal state**, a lifecycle, and a set of valid transitions between states.
 
-Именно поэтому Popover API является одной из первых HTML-технологий, демонстрирующих переход Web Platform к **декларативным конечным автоматам (Declarative State Machines)**.
+That is why the Popover API is one of the first HTML technologies to demonstrate the Web Platform's transition to **Declarative State Machines**.
 
 ---
 
-### Почему это важно
+### Why This Matters
 
-До появления Popover почти все управление состоянием интерфейса происходило в JavaScript.
+Before Popover, almost all interface state management happened in JavaScript.
 
-Типичный код выглядел так:
+Typical code looked like this:
 
 ```javascript
 let isOpen = false;
@@ -519,28 +521,28 @@ button.addEventListener('click', () => {
 });
 ```
 
-Разработчик самостоятельно:
+The developer independently:
 
-- хранит состояние;
-- изменяет DOM;
-- синхронизирует CSS;
-- следит за событиями;
-- обрабатывает Escape;
-- отслеживает клики вне элемента.
+- stores state;
+- modifies the DOM;
+- synchronizes CSS;
+- tracks events;
+- handles Escape;
+- tracks outside clicks.
 
-Браузер практически не участвует в этом процессе.
+The browser is practically not involved in this process.
 
-Popover API меняет архитектуру.
+The Popover API changes the architecture.
 
-Теперь состояние принадлежит **самому браузеру**.
+Now the state belongs to **the browser itself**.
 
-HTML лишь описывает объект.
+HTML merely describes the object.
 
 ---
 
-### Жизненный цикл Popover
+### Popover Lifecycle
 
-Внутри движка браузера popover проходит несколько последовательных состояний.
+Inside the browser engine, a popover goes through several sequential states:
 
 ```text
           showPopover()
@@ -562,36 +564,36 @@ hidePopover()
  Closed
 ```
 
-Хотя спецификация не требует отображать промежуточные состояния (`Opening` и `Closing`) как отдельные публичные API, именно они позволяют браузеру корректно выполнять:
+Although the specification does not require exposing intermediate states (`Opening` and `Closing`) as separate public APIs, they allow the browser to correctly execute:
 
-- анимации;
-- изменение Top Layer;
-- обновление Accessibility Tree;
-- передачу фокуса;
-- события жизненного цикла.
+- animations;
+- Top Layer changes;
+- Accessibility Tree updates;
+- focus transfer;
+- lifecycle events.
 
-Фактически браузер выполняет полноценный транзакционный переход между состояниями.
+In effect, the browser performs a full transactional transition between states.
 
 ---
 
-### Что происходит при открытии
+### What Happens When Opening
 
-После вызова
+After calling
 
 ```javascript
 popover.showPopover();
 ```
 
-браузер выполняет значительно больше операций, чем просто изменение CSS.
+the browser performs significantly more operations than just changing CSS.
 
-Упрощённо процесс выглядит так:
+Simplified, the process looks like this:
 
 ```text
 showPopover()
 
 ↓
 
-проверка состояния
+state check
 
 ↓
 
@@ -599,50 +601,50 @@ beforetoggle
 
 ↓
 
-изменение внутреннего состояния
+internal state change
 
 ↓
 
-перемещение в Top Layer
+move to Top Layer
 
 ↓
 
-обновление Accessibility Tree
+update Accessibility Tree
 
 ↓
 
-позиционирование
+positioning
 
 ↓
 
-отрисовка
+rendering
 
 ↓
 
 toggle
 ```
 
-Обратите внимание:
+Notice:
 
-нигде нет
+nowhere is there
 
 ```css
 display: block;
 ```
 
-или
+or
 
 ```css
 visibility: visible;
 ```
 
-Это внутренний механизм браузера.
+This is an internal browser mechanism.
 
 ---
 
-### Что происходит при закрытии
+### What Happens When Closing
 
-Закрытие также представляет собой последовательность операций.
+Closing is also a sequence of operations:
 
 ```text
 hidePopover()
@@ -653,31 +655,30 @@ beforetoggle
 
 ↓
 
-закрытие
+closing
 
 ↓
 
-удаление из Top Layer
+remove from Top Layer
 
 ↓
 
-обновление дерева доступности
+update Accessibility Tree
 
 ↓
 
 toggle
 ```
 
-Именно поэтому закрытие можно отменить через событие
-`beforetoggle`.
+This is why closing can be canceled via the `beforetoggle` event.
 
 ---
 
-### Конечный автомат
+### Finite State Machine
 
-С точки зрения теории вычислений Popover является **конечным автоматом (Finite State Machine, FSM).**
+From a computational theory perspective, Popover is a **Finite State Machine (FSM)**.
 
-Существует ограниченный набор состояний.
+There is a limited set of states:
 
 ```text
 Closed
@@ -685,7 +686,7 @@ Closed
 Open
 ```
 
-и ограниченный набор допустимых переходов между ними.
+and a limited set of valid transitions between them:
 
 ```text
 Closed
@@ -701,7 +702,7 @@ hide
 Closed
 ```
 
-Невозможно перейти в состояние
+It is impossible to transition to a state like:
 
 ```
 Half Open
@@ -711,17 +712,17 @@ Almost Closed
 Unknown
 ```
 
-Переходы всегда контролируются браузером.
+Transitions are always controlled by the browser.
 
-Это делает интерфейс значительно более предсказуемым.
+This makes the interface significantly more predictable.
 
 ---
 
-### Почему это лучше JavaScript
+### Why This Is Better Than JavaScript
 
-В традиционном приложении разработчик может случайно создать противоречивое состояние.
+In a traditional application, a developer can accidentally create an inconsistent state.
 
-Например,
+For example:
 
 ```javascript
 menu.style.display = 'block';
@@ -731,26 +732,26 @@ menu.hidden = true;
 menu.classList.add('visible');
 ```
 
-Теперь непонятно:
+Now it's unclear:
 
-открыто меню или закрыто?
+is the menu open or closed?
 
-CSS говорит одно.
+CSS says one thing.
 
-HTML другое.
+HTML says another.
 
-JavaScript третье.
+JavaScript says a third.
 
-Popover исключает подобные ситуации.
+Popover eliminates such situations.
 
-Источник истины существует только один —
-сам браузер.
+There is only one source of truth —
+the browser itself.
 
 ---
 
-### События как переходы автомата
+### Events as Automaton Transitions
 
-Каждый переход сопровождается событиями.
+Each transition is accompanied by events:
 
 ```text
 Closed
@@ -768,7 +769,7 @@ Open
 toggle
 ```
 
-или
+or
 
 ```text
 Open
@@ -786,21 +787,21 @@ Closed
 toggle
 ```
 
-Таким образом разработчик работает уже не с DOM напрямую, а с жизненным циклом компонента.
+Thus, the developer works not directly with the DOM anymore, but with the component's lifecycle.
 
 ---
 
-### Декларативная модель состояния
+### Declarative State Model
 
-Интересно, что HTML постепенно начинает описывать не только структуру документа, но и состояние интерфейса.
+Interestingly, HTML is gradually beginning to describe not only document structure but also interface state.
 
-Например,
+For example,
 
 ```html
 <details open></details>
 ```
 
-имеет состояния
+has states:
 
 ```
 closed
@@ -810,7 +811,7 @@ closed
 open
 ```
 
-`<dialog>` имеет
+`<dialog>` has:
 
 ```
 closed
@@ -824,7 +825,7 @@ modal
 closed
 ```
 
-Popover —
+Popover:
 
 ```
 closed
@@ -838,7 +839,7 @@ open
 closed
 ```
 
-Формы имеют
+Forms have:
 
 ```
 valid
@@ -846,7 +847,7 @@ valid
 invalid
 ```
 
-Элемент `<video>` имеет собственный автомат:
+The `<video>` element has its own automaton:
 
 ```
 paused
@@ -864,51 +865,51 @@ waiting
 ended
 ```
 
-Получается, что современный HTML всё чаще описывает не только данные, но и **машины состояний**.
+It turns out that modern HTML is increasingly describing not just data, but **state machines**.
 
 ---
 
-### HTML становится декларативной State Machine
+### HTML Is Becoming a Declarative State Machine
 
-Это одна из наиболее важных тенденций развития Web Platform.
+This is one of the most important trends in Web Platform development.
 
-Раньше HTML описывал исключительно структуру документа.
+Previously, HTML described exclusively document structure.
 
-Сегодня HTML описывает:
+Today, HTML describes:
 
-- структуру;
-- поведение;
-- состояние;
-- жизненный цикл компонентов.
+- structure;
+- behavior;
+- state;
+- component lifecycle.
 
-Разработчик больше не говорит браузеру:
+The developer no longer tells the browser:
 
-> «Сделай это пошагово.»
+> "Do this step by step."
 
-Он лишь объявляет:
+They merely declare:
 
-> «Этот элемент является popover.»
+> "This element is a popover."
 
-После этого браузер самостоятельно управляет:
+After that, the browser independently manages:
 
-- состояниями;
-- переходами;
-- событиями;
-- доступностью;
-- взаимодействием с пользователем;
+- states;
+- transitions;
+- events;
+- accessibility;
+- user interaction;
 - Top Layer;
-- фокусом;
-- позиционированием.
+- focus;
+- positioning.
 
 ---
 
-### Почему это особенно важно в 2026 году
+### Why This Is Especially Important in 2026
 
-Если посмотреть на развитие Web Platform за последние несколько лет, становится очевидна общая тенденция.
+If we look at the development of the Web Platform over the past few years, a general trend becomes obvious.
 
-Все новые API строятся вокруг идеи декларативных состояний.
+All new APIs are built around the idea of declarative states.
 
-К ним относятся:
+These include:
 
 - `<dialog>`;
 - Popover API;
@@ -918,42 +919,42 @@ ended
 - Anchor Positioning;
 - Declarative Shadow DOM.
 
-Во всех случаях браузер принимает на себя ответственность за внутренний жизненный цикл компонентов, а HTML становится высокоуровневым языком описания интерфейса.
+In all cases, the browser takes responsibility for the internal lifecycle of components, and HTML becomes a high-level language for describing interfaces.
 
-Именно поэтому Popover API — это не просто способ открыть всплывающее окно. Это один из первых ярких примеров того, как HTML эволюционирует из языка разметки в язык декларативного управления состояниями пользовательского интерфейса. Для разработчика 2026 года понимание этой архитектурной идеи не менее важно, чем знание отдельных тегов и атрибутов.
-
----
-
-## 5.5. `auto`, `manual` и `hint`
-
-На первый взгляд может показаться, что значения атрибута `popover` (`auto`, `manual` и `hint`) — это всего лишь три режима открытия всплывающего элемента.
-
-На самом деле они определяют **архитектуру управления состоянием компонента**.
-
-Главный вопрос здесь звучит не:
-
-> **«Как открывается popover?»**
-
-а
-
-> **«Кто отвечает за его жизненный цикл?»**
-
-Именно этим значения `auto`, `manual` и `hint` принципиально отличаются друг от друга.
+That is why the Popover API is not just a way to open a popup window. It is one of the first vivid examples of how HTML is evolving from a markup language into a language for declarative management of user interface states. For a developer in 2026, understanding this architectural idea is no less important than knowing individual tags and attributes.
 
 ---
 
-### Три модели управления
+## 5.5. `auto`, `manual`, and `hint`
 
-Современный HTML постепенно переносит управление интерфейсом из JavaScript в браузер.
+At first glance, the values of the `popover` attribute (`auto`, `manual`, and `hint`) might seem like just three modes for opening a popup element.
 
-В случае Popover API существует три различных модели ответственности.
+In fact, they define the **component state management architecture**.
+
+The main question here is not:
+
+> **"How does the popover open?"**
+
+but
+
+> **"Who is responsible for its lifecycle?"**
+
+This is what fundamentally distinguishes the `auto`, `manual`, and `hint` values from each other.
+
+---
+
+### Three Management Models
+
+Modern HTML is gradually moving interface management from JavaScript to the browser.
+
+In the case of the Popover API, there are three different responsibility models:
 
 ```text
 auto
 
 ↓
 
-браузер управляет состоянием
+browser manages state
 ```
 
 ```text
@@ -961,7 +962,7 @@ manual
 
 ↓
 
-разработчик управляет состоянием
+developer manages state
 ```
 
 ```text
@@ -969,41 +970,41 @@ hint
 
 ↓
 
-браузер управляет подсказками
+browser manages tooltips
 ```
 
-По сути, выбор режима — это выбор того, **кому принадлежит управление состоянием компонента**.
+Essentially, choosing a mode is choosing **who owns the component's state management**.
 
 ---
 
-#### Режим `auto`
+#### `auto` Mode
 
 ```html
 <div popover="auto"></div>
 ```
 
-Это режим по умолчанию.
+This is the default mode.
 
-Если значение не указано,
+If the value is not specified,
 
 ```html
 <div popover></div>
 ```
 
-браузер автоматически использует именно `auto`.
+the browser automatically uses `auto`.
 
 ---
 
-##### Философия режима
+##### Philosophy of the Mode
 
-В режиме `auto` браузер берет управление жизненным циклом popover на себя.
+In `auto` mode, the browser takes control of the popover's lifecycle.
 
-Разработчику достаточно объявить элемент.
+The developer only needs to declare the element.
 
-Остальное делает платформа.
+The platform does the rest.
 
 ```text
-Открыть
+Open
 
 ↓
 
@@ -1027,79 +1028,79 @@ Focus
 
 ↓
 
-Закрыть
+Close
 ```
 
-Все эти механизмы встроены непосредственно в браузер.
+All these mechanisms are built directly into the browser.
 
 ---
 
-##### Что автоматически делает браузер
+##### What the Browser Automatically Does
 
-При использовании `auto` браузер самостоятельно:
+When using `auto`, the browser independently:
 
-- открывает popover;
-- закрывает его по `Escape`;
-- закрывает по клику вне элемента;
-- отслеживает потерю контекста;
-- поддерживает стек popover;
-- взаимодействует с Top Layer;
-- обновляет Accessibility Tree;
-- генерирует события жизненного цикла.
+- opens the popover;
+- closes it on `Escape`;
+- closes it on outside click;
+- tracks context loss;
+- maintains the popover stack;
+- interacts with the Top Layer;
+- updates the Accessibility Tree;
+- generates lifecycle events.
 
-Разработчику практически не требуется писать JavaScript.
+The developer practically doesn't need to write JavaScript.
 
 ---
 
-##### Для чего подходит
+##### What It's For
 
-Режим `auto` рекомендуется практически для всех стандартных всплывающих элементов интерфейса:
+The `auto` mode is recommended for almost all standard popup interface elements:
 
-- выпадающие меню;
-- пользовательские меню;
-- панели фильтров;
-- контекстные панели;
-- палитры действий;
-- всплывающие карточки;
-- панели выбора.
+- dropdown menus;
+- user menus;
+- filter panels;
+- context panels;
+- action palettes;
+- popup cards;
+- selection panels.
 
-Например,
+For example:
 
 ```text
-Профиль пользователя
+User Profile
 
 ↓
 
-Меню пользователя
+User Menu
 ```
 
-или
+or
 
 ```text
-Фильтр
+Filter
 
 ↓
 
-Панель фильтрации
+Filter Panel
 ```
 
 ---
 
-#### Режим `manual`
+#### `manual` Mode
 
 ```html
 <div popover="manual"></div>
 ```
 
-В этом режиме браузер перестает принимать решения самостоятельно.
+In this mode, the browser stops making decisions on its own.
 
-Он лишь предоставляет инфраструктуру.
+It only provides the infrastructure.
 
-Вся логика переходит разработчику.
+All logic moves to the developer.
 
 ---
 
-##### Философия режима
+##### Philosophy of the Mode
 
 ```text
 HTML
@@ -1114,261 +1115,261 @@ Top Layer
 
 ↓
 
-JavaScript полностью управляет состоянием
+JavaScript fully manages state
 ```
 
-Браузер больше не выполняет автоматически:
+The browser no longer automatically performs:
 
-- закрытие по Escape;
-- закрытие по клику вне;
+- closing on Escape;
+- closing on outside click;
 - Light Dismiss;
-- автоматическое переключение между popover.
+- automatic switching between popovers.
 
-Разработчик обязан самостоятельно решить:
+The developer is responsible for deciding:
 
-- когда открыть popover;
-- когда закрыть;
-- можно ли закрывать;
-- какой popover сейчас активен.
-
----
-
-##### Когда нужен `manual`
-
-Этот режим полезен, когда интерфейс работает как полноценное приложение.
-
-Например:
-
-- палитра инструментов графического редактора;
-- плавающая панель IDE;
-- окно инспектора объектов;
-- мини-плеер;
-- панель разработчика;
-- системные уведомления;
-- закреплённые панели.
-
-Во всех этих случаях автоматическое закрытие было бы неудобным.
-
-Пользователь может кликать по документу десятки раз, но панель должна оставаться открытой.
+- when to open the popover;
+- when to close it;
+- whether it can be closed;
+- which popover is currently active.
 
 ---
 
-##### Пример
+##### When `manual` Is Needed
+
+This mode is useful when the interface works as a full-fledged application.
+
+For example:
+
+- a graphic editor's tool palette;
+- an IDE's floating panel;
+- an object inspector window;
+- a mini-player;
+- a developer panel;
+- system notifications;
+- pinned panels.
+
+In all these cases, automatic closing would be inconvenient.
+
+The user may click on the document dozens of times, but the panel should remain open.
+
+---
+
+##### Example
 
 ```text
-Редактор изображения
+Image Editor
 
 ↓
 
-Панель слоёв
+Layers Panel
 
 ↓
 
-Пользователь рисует
+User draws
 
 ↓
 
-Панель остаётся открытой
+Panel remains open
 ```
 
-В режиме `auto` такое поведение пришлось бы постоянно обходить.
+In `auto` mode, this behavior would have to be constantly worked around.
 
-`manual` решает эту задачу естественным образом.
+`manual` solves this problem naturally.
 
 ---
 
-#### Режим `hint`
+#### `hint` Mode
 
 ```html
 <div popover="hint"></div>
 ```
 
-Это самый необычный режим.
+This is the most unusual mode.
 
-Он предназначен не для меню и не для панелей.
+It is not intended for menus or panels.
 
-Он создан исключительно для **кратковременных информационных подсказок**.
+It is designed exclusively for **short-term informational tooltips**.
 
 ---
 
-###### Философия режима
+###### Philosophy of the Mode
 
-В режиме `hint` браузер понимает, что popover не является полноценным интерфейсным окном.
+In `hint` mode, the browser understands that the popover is not a full-fledged interface window.
 
-Это лишь временная подсказка пользователю.
+It is just a temporary hint for the user.
 
-Например,
+For example:
 
 ```text
-Наведение мыши
+Mouse hover
 
 ↓
 
-Подсказка появилась
+Tooltip appears
 
 ↓
 
-Курсор ушёл
+Cursor moves away
 
 ↓
 
-Подсказка исчезла
+Tooltip disappears
 ```
 
-или
+or
 
 ```text
-Фокус клавиатуры
+Keyboard focus
 
 ↓
 
-Подсказка
+Tooltip
 
 ↓
 
-Фокус сменился
+Focus changes
 
 ↓
 
-Подсказка закрылась
+Tooltip closes
 ```
 
-Браузер начинает воспринимать такие popover иначе.
+The browser begins to perceive such popovers differently.
 
 ---
 
-###### Для чего предназначен
+###### What It's For
 
-`hint` идеально подходит для:
+`hint` is ideal for:
 
-- tooltip;
-- обучающих подсказок;
-- коротких описаний;
-- пояснений элементов интерфейса;
-- контекстной помощи.
+- tooltips;
+- educational hints;
+- short descriptions;
+- UI element explanations;
+- contextual help.
 
 ---
 
-##### Почему появился отдельный режим
+##### Why a Separate Mode Was Introduced
 
-Если бы подсказки работали через `auto`, возникало бы множество конфликтов.
+If tooltips worked via `auto`, there would be many conflicts.
 
-Например,
+For example:
 
 ```text
-Открыто меню пользователя
+User menu open
 
 ↓
 
-Навели курсор
+Cursor hovers
 
 ↓
 
-Появилась подсказка
+Tooltip appears
 
 ↓
 
-Меню неожиданно закрылось
+Menu unexpectedly closes
 ```
 
-Такое поведение было бы крайне неудобным.
+Such behavior would be extremely inconvenient.
 
-Именно поэтому `hint` образует отдельную категорию всплывающих элементов со своими правилами взаимодействия.
+That is why `hint` forms a separate category of popup elements with its own interaction rules.
 
-Подсказки не должны конкурировать с основными popover.
-
----
-
-### Архитектурное сравнение
-
-| Режим    | Кто управляет состоянием | Автоматическое закрытие    | Типичные сценарии                     |
-| -------- | ------------------------ | -------------------------- | ------------------------------------- |
-| `auto`   | Браузер                  | Да                         | Меню, панели, выпадающие списки       |
-| `manual` | Разработчик              | Нет                        | IDE, редакторы, закреплённые панели   |
-| `hint`   | Браузер                  | Да (по правилам подсказок) | Tooltip, справка, обучающие подсказки |
+Tooltips should not compete with main popovers.
 
 ---
 
-#### Как выбрать правильный режим
+### Architectural Comparison
 
-Можно руководствоваться простым правилом.
-
-#### Выбирайте `auto`, если...
-
-- браузер должен самостоятельно управлять жизненным циклом;
-- popover является частью обычного пользовательского интерфейса;
-- требуется стандартное поведение Web Platform.
-
-Это наиболее распространённый вариант.
+| Mode     | Who Manages State | Automatic Closing   | Typical Use Cases                 |
+| -------- | ----------------- | ------------------- | --------------------------------- |
+| `auto`   | Browser           | Yes                 | Menus, panels, dropdowns          |
+| `manual` | Developer         | No                  | IDEs, editors, pinned panels      |
+| `hint`   | Browser           | Yes (tooltip rules) | Tooltips, help, educational hints |
 
 ---
 
-#### Выбирайте `manual`, если...
+#### How to Choose the Right Mode
 
-- состояние определяется логикой приложения;
-- popover должен жить независимо от действий пользователя;
-- требуется полный программный контроль.
+A simple rule can be followed.
 
-Именно этот режим чаще всего используется в сложных веб-приложениях.
+#### Choose `auto` if...
 
----
+- the browser should independently manage the lifecycle;
+- the popover is part of a regular user interface;
+- standard Web Platform behavior is required.
 
-#### Выбирайте `hint`, если...
-
-- отображается только краткая справочная информация;
-- пользователь не взаимодействует с popover как с самостоятельным интерфейсом;
-- важнее ненавязчивость, чем функциональность.
+This is the most common option.
 
 ---
 
-### Почему это особенно важно в 2026 году
+#### Choose `manual` if...
 
-Появление трёх режимов работы Popover API отражает одну из ключевых тенденций развития Web Platform.
+- the state is determined by application logic;
+- the popover should live independently of user actions;
+- full programmatic control is required.
 
-HTML перестаёт быть языком, который лишь описывает внешний вид документа. Он становится языком, который распределяет ответственность между браузером и приложением.
+This mode is most often used in complex web applications.
 
-Разработчик больше не просто создаёт всплывающее окно — он выбирает **архитурную модель управления его состоянием**. В одном случае ответственность полностью берёт на себя браузер (`auto`), в другом — приложение (`manual`), а в третьем браузер использует специализированную модель поведения для подсказок (`hint`).
+---
 
-Такой подход делает HTML более выразительным и приближает его к современным архитектурным концепциям, где декларативное описание поведения становится столь же важным, как и описание структуры документа.
+#### Choose `hint` if...
+
+- only short reference information is displayed;
+- the user does not interact with the popover as an independent interface;
+- unobtrusiveness is more important than functionality.
+
+---
+
+### Why This Is Especially Important in 2026
+
+The emergence of three Popover API operating modes reflects one of the key trends in Web Platform development.
+
+HTML is ceasing to be a language that only describes the document's appearance. It is becoming a language that distributes responsibility between the browser and the application.
+
+The developer no longer just creates a popup window — they choose the **architectural model for managing its state**. In one case, the browser takes full responsibility (`auto`), in another — the application (`manual`), and in a third, the browser uses a specialized behavior model for tooltips (`hint`).
+
+This approach makes HTML more expressive and brings it closer to modern architectural concepts, where declarative behavior description is becoming as important as document structure description.
 
 ---
 
 ## 5.6. Light Dismiss
 
-Одной из самых недооцененных возможностей **Popover API** является механизм **Light Dismiss**. На первый взгляд кажется, что это всего лишь автоматическое закрытие всплывающего окна при клике вне его области. Однако в действительности Light Dismiss представляет собой встроенный механизм управления состоянием интерфейса, реализованный непосредственно в браузере.
+One of the most underestimated features of the **Popover API** is the **Light Dismiss** mechanism. At first glance, it seems like just automatic closing of a popup window when clicking outside its area. However, in reality, Light Dismiss is a built-in interface state management mechanism implemented directly in the browser.
 
-Именно благодаря Light Dismiss Popover API перестает быть простым набором HTML-атрибутов и становится частью архитектуры современной Web Platform.
+It is precisely because of Light Dismiss that the Popover API ceases to be a simple set of HTML attributes and becomes part of the modern Web Platform architecture.
 
 ---
 
-### Что такое Light Dismiss
+### What Is Light Dismiss
 
-**Light Dismiss** — это механизм автоматического закрытия немодального интерфейсного элемента, когда пользователь выполняет действие, означающее завершение взаимодействия с ним.
+**Light Dismiss** is a mechanism for automatically closing a non-modal interface element when the user performs an action that signifies the end of interaction with it.
 
-Обычно такими действиями являются:
+Typically, such actions are:
 
-- клик вне popover;
-- нажатие клавиши **Escape**;
-- открытие другого popover;
-- потеря контекста взаимодействия.
+- clicking outside the popover;
+- pressing the **Escape** key;
+- opening another popover;
+- losing the interaction context.
 
-При этом разработчику **не требуется писать JavaScript**, отслеживающий подобные ситуации.
+The developer does **not need to write JavaScript** to track such situations.
 
-Достаточно написать:
+It's enough to write:
 
 ```html
-<button popovertarget="menu">Меню</button>
+<button popovertarget="menu">Menu</button>
 
 <div id="menu" popover>...</div>
 ```
 
-После этого браузер самостоятельно начинает управлять жизненным циклом элемента.
+After that, the browser independently begins managing the element's lifecycle.
 
 ---
 
-### Почему это не `onclick document.body`
+### Why This Is Not `onclick document.body`
 
-До появления Popover API практически каждая библиотека реализовывала одинаковый алгоритм.
+Before the Popover API, virtually every library implemented the same algorithm:
 
 ```javascript
 document.addEventListener('click', (event) => {
@@ -1378,76 +1379,74 @@ document.addEventListener('click', (event) => {
 });
 ```
 
-Подобный код кажется простым лишь на первый взгляд.
+Such code only seems simple at first glance.
 
-На практике возникает огромное количество вопросов.
+In practice, it raises a huge number of questions.
 
-Например:
+For example:
 
-- какой popover сейчас открыт?
-- что делать, если открыто несколько popover?
-- что считать кликом "снаружи"?
-- как работают Shadow DOM?
-- как учитывать портал (Portal)?
-- как учитывать Top Layer?
-- как избежать гонок событий?
-- когда закрывать вложенные меню?
-- когда НЕ закрывать popover?
+- which popover is currently open?
+- what to do if several popovers are open?
+- what counts as a click "outside"?
+- how do Shadow DOM work?
+- how to account for Portals?
+- how to account for the Top Layer?
+- how to avoid event races?
+- when to close nested menus?
+- when NOT to close the popover?
 
-Во всех популярных UI-библиотеках сотни строк кода посвящены исключительно этим задачам.
+In all popular UI libraries, hundreds of lines of code are dedicated exclusively to these tasks.
 
-Popover API переносит эту ответственность внутрь браузера.
-
----
-
-### Почему браузер делает это лучше JavaScript
-
-Браузер обладает информацией, недоступной обычному JavaScript.
-
-Он знает:
-
-- какие элементы находятся в **Top Layer**;
-- какой popover сейчас активен;
-- какова их иерархия;
-- кто открыл данный popover;
-- какой элемент получил фокус;
-- какой стек popover существует в настоящий момент.
-
-Поэтому браузеру не нужно ничего вычислять.
-
-Он уже знает текущее состояние интерфейса.
-
-Именно поэтому Light Dismiss работает значительно надежнее любого пользовательского JavaScript.
+The Popover API moves this responsibility inside the browser.
 
 ---
 
-### Закрытие по Escape
+### Why the Browser Does This Better Than JavaScript
 
-Для popover с режимом
+The browser has information unavailable to regular JavaScript.
+
+It knows:
+
+- which elements are in the **Top Layer**;
+- which popover is currently active;
+- what their hierarchy is;
+- who opened this popover;
+- which element has focus;
+- what popover stack currently exists.
+
+Therefore, the browser doesn't need to calculate anything.
+
+It already knows the current interface state.
+
+That is why Light Dismiss works significantly more reliably than any custom JavaScript.
+
+---
+
+### Closing on Escape
+
+For popovers with mode
 
 ```html
 popover="auto"
 ```
 
-нажатие клавиши **Escape** приводит к автоматическому закрытию.
+pressing the **Escape** key leads to automatic closing.
 
-Разработчику не требуется писать
+The developer does not need to write:
 
 ```javascript
 window.addEventListener("keydown", event => {
-
     if (event.key === "Escape") {
         ...
     }
-
 });
 ```
 
-Браузер уже реализовал это поведение.
+The browser has already implemented this behavior.
 
-Более того, если открыто несколько вложенных popover, браузер закрывает **только верхний**.
+Moreover, if several nested popovers are open, the browser closes **only the top one**.
 
-Это напоминает стек вызовов.
+This resembles a call stack:
 
 ```
 Palette
@@ -1461,31 +1460,33 @@ Settings
 Color Picker
 ```
 
-После нажатия Escape закроется только
+After pressing Escape, only
 
 ```
 Color Picker
 ```
 
-Следующее нажатие закроет
+will close.
+
+The next press will close
 
 ```
 Settings
 ```
 
-И только затем
+And only then
 
 ```
 Palette
 ```
 
-Такое поведение практически невозможно реализовать универсально при помощи простых обработчиков клавиатуры.
+Such behavior is practically impossible to implement universally using simple keyboard handlers.
 
 ---
 
-### Закрытие при клике вне элемента
+### Closing on Outside Click
 
-Наиболее известная часть Light Dismiss — автоматическое закрытие popover при клике вне него.
+The most well-known part of Light Dismiss is automatic closing of a popover when clicking outside it.
 
 ```
 ┌──────────────────────────────┐
@@ -1500,154 +1501,154 @@ Palette
 
 ↓
 
-Popover закрывается
+Popover closes
 ```
 
-Особенность заключается в том, что браузер понимает, где действительно заканчивается popover.
+The key point is that the browser understands exactly where the popover truly ends.
 
-Это кажется очевидным только пока не появляются:
+This seems obvious only until there are:
 
 - Shadow DOM;
-- вложенные popover;
+- nested popovers;
 - Anchor Positioning;
 - Top Layer;
-- различные stacking context.
+- various stacking contexts.
 
-JavaScript обычно вынужден самостоятельно вычислять подобные ситуации.
+JavaScript is usually forced to calculate such situations on its own.
 
-Браузер этого не делает — он уже знает правильный ответ.
+The browser doesn't do that — it already knows the correct answer.
 
 ---
 
 ### Pointer Events
 
-Light Dismiss основан не на событии `click`, а на более глубоком понимании пользовательского взаимодействия.
+Light Dismiss is based not on the `click` event, but on a deeper understanding of user interaction.
 
-Современные браузеры работают с унифицированной системой **Pointer Events**.
+Modern browsers work with a unified **Pointer Events** system.
 
-Она объединяет:
+It unifies:
 
-- мышь;
-- сенсорный экран;
-- стилус;
-- трекпад;
-- другие указывающие устройства.
+- mouse;
+- touch screen;
+- stylus;
+- trackpad;
+- other pointing devices.
 
-Поэтому закрытие popover работает одинаково на:
+Therefore, popover closing works identically on:
 
 - Windows;
 - macOS;
 - Linux;
 - Android;
 - iOS;
-- планшетах;
-- устройствах с гибридным вводом.
+- tablets;
+- hybrid input devices.
 
-Разработчику больше не нужно учитывать различия между `mousedown`, `mouseup`, `touchstart`, `touchend` и другими событиями.
-
----
-
-### Потеря фокуса
-
-В некоторых сценариях завершением взаимодействия считается изменение фокуса.
-
-Например,
-
-```
-Поиск
-
-↓
-
-выпадающий список результатов
-
-↓
-
-пользователь переходит на другое поле формы
-```
-
-Для подобных случаев браузер способен автоматически завершить работу popover.
-
-Важно понимать, что решение принимает **не JavaScript**, а сам механизм управления состоянием интерфейса внутри браузера.
-
-Это делает поведение одинаковым во всех современных браузерах.
+The developer no longer needs to account for differences between `mousedown`, `mouseup`, `touchstart`, `touchend`, and other events.
 
 ---
 
-### Один открытый popover
+### Focus Loss
 
-Для режима
+In some scenarios, the end of interaction is considered to be a focus change.
+
+For example:
+
+```
+Search
+
+↓
+
+dropdown result list
+
+↓
+
+user moves to another form field
+```
+
+For such cases, the browser can automatically close the popover.
+
+It is important to understand that the decision is made **not by JavaScript**, but by the interface state management mechanism inside the browser.
+
+This makes behavior consistent across all modern browsers.
+
+---
+
+### One Open Popover
+
+For mode
 
 ```html
 popover="auto"
 ```
 
-действует важное правило.
+an important rule applies.
 
-В каждый момент времени существует только один активный popover одного уровня.
+At any given moment, there is only one active popover at the same level.
 
-Например
+For example:
 
 ```
-Открываем
+Open
 
 ↓
 
-Файл
+File
 ```
 
 ```
-Файл
+File
 ```
 
-Затем открываем
+Then open
 
 ```
-Правка
+Edit
 ```
 
-Браузер автоматически выполняет
+The browser automatically does:
 
 ```
-закрыть "Файл"
+close "File"
 
 ↓
 
-открыть "Правка"
+open "Edit"
 ```
 
-Никакого JavaScript для этого писать не требуется.
+No JavaScript is required for this.
 
-Именно это называется встроенным управлением состоянием.
+This is what is called built-in state management.
 
 ---
 
-### Когда Light Dismiss не работает
+### When Light Dismiss Does Not Work
 
-Механизм действует только для popover, которыми управляет браузер.
+The mechanism only works for popovers managed by the browser.
 
-Если используется
+If using
 
 ```html
 popover="manual"
 ```
 
-никакого автоматического закрытия не происходит.
+no automatic closing occurs.
 
-Не работают:
+The following don't work:
 
 - Escape;
 - click outside;
-- автоматическое закрытие при открытии других popover.
+- automatic closing when other popovers open.
 
-Полный контроль переходит разработчику.
+Full control passes to the developer.
 
-Именно поэтому режим `manual` рекомендуется использовать только тогда, когда действительно требуется собственная логика работы.
+That is why the `manual` mode should only be used when custom logic is truly required.
 
 ---
 
-### Почему это важно именно в 2026 году
+### Why This Matters in 2026
 
-До появления Popover API практически каждая UI-библиотека содержала собственую реализацию Light Dismiss.
+Before the Popover API, virtually every UI library contained its own implementation of Light Dismiss.
 
 Bootstrap.
 
@@ -1661,74 +1662,74 @@ Headless UI.
 
 Floating UI.
 
-Все они решали одну и ту же задачу:
+All of them solved the same problem:
 
-> определить, когда пользователь закончил взаимодействовать с всплывающим интерфейсом.
+> determine when the user has finished interacting with a popup interface.
 
-В 2026 году эта задача постепенно становится обязанностью самой Web Platform.
+In 2026, this task is gradually becoming the responsibility of the Web Platform itself.
 
-Это отражает общую тенденцию развития современного HTML: браузер берет на себя всё больше поведения, которое раньше реализовывалось исключительно средствами JavaScript.
+This reflects the general trend of modern HTML development: the browser is taking on more and more behavior that was previously implemented exclusively in JavaScript.
 
-Light Dismiss — один из наиболее ярких примеров этой эволюции. Он показывает, что HTML становится не только языком описания структуры, но и декларативным языком управления состоянием пользовательского интерфейса.
-
----
-
-## 5.7. `beforetoggle` и `toggle`
-
-Одним из наиболее интересных нововведений современной Web Platform стали события **`beforetoggle`** и **`toggle`**. На первый взгляд они кажутся обычными событиями открытия и закрытия элемента, однако на практике они представляют собой значительно более важную архитектурную концепцию.
-
-Если раньше HTML предоставлял лишь статические элементы, а весь жизненный цикл компонентов реализовывался исключительно средствами JavaScript-фреймворков, то сегодня браузер начинает самостоятельно управлять жизненным циклом декларативных компонентов.
-
-Именно поэтому Popover API можно рассматривать как один из первых шагов к превращению HTML в декларативную платформу компонентов.
+Light Dismiss is one of the most vivid examples of this evolution. It shows that HTML is becoming not only a language for describing structure but also a declarative language for managing user interface state.
 
 ---
 
-### Почему обычных событий оказалось недостаточно
+## 5.7. `beforetoggle` and `toggle`
 
-До появления Popover API разработчики самостоятельно изменяли состояние элементов.
+One of the most interesting innovations of the modern Web Platform is the **`beforetoggle`** and **`toggle`** events. At first glance, they seem like ordinary element open and close events, but in practice, they represent a significantly more important architectural concept.
 
-Например:
+If previously HTML provided only static elements and the entire component lifecycle was implemented exclusively through JavaScript frameworks, today the browser is beginning to independently manage the lifecycle of declarative components.
+
+That is why the Popover API can be seen as one of the first steps toward turning HTML into a declarative component platform.
+
+---
+
+### Why Regular Events Were Not Enough
+
+Before the Popover API, developers manually changed element states.
+
+For example:
 
 ```javascript
 menu.classList.add('open');
 menu.classList.remove('open');
 ```
 
-или
+or
 
 ```javascript
 menu.hidden = false;
 ```
 
-или
+or
 
 ```javascript
 menu.style.display = 'block';
 ```
 
-После этого приходилось самостоятельно генерировать события, запускать анимации, выполнять проверку условий открытия, уведомлять другие компоненты.
+After that, they had to manually generate events, start animations, check open conditions, and notify other components.
 
-Другими словами — жизненный цикл существовал исключительно внутри приложения.
+In other words — the lifecycle existed exclusively inside the application.
 
-HTML ничего об этом не знал.
+HTML knew nothing about it.
 
 ---
 
-### Теперь жизненный цикл знает браузер
+### Now the Browser Knows the Lifecycle
 
-Когда используется Popover API,
+When using the Popover API,
 
-браузер становится владельцем состояния компонента.
+the browser becomes the owner of the component's state.
 
-Он знает:
+It knows:
 
-- открыт поповер или нет;
-- кто инициировал открытие;
-- каким способом произошло открытие;
-- когда необходимо выполнить закрытие;
-- какие события необходимо отправить.
+- whether the popover is open or not;
+- who initiated the opening;
+- how the opening occurred;
+- when closing is needed;
+- what events need to be sent.
 
-Поэтому вместе с изменением состояния браузер автоматически генерирует события жизненного цикла.
+Therefore, along with state changes, the browser automatically generates lifecycle events.
 
 ```
 Closed
@@ -1746,7 +1747,7 @@ Open
 toggle
 ```
 
-или
+or
 
 ```
 Open
@@ -1764,21 +1765,21 @@ Closed
 toggle
 ```
 
-Именно браузер определяет последовательность событий.
+It is the browser that determines the sequence of events.
 
-Разработчику остается лишь подписаться на них.
+The developer only needs to subscribe to them.
 
 ---
 
-### Событие `beforetoggle`
+### The `beforetoggle` Event
 
-Это первое событие жизненного цикла.
+This is the first lifecycle event.
 
-Оно возникает **до изменения состояния**.
+It occurs **before the state change**.
 
-Именно здесь приложение может принять решение:
+This is where the application can decide:
 
-> разрешить изменение состояния или запретить его.
+> allow the state change or prevent it.
 
 ```
 Closed
@@ -1792,7 +1793,7 @@ beforetoggle
 Open
 ```
 
-или
+or
 
 ```
 Open
@@ -1806,33 +1807,33 @@ beforetoggle
 Closed
 ```
 
-Главная особенность —
+The main feature —
 
-это **отменяемое событие (Cancelable Event)**.
+it is a **Cancelable Event**.
 
-То есть браузер спрашивает приложение:
+That is, the browser asks the application:
 
-> "Я собираюсь изменить состояние. Не возражаете?"
+> "I'm about to change the state. Any objections?"
 
-Если приложение отвечает:
+If the application responds:
 
 ```javascript
 event.preventDefault();
 ```
 
-то переход состояния не произойдет.
+then the state transition will not occur.
 
 ---
 
-### Почему `beforetoggle` отменяемое
+### Why `beforetoggle` Is Cancelable
 
-Это позволяет реализовать огромное количество сценариев без переписывания логики браузера.
+This allows implementing a huge number of scenarios without rewriting the browser's logic.
 
-Например:
+For example:
 
-не закрывать поповер,
+do not close the popover,
 
-если пользователь не сохранил изменения.
+if the user hasn't saved changes.
 
 ```javascript
 popover.addEventListener('beforetoggle', (event) => {
@@ -1842,24 +1843,24 @@ popover.addEventListener('beforetoggle', (event) => {
 });
 ```
 
-Поповер останется открытым.
+The popover will remain open.
 
-Браузер не изменит состояние.
+The browser will not change the state.
 
-При этом:
+At the same time:
 
-- Top Layer останется корректным;
-- Focus останется корректным;
-- Accessibility продолжит работать;
-- никакой синхронизации выполнять не потребуется.
+- the Top Layer remains correct;
+- Focus remains correct;
+- Accessibility continues to work;
+- no synchronization is required.
 
 ---
 
-Можно запретить открытие.
+You can prevent opening.
 
-Например,
+For example,
 
-если пользователь не авторизован.
+if the user is not authenticated.
 
 ```javascript
 popover.addEventListener('beforetoggle', (event) => {
@@ -1869,41 +1870,43 @@ popover.addEventListener('beforetoggle', (event) => {
 });
 ```
 
-Получается,
+So,
 
-HTML предоставляет встроенную точку расширения жизненного цикла.
+HTML provides a built-in lifecycle extension point.
 
 ---
 
-### Событие `toggle`
+### The `toggle` Event
 
-После успешного изменения состояния браузер генерирует событие
+After a successful state change, the browser generates the
 
 ```
 toggle
 ```
 
-Оно сообщает,
+event.
 
-что изменение уже произошло.
+It signals
 
-В этот момент состояние браузера полностью синхронизировано.
+that the change has already occurred.
 
-Именно поэтому здесь удобно выполнять:
+At this moment, the browser's state is fully synchronized.
 
-- аналитику;
-- логирование;
-- запуск анимаций;
-- загрузку данных;
-- обновление интерфейса.
+That is why it's convenient to perform:
+
+- analytics;
+- logging;
+- animation startup;
+- data loading;
+- interface updates.
 
 ---
 
-### Старое и новое состояние
+### Old and New State
 
-Одной из наиболее полезных возможностей является наличие информации о переходе.
+One of the most useful features is having information about the transition.
 
-Событие содержит два свойства:
+The event contains two properties:
 
 ```
 oldState
@@ -1913,7 +1916,7 @@ oldState
 newState
 ```
 
-Например
+For example
 
 ```
 closed
@@ -1923,7 +1926,7 @@ closed
 open
 ```
 
-или
+or
 
 ```
 open
@@ -1933,23 +1936,22 @@ open
 closed
 ```
 
-Это значительно удобнее,
+This is significantly more convenient
 
-чем самостоятельно хранить состояние компонента.
+than storing the component's state manually.
 
 ---
 
-Пример:
+Example:
 
 ```javascript
 popover.addEventListener('toggle', (event) => {
   console.log(event.oldState);
-
   console.log(event.newState);
 });
 ```
 
-Вывод:
+Output:
 
 ```
 closed
@@ -1959,7 +1961,7 @@ closed
 open
 ```
 
-или
+or
 
 ```
 open
@@ -1969,31 +1971,29 @@ open
 closed
 ```
 
-Браузер уже выполнил переход.
+The browser has already performed the transition.
 
-Можно реагировать на него.
+You can react to it.
 
 ---
 
-### Пример полного жизненного цикла
+### Complete Lifecycle Example
 
 ```javascript
 const popover = document.getElementById('menu');
 
 popover.addEventListener('beforetoggle', (event) => {
-  console.log('До переключения');
-
+  console.log('Before toggle');
   console.log(event.newState);
 });
 
 popover.addEventListener('toggle', (event) => {
-  console.log('После переключения');
-
+  console.log('After toggle');
   console.log(`${event.oldState} → ${event.newState}`);
 });
 ```
 
-При открытии последовательность будет следующей:
+When opening, the sequence will be:
 
 ```
 showPopover()
@@ -2004,14 +2004,14 @@ beforetoggle
 
 ↓
 
-изменение состояния
+state change
 
 ↓
 
 toggle
 ```
 
-При закрытии:
+When closing:
 
 ```
 hidePopover()
@@ -2022,46 +2022,46 @@ beforetoggle
 
 ↓
 
-изменение состояния
+state change
 
 ↓
 
 toggle
 ```
 
-Получается полноценный жизненный цикл компонента.
+This is a complete component lifecycle.
 
 ---
 
-### Почему это гораздо важнее самого Popover API
+### Why This Is Much More Important Than the Popover API Itself
 
-На первый взгляд кажется,
+At first glance,
 
-что события нужны исключительно для поповеров.
+it seems that the events are needed exclusively for popovers.
 
-На самом деле они отражают гораздо более глубокую тенденцию развития Web Platform.
+In fact, they reflect a much deeper trend in Web Platform development.
 
-HTML постепенно перестает быть только языком разметки.
+HTML is gradually ceasing to be only a markup language.
 
-Он начинает описывать:
+It is beginning to describe:
 
-- компоненты;
-- их состояния;
-- допустимые переходы;
-- жизненный цикл;
-- взаимодействие между состояниями.
+- components;
+- their states;
+- valid transitions;
+- lifecycle;
+- interaction between states.
 
-Другими словами,
+In other words,
 
-HTML начинает предоставлять **декларативную модель состояний (State Machine)**.
+HTML is beginning to provide a **declarative state model (State Machine)**.
 
-Именно браузер становится владельцем этой модели.
+The browser becomes the owner of this model.
 
 ---
 
-### Связь с конечным автоматом
+### Connection to the Finite State Machine
 
-В предыдущем разделе мы рассматривали Popover как конечный автомат.
+In the previous section, we considered Popover as a finite state machine.
 
 ```
 Closed
@@ -2083,9 +2083,9 @@ Closing
 Closed
 ```
 
-Теперь становится понятно,
+Now it becomes clear
 
-где появляются события.
+where the events appear.
 
 ```
 Closed
@@ -2107,7 +2107,7 @@ Open
 toggle
 ```
 
-и
+and
 
 ```
 Open
@@ -2129,58 +2129,58 @@ Closed
 toggle
 ```
 
-События становятся частью автомата.
+Events become part of the automaton.
 
-Они сопровождают переходы между состояниями.
+They accompany transitions between states.
 
-Именно поэтому жизненный цикл оказывается встроенным непосредственно в платформу.
+That is why the lifecycle is built directly into the platform.
 
 ---
 
-### Почему это особенно важно в 2026 году
+### Why This Is Especially Important in 2026
 
-Именно в 2026 году становится очевидно, что браузерные API развиваются в сторону **декларативных компонентов с собственным жизненным циклом**.
+In 2026, it becomes obvious that browser APIs are evolving toward **declarative components with their own lifecycle**.
 
-Тот же подход используется не только в Popover API, но и в:
+The same approach is used not only in the Popover API but also in:
 
 - `<dialog>`;
 - View Transition API;
 - Navigation API;
 - Declarative Shadow DOM;
-- будущих элементах Web Platform.
+- future Web Platform elements.
 
-Во всех этих API браузер берет на себя управление состояниями, переходами и синхронизацией интерфейса.
+In all these APIs, the browser takes on state management, transitions, and interface synchronization.
 
-Это означает фундаментальный сдвиг в архитектуре фронтенда:
+This means a fundamental shift in frontend architecture:
 
-> **Если раньше HTML описывал только структуру документа, то современный HTML описывает поведение компонентов, а браузер становится их рантаймом.**
+> **If previously HTML described only document structure, modern HTML describes component behavior, and the browser becomes their runtime.**
 
-Именно поэтому события `beforetoggle` и `toggle` — это не просто новые события Popover API. Это первые признаки появления в HTML полноценной декларативной модели жизненного цикла компонентов, которая станет одной из ключевых идей Web Platform второй половины 2020-х годов.
-
----
-
-## 5.8. Popover и CSS Anchor Positioning
-
-Одной из самых революционных возможностей современной Web Platform стало появление **CSS Anchor Positioning** — технологии, которая впервые позволяет позиционировать элементы интерфейса **относительно других элементов декларативно**, без вычисления координат на JavaScript.
-
-Если Popover API избавил разработчиков от необходимости самостоятельно управлять жизненным циклом всплывающих элементов, то Anchor Positioning избавляет от необходимости вычислять их положение.
-
-Вместе эти технологии образуют новый архитектурный уровень современной платформы.
+That is why the `beforetoggle` and `toggle` events are not just new Popover API events. They are the first signs of a full-fledged declarative component lifecycle model appearing in HTML, which will become one of the key ideas of the Web Platform in the second half of the 2020s.
 
 ---
 
-### До появления Anchor Positioning
+## 5.8. Popover and CSS Anchor Positioning
 
-На протяжении почти двадцати лет позиционирование любого всплывающего интерфейса выглядело примерно одинаково.
+One of the most revolutionary features of the modern Web Platform is **CSS Anchor Positioning** — a technology that for the first time allows positioning interface elements **relative to other elements declaratively**, without calculating coordinates in JavaScript.
 
-Необходимо было:
+If the Popover API freed developers from having to independently manage the lifecycle of popup elements, Anchor Positioning frees them from having to calculate their position.
+
+Together, these technologies form a new architectural level of the modern platform.
+
+---
+
+### Before Anchor Positioning
+
+For almost twenty years, positioning any popup interface looked roughly the same.
+
+It was necessary to:
 
 ```
 getBoundingClientRect()
 
 ↓
 
-узнать координаты кнопки
+get button coordinates
 
 ↓
 
@@ -2188,7 +2188,7 @@ scrollX / scrollY
 
 ↓
 
-учесть прокрутку страницы
+account for page scroll
 
 ↓
 
@@ -2196,7 +2196,7 @@ resize
 
 ↓
 
-пересчитывать координаты после изменения окна
+recalculate coordinates after window change
 
 ↓
 
@@ -2204,7 +2204,7 @@ MutationObserver
 
 ↓
 
-следить за изменением DOM
+track DOM changes
 
 ↓
 
@@ -2212,7 +2212,7 @@ IntersectionObserver
 
 ↓
 
-следить за появлением элемента
+track element appearance
 
 ↓
 
@@ -2220,89 +2220,91 @@ requestAnimationFrame()
 
 ↓
 
-постоянно обновлять позицию
+constantly update position
 ```
 
-Практически каждая UI-библиотека содержала тысячи строк кода, посвященных исключительно вычислению координат.
+Almost every UI library contained thousands of lines of code dedicated exclusively to coordinate calculation.
 
-Именно поэтому появились такие проекты, как:
+That is why projects like:
 
 - Floating UI;
 - Popper.js;
 - Tippy.js;
 - Headless UI;
-- Radix UI.
+- Radix UI
 
-Большая часть их сложности была связана вовсе не с отображением меню, а с правильным вычислением его положения.
+emerged.
+
+Most of their complexity was not related to displaying menus at all, but to correctly calculating their position.
 
 ---
 
-### Почему обычное позиционирование плохо подходит
+### Why Regular Positioning Is Not Suitable
 
-На первый взгляд кажется, что достаточно написать
+At first glance, it seems enough to write
 
 ```css
 position: absolute;
 ```
 
-и проблема решена.
+and the problem is solved.
 
-На практике это работает только в самых простых случаях.
+In practice, this only works in the simplest cases.
 
-Необходимо учитывать:
+It is necessary to account for:
 
-- прокрутку страницы;
-- изменение размеров окна;
-- масштабирование;
+- page scroll;
+- window resizing;
+- zoom;
 - CSS Transform;
 - `overflow`;
-- вложенные контейнеры;
-- различные stacking context;
-- мобильную клавиатуру;
-- изменение размеров контента;
-- RTL-языки;
-- разные направления письма.
+- nested containers;
+- various stacking contexts;
+- mobile keyboard;
+- content size changes;
+- RTL languages;
+- different writing directions.
 
-Получается огромная задача геометрии интерфейса.
+This turns into a huge interface geometry task.
 
-Именно этим годами занимались JavaScript-библиотеки.
-
----
-
-### Что изменилось
-
-Anchor Positioning полностью меняет модель позиционирования.
-
-Теперь вместо вычисления координат разработчик описывает **отношение** между двумя элементами.
-
-Не координаты.
-
-Не пиксели.
-
-Не вычисления.
-
-А связь.
-
-Например:
-
-> Этот Popover должен находиться возле этой кнопки.
-
-Именно браузер определяет:
-
-- где расположить элемент;
-- как его сдвинуть;
-- как избежать выхода за границы окна;
-- когда автоматически изменить положение.
+This is precisely what JavaScript libraries have been doing for years.
 
 ---
 
-### Новые возможности CSS
+### What Has Changed
 
-Anchor Positioning добавляет несколько новых механизмов.
+Anchor Positioning completely changes the positioning model.
+
+Now instead of calculating coordinates, the developer describes a **relationship** between two elements.
+
+Not coordinates.
+
+Not pixels.
+
+Not calculations.
+
+But a connection.
+
+For example:
+
+> This Popover should be located near this button.
+
+It is the browser that determines:
+
+- where to place the element;
+- how to shift it;
+- how to avoid going outside the window;
+- when to automatically change the position.
+
+---
+
+### New CSS Capabilities
+
+Anchor Positioning adds several new mechanisms.
 
 #### `anchor-name`
 
-Позволяет объявить элемент якорем.
+Allows declaring an element as an anchor.
 
 ```css
 button {
@@ -2310,17 +2312,17 @@ button {
 }
 ```
 
-Теперь браузер знает,
+Now the browser knows
 
-что этот элемент может использоваться как точка привязки.
+that this element can be used as an anchor point.
 
 ---
 
 #### `position-anchor`
 
-Позволяет указать,
+Allows specifying
 
-к какому якорю необходимо привязать элемент.
+which anchor to bind the element to.
 
 ```css
 .menu {
@@ -2328,41 +2330,40 @@ button {
 }
 ```
 
-После этого между двумя элементами появляется декларативная связь.
+After this, a declarative connection appears between the two elements.
 
 ---
 
-#### Функция `anchor()`
+#### The `anchor()` Function
 
-Позволяет использовать координаты якоря непосредственно в CSS.
+Allows using anchor coordinates directly in CSS.
 
-Например:
+For example:
 
 ```css
 .menu {
   left: anchor(left);
-
   top: anchor(bottom);
 }
 ```
 
-При изменении положения кнопки
+When the button's position changes,
 
-браузер автоматически обновит положение поповера.
+the browser automatically updates the popover's position.
 
-JavaScript больше не нужен.
+JavaScript is no longer needed.
 
 ---
 
 #### `position-area`
 
-Во многих случаях координаты вообще не приходится вычислять.
+In many cases, coordinates don't need to be calculated at all.
 
-Можно просто сказать браузеру,
+You can simply tell the browser
 
-где должен находиться элемент.
+where the element should be located.
 
-Например:
+For example:
 
 ```css
 .menu {
@@ -2370,7 +2371,7 @@ JavaScript больше не нужен.
 }
 ```
 
-Или
+Or
 
 ```css
 .menu {
@@ -2378,7 +2379,7 @@ JavaScript больше не нужен.
 }
 ```
 
-Или
+Or
 
 ```css
 .menu {
@@ -2386,102 +2387,101 @@ JavaScript больше не нужен.
 }
 ```
 
-Это гораздо ближе к человеческому описанию интерфейса.
+This is much closer to how humans describe interfaces.
 
 ---
 
 #### `position-try`
 
-А что делать,
+But what if
 
-если возле кнопки недостаточно места?
+there isn't enough space near the button?
 
-Раньше приходилось писать сложный JavaScript.
+Previously, complex JavaScript had to be written.
 
-Сегодня достаточно сообщить браузеру возможные варианты.
+Today, it's enough to tell the browser the possible options.
 
 ```css
 .menu {
   position-area: bottom;
-
   position-try: top, right, left;
 }
 ```
 
-Браузер самостоятельно попробует каждое положение.
+The browser will independently try each position.
 
-Если снизу места нет,
+If there's no space at the bottom,
 
-он автоматически переместит поповер вверх.
+it will automatically move the popover up.
 
-Если и там нет —
+If there's no space there either —
 
-вправо.
+to the right.
 
-И так далее.
+And so on.
 
-Получается встроенный механизм интеллектуального позиционирования.
-
----
-
-### Вместо координат — намерение
-
-Самое важное изменение заключается даже не в новых CSS-свойствах.
-
-Изменился сам способ мышления.
-
-Раньше разработчик говорил браузеру:
-
-> Помести элемент в координаты X = 425 и Y = 318.
-
-Сегодня он говорит совершенно другое:
-
-> Я хочу, чтобы этот Popover находился рядом с этой кнопкой.
-
-Это принципиально иной уровень абстракции.
-
-Разработчик описывает **намерение (intent)**.
-
-Браузер самостоятельно реализует его.
+This is a built-in intelligent positioning mechanism.
 
 ---
 
-### Неявные якоря (Implicit Anchors)
+### Instead of Coordinates — Intention
 
-Особенно интересно Popover API интегрируется с Anchor Positioning.
+The most important change is not even in the new CSS properties.
 
-Если используется
+The way of thinking itself has changed.
+
+Previously, the developer told the browser:
+
+> Place the element at coordinates X = 425 and Y = 318.
+
+Today, they say something completely different:
+
+> I want this Popover to be next to this button.
+
+This is a fundamentally different level of abstraction.
+
+The developer describes **intent**.
+
+The browser independently implements it.
+
+---
+
+### Implicit Anchors
+
+What's particularly interesting is how the Popover API integrates with Anchor Positioning.
+
+If using
 
 ```html
 <button popovertarget="menu"></button>
 ```
 
-и
+and
 
 ```html
 <div id="menu" popover></div>
 ```
 
-браузер автоматически понимает,
+the browser automatically understands
 
-что кнопка является якорем для данного Popover.
+that the button is the anchor for this Popover.
 
-То есть связь создается без дополнительной разметки.
+That is, the connection is created without additional markup.
 
-Получается так называемый **Implicit Anchor**.
+This is what's called an **Implicit Anchor**.
 
-Во многих случаях достаточно написать только HTML.
+In many cases, writing only HTML is sufficient.
 
 ---
 
-### Вместе с Popover API
+### Together with the Popover API
 
-Получается практически полностью декларативный интерфейс.
+This results in an almost completely declarative interface.
 
 HTML:
 
 ```html
-<button popovertarget="menu">Меню</button>
+<button popovertarget="menu">Menu</button>
 
 <div id="menu" popover>...</div>
 ```
@@ -2491,7 +2491,6 @@ CSS:
 ```css
 #menu {
   position-area: bottom;
-
   position-try: bottom, top, right, left;
 }
 ```
@@ -2499,58 +2498,58 @@ CSS:
 JavaScript:
 
 ```javascript
-// отсутствует
+// absent
 ```
 
-Браузер самостоятельно:
+The browser independently:
 
-- откроет Popover;
-- разместит его возле кнопки;
-- перенесет в Top Layer;
-- закроет по Light Dismiss;
-- изменит положение при нехватке места;
-- обновит координаты при изменении размеров окна;
-- пересчитает положение при прокрутке страницы.
+- opens the Popover;
+- positions it near the button;
+- moves it to the Top Layer;
+- closes it via Light Dismiss;
+- changes position when space is insufficient;
+- updates coordinates when the window resizes;
+- recalculates position when the page scrolls.
 
-Все это происходит на уровне движка браузера.
+All of this happens at the browser engine level.
 
 ---
 
-### Почему Floating UI не исчезнет
+### Why Floating UI Won't Disappear
 
-После появления Anchor Positioning может показаться, что библиотеки вроде Floating UI стали не нужны.
+After the introduction of Anchor Positioning, it might seem that libraries like Floating UI are no longer needed.
 
-На практике это не так.
+In practice, this is not the case.
 
-Anchor Positioning отлично решает большинство стандартных задач:
+Anchor Positioning excellently solves most standard tasks:
 
-- выпадающие меню;
+- dropdown menus;
 - Popover;
-- контекстные меню;
-- панели действий;
-- подсказки;
-- простые инспекторы.
+- context menus;
+- action panels;
+- tooltips;
+- simple inspectors.
 
-Однако существуют сценарии, в которых необходим более сложный контроль:
+However, there are scenarios that require more complex control:
 
-- пользовательские алгоритмы позиционирования;
-- привязка сразу к нескольким элементам;
-- сложные ограничения внутри контейнеров;
-- нестандартные анимации;
-- поддержка старых браузеров;
-- интеграция с виртуальными элементами (например, выделением текста или координатами курсора).
+- custom positioning algorithms;
+- binding to multiple elements at once;
+- complex constraints inside containers;
+- non-standard animations;
+- legacy browser support;
+- integration with virtual elements (e.g., text selection or cursor coordinates).
 
-Поэтому Anchor Positioning не заменяет Floating UI полностью, а берет на себя основную, наиболее распространенную часть задач. Это позволяет значительно сократить объем JavaScript и использовать специализированные библиотеки только там, где действительно требуется сложная логика.
+Therefore, Anchor Positioning does not completely replace Floating UI, but takes on the main, most common set of tasks. This allows significantly reducing JavaScript volume and using specialized libraries only where truly complex logic is required.
 
 ---
 
-### Почему это особенно важно в 2026 году
+### Why This Is Especially Important in 2026
 
-Anchor Positioning — это не просто новое CSS-свойство.
+Anchor Positioning is not just a new CSS property.
 
-Это очередной шаг в развитии философии современной Web Platform.
+It is another step in the evolution of the modern Web Platform philosophy.
 
-Вместе с:
+Together with:
 
 - `<dialog>`;
 - Popover API;
@@ -2558,57 +2557,57 @@ Anchor Positioning — это не просто новое CSS-свойство.
 - Declarative Shadow DOM;
 - Navigation API;
 
-оно демонстрирует общую тенденцию развития браузеров.
+it demonstrates the general trend of browser development.
 
-Платформа постепенно переносит наиболее сложные задачи интерфейсной разработки из JavaScript в декларативные механизмы HTML и CSS.
+The platform is gradually moving the most complex interface development tasks from JavaScript to declarative HTML and CSS mechanisms.
 
-Разработчик больше не описывает последовательность вычислений.
+The developer no longer describes a sequence of calculations.
 
-Он описывает **отношения между элементами**, а браузер самостоятельно выбирает оптимальную стратегию их реализации.
+They describe **relationships between elements**, and the browser independently chooses the optimal strategy for implementing them.
 
-Именно поэтому связка **Popover API + CSS Anchor Positioning** считается одной из самых значимых архитектурных инноваций Web Platform середины 2020-х годов. Она знаменует переход от координатного программирования к декларативному описанию интерфейсов — подходу, который, вероятно, станет стандартом для будущих поколений веб-приложений.
-
----
-
-## 5.9. Popover и Accessibility
-
-Одной из главных причин появления Popover API стало не только упрощение создания всплывающих интерфейсов, но и перенос значительной части логики доступности (Accessibility, a11y) с уровня JavaScript-библиотек на уровень самой Web Platform.
-
-До появления Popover API каждый разработчик самостоятельно реализовывал поведение всплывающих меню, подсказок и панелей. Это означало необходимость вручную управлять фокусом, отслеживать клавиатурные события, корректно обрабатывать закрытие по клавише <kbd>Escape</kbd>, синхронизировать ARIA-атрибуты и следить за тем, чтобы компонент был понятен программам экранного доступа.
-
-Практика показывала, что даже популярные UI-библиотеки регулярно содержали ошибки доступности.
-
-Современный браузер берет значительную часть этой работы на себя.
+That is why the combination of **Popover API + CSS Anchor Positioning** is considered one of the most significant architectural innovations of the Web Platform in the mid-2020s. It marks the transition from coordinate programming to declarative interface description — an approach that will likely become the standard for future generations of web applications.
 
 ---
 
-### Что браузер делает автоматически
+## 5.9. Popover and Accessibility
 
-Popover API интегрирован непосредственно в механизм отображения браузера.
+One of the main reasons for the Popover API's emergence was not only simplifying the creation of popup interfaces but also moving a significant portion of accessibility (a11y) logic from the JavaScript library level to the Web Platform itself.
 
-Поэтому браузер знает:
+Before the Popover API, every developer independently implemented the behavior of popup menus, tooltips, and panels. This meant manually managing focus, tracking keyboard events, correctly handling closure via the <kbd>Escape</kbd> key, synchronizing ARIA attributes, and ensuring the component was understandable to screen reader programs.
 
-- какой элемент является поповером;
-- какой элемент его открыл;
-- какой поповер активен в настоящий момент;
-- когда пользователь взаимодействует с окружающим интерфейсом;
-- какие события должны привести к закрытию.
+Practice showed that even popular UI libraries regularly contained accessibility errors.
 
-Это позволяет автоматически реализовать множество механизмов доступности.
+The modern browser takes a significant part of this work on itself.
 
 ---
 
-### Управление клавиатурой
+### What the Browser Does Automatically
 
-Для поповеров режима `auto` браузер автоматически поддерживает стандартные сценарии работы с клавиатурой.
+The Popover API is integrated directly into the browser's display mechanism.
 
-Например,
+Therefore, the browser knows:
 
-- закрытие по <kbd>Escape</kbd>;
-- корректную обработку открытия;
-- предотвращение открытия нескольких несовместимых popover одновременно.
+- which element is a popover;
+- which element opened it;
+- which popover is currently active;
+- when the user interacts with the surrounding interface;
+- which events should lead to closure.
 
-Разработчику больше не нужно писать подобный код:
+This allows automatically implementing numerous accessibility mechanisms.
+
+---
+
+### Keyboard Management
+
+For `auto` mode popovers, the browser automatically supports standard keyboard interaction scenarios.
+
+For example:
+
+- closing via <kbd>Escape</kbd>;
+- correct handling of opening;
+- preventing multiple incompatible popovers from opening simultaneously.
+
+The developer no longer needs to write code like:
 
 ```javascript
 document.addEventListener('keydown', (event) => {
@@ -2618,24 +2617,24 @@ document.addEventListener('keydown', (event) => {
 });
 ```
 
-Платформа уже знает, какой именно Popover должен быть закрыт.
+The platform already knows which Popover should be closed.
 
 ---
 
-### Управление фокусом
+### Focus Management
 
-В отличие от `<dialog>`, Popover **не является модальным компонентом**.
+Unlike `<dialog>`, Popover **is not a modal component**.
 
-Поэтому браузер **не блокирует** остальную страницу и **не создает Focus Trap**.
+Therefore, the browser **does not block** the rest of the page and **does not create a Focus Trap**.
 
-Это принципиальное архитектурное отличие.
+This is a fundamental architectural difference.
 
 ```
 <dialog>
 
 ↓
 
-весь фокус находится внутри окна
+all focus is inside the window
 ```
 
 ```
@@ -2643,283 +2642,277 @@ popover
 
 ↓
 
-фокус может свободно переходить
-между поповером
-и документом
+focus can freely move
+between the popover
+and the document
 ```
 
-Именно поэтому Popover подходит для:
+That is why Popover is suitable for:
 
-- меню;
-- выпадающих списков;
-- панелей инструментов;
-- подсказок;
-- поисковых панелей;
-- фильтров.
+- menus;
+- dropdowns;
+- toolbars;
+- tooltips;
+- search panels;
+- filters.
 
 ---
 
-### Top Layer и доступность
+### Top Layer and Accessibility
 
-Поскольку Popover размещается в **Top Layer**, браузеру больше не приходится гадать, какой элемент находится поверх остальных.
+Since Popover is placed in the **Top Layer**, the browser no longer has to guess which element is on top.
 
-Это позволяет:
+This allows:
 
-- корректно определить активный слой интерфейса;
-- правильно обработать Escape;
-- закрыть нужный popover;
-- сохранить логичный порядок взаимодействия пользователя.
+- correctly determining the active interface layer;
+- correctly handling Escape;
+- closing the right popover;
+- maintaining a logical order of user interaction.
 
-Раньше JavaScript был вынужден самостоятельно хранить стек открытых окон.
+Previously, JavaScript had to independently maintain a stack of open windows.
 
-Теперь этим занимается движок браузера.
+Now this is handled by the browser engine.
 
 ---
 
 ### ARIA
 
-Одно из распространенных заблуждений заключается в том, что Popover автоматически превращает любой элемент в полностью доступный компонент.
+One common misconception is that Popover automatically turns any element into a fully accessible component.
 
-Это не так.
+This is not the case.
 
-Popover сообщает браузеру:
+Popover tells the browser:
 
-> «Этот элемент является всплывающим слоем.»
+> "This element is a popup layer."
 
-Но браузер **не знает**, что именно представляет собой содержимое.
+But the browser **does not know** what exactly the content represents.
 
-Например, это может быть:
+For example, it could be:
 
-- меню;
-- список;
-- панель поиска;
-- палитра команд;
-- список пользователей;
-- календарь;
-- цветовая палитра.
+- a menu;
+- a list;
+- a search panel;
+- a command palette;
+- a user list;
+- a calendar;
+- a color palette.
 
-Именно поэтому разработчик по-прежнему обязан использовать правильную семантику.
+That is why the developer is still responsible for using correct semantics.
 
-Например:
+For example:
 
 ```html
 <button popovertarget="menu" aria-haspopup="menu" aria-expanded="false">
-  Меню
+  Menu
 </button>
 
 <ul id="menu" popover role="menu">
-  <li role="menuitem">Открыть</li>
-  <li role="menuitem">Сохранить</li>
+  <li role="menuitem">Open</li>
+  <li role="menuitem">Save</li>
 </ul>
 ```
 
-Popover не отменяет HTML.
+Popover does not replace HTML.
 
-Он работает **вместе** с семантикой HTML.
+It works **together** with HTML semantics.
 
 ---
 
 ### Screen Readers
 
-Современные программы экранного доступа ориентируются сразу на несколько источников информации:
+Modern screen reader programs rely on multiple sources of information simultaneously:
 
 - DOM;
 - Accessibility Tree;
-- роли ARIA;
-- состояние элементов;
-- фокус ввода.
+- ARIA roles;
+- element state;
+- input focus.
 
-Popover автоматически становится частью Accessibility Tree.
+Popover automatically becomes part of the Accessibility Tree.
 
-Однако качество озвучивания зависит от того, насколько правильно размечен сам контент.
+However, the quality of speech output depends on how correctly the content itself is marked up.
 
-Например:
+For example:
 
 ```html
-<div popover>Настройки Профиль Выйти</div>
+<div popover>Settings Profile Logout</div>
 ```
 
-не сообщает пользователю практически ничего.
+tells the user almost nothing.
 
-Гораздо лучше использовать семантическую структуру.
+It's much better to use semantic structure:
 
 ```html
 <nav popover>
   <ul>
-    <li><a href="#">Профиль</a></li>
-
-    <li><a href="#">Настройки</a></li>
-
-    <li><a href="#">Выход</a></li>
+    <li><a href="#">Profile</a></li>
+    <li><a href="#">Settings</a></li>
+    <li><a href="#">Logout</a></li>
   </ul>
 </nav>
 ```
 
-Здесь скринридер сможет сообщить:
+Here the screen reader can announce:
 
-> Навигация.
+> Navigation.
 
-> Список.
+> List.
 
-> Три элемента.
+> Three items.
 
-Это значительно улучшает пользовательский опыт.
-
----
-
-### Что остается обязанностью разработчика
-
-Несмотря на большое количество автоматизации, Popover не освобождает разработчика от ответственности за архитектуру интерфейса.
-
-Именно разработчик должен:
-
-- выбрать правильный HTML-элемент;
-- использовать корректные ARIA-роли там, где это необходимо;
-- обеспечить логичный порядок табуляции;
-- подписать управляющие кнопки (`aria-label`, `aria-labelledby`);
-- следить за контрастностью;
-- обеспечить удобную работу без мыши;
-- не перегружать интерфейс одновременно открытыми поповерами.
-
-Можно сказать, что Popover автоматизирует **механику**, но не **смысл** интерфейса.
+This significantly improves user experience.
 
 ---
 
-### Типичные ошибки
+### What Remains the Developer's Responsibility
 
-На практике чаще всего встречаются следующие ошибки.
+Despite a large amount of automation, Popover does not relieve the developer of responsibility for interface architecture.
 
-#### Использование `<div>` вместо семантических элементов
+It is the developer who must:
 
-Плохо:
+- choose the correct HTML element;
+- use correct ARIA roles where necessary;
+- ensure logical tab order;
+- label control buttons (`aria-label`, `aria-labelledby`);
+- monitor contrast;
+- ensure convenient operation without a mouse;
+- avoid overloading the interface with simultaneously open popovers.
+
+It can be said that Popover automates **mechanics**, but not the **meaning** of the interface.
+
+---
+
+### Common Mistakes
+
+In practice, the following mistakes are most common.
+
+#### Using `<div>` Instead of Semantic Elements
+
+Bad:
 
 ```html
 <div popover>
-  <div>Настройки</div>
-
-  <div>Профиль</div>
-
-  <div>Выход</div>
+  <div>Settings</div>
+  <div>Profile</div>
+  <div>Logout</div>
 </div>
 ```
 
-Лучше:
+Better:
 
 ```html
 <nav popover>
   <ul>
-    <li><a href="#">Профиль</a></li>
-
-    <li><a href="#">Настройки</a></li>
-
-    <li><a href="#">Выход</a></li>
+    <li><a href="#">Profile</a></li>
+    <li><a href="#">Settings</a></li>
+    <li><a href="#">Logout</a></li>
   </ul>
 </nav>
 ```
 
 ---
 
-#### Отсутствие связи между кнопкой и поповером
+#### No Relationship Between Button and Popover
 
-Кнопка должна явно управлять поповером.
+The button must explicitly control the popover.
 
 ```html
-<button popovertarget="menu" aria-haspopup="menu">Меню</button>
+<button popovertarget="menu" aria-haspopup="menu">Menu</button>
 ```
 
-Такая связь понятна как браузеру, так и вспомогательным технологиям.
+Such a connection is understandable to both the browser and assistive technologies.
 
 ---
 
-#### Поповер используется как диалог
+#### Using Popover as a Dialog
 
-Иногда разработчики пытаются заменить `<dialog>` поповером.
+Sometimes developers try to replace `<dialog>` with a popover.
 
-Это архитектурная ошибка.
+This is an architectural mistake.
 
-Если необходимо:
+If it is necessary to:
 
-- подтвердить удаление;
-- заблокировать фон;
-- удерживать фокус;
-- дождаться решения пользователя,
+- confirm deletion;
+- block the background;
+- retain focus;
+- wait for the user's decision,
 
-следует использовать именно `<dialog>`.
+`<dialog>` should be used.
 
-Popover предназначен для немодальных сценариев.
-
----
-
-#### Использование Popover вместо Tooltip
-
-Хотя режим `hint` позволяет строить подсказки, следует помнить, что классические tooltip имеют собственные требования доступности.
-
-Иногда лучшим решением остается использование элемента с `role="tooltip"` и корректной связью через `aria-describedby`.
+Popover is intended for non-modal scenarios.
 
 ---
 
-### Почему это особенно важно в 2026 году
+#### Using Popover Instead of Tooltip
 
-До появления Popover API доступность всплывающих интерфейсов практически полностью зависела от качества JavaScript-библиотек.
+Although the `hint` mode allows building tooltips, it should be remembered that classic tooltips have their own accessibility requirements.
 
-В 2026 году ситуация изменилась.
-
-Браузер сам реализует значительную часть поведения, которое раньше считалось обязанностью разработчика:
-
-- управление Top Layer;
-- обработку Escape;
-- механизм Light Dismiss;
-- управление состоянием;
-- взаимодействие между несколькими popover.
-
-Это означает важный архитектурный сдвиг.
-
-Если раньше разработчик создавал компонент **с нуля**, то теперь он **конфигурирует встроенный компонент браузера**.
-
-Именно поэтому знание семантики HTML и принципов Accessibility становится важнее, чем знание множества JavaScript-хаков.
+Sometimes the best solution remains using an element with `role="tooltip"` and correct connection via `aria-describedby`.
 
 ---
 
-### Вывод
+### Why This Is Especially Important in 2026
 
-Popover API не делает интерфейс автоматически доступным, но значительно снижает количество ошибок, возникающих при реализации всплывающих компонентов.
+Before the Popover API, accessibility of popup interfaces depended almost entirely on the quality of JavaScript libraries.
 
-Браузер берет на себя управление жизненным циклом поповера, его отображением в Top Layer, обработкой стандартных пользовательских действий и взаимодействием с системой ввода.
+In 2026, the situation has changed.
 
-Задача разработчика смещается с реализации низкоуровневой механики на проектирование семантически правильного пользовательского интерфейса. Именно это отражает современную философию Web Platform: **использовать встроенные возможности браузера, а не воспроизводить их средствами JavaScript**.
+The browser itself implements a significant part of the behavior that was previously considered the developer's responsibility:
+
+- Top Layer management;
+- Escape handling;
+- Light Dismiss mechanism;
+- state management;
+- interaction between multiple popovers.
+
+This means an important architectural shift.
+
+If previously the developer created a component **from scratch**, now they **configure a built-in browser component**.
+
+That is why knowledge of HTML semantics and accessibility principles is becoming more important than knowledge of numerous JavaScript hacks.
 
 ---
 
-## 5.10. Анимация Popover
+### Conclusion
 
-Одной из самых интересных возможностей современной Web Platform стала полноценная поддержка анимации встроенных компонентов браузера. Если раньше появление и исчезновение всплывающих элементов требовало JavaScript или сложных CSS-хаков, то в 2026 году Popover API и современный CSS позволяют реализовывать плавные переходы декларативно.
+The Popover API does not automatically make an interface accessible, but it significantly reduces the number of errors that occur when implementing popup components.
 
-Появление Popover API совпало с развитием новой модели анимации браузера, которая умеет работать не только с изменением значений CSS-свойств, но и с **изменением состояний самого элемента**.
+The browser takes on managing the popover's lifecycle, its display in the Top Layer, handling standard user actions, and interaction with the input system.
 
-Именно поэтому Popover стал одним из первых компонентов платформы, демонстрирующих возможности нового поколения CSS.
+The developer's task shifts from implementing low-level mechanics to designing semantically correct user interfaces. This reflects the modern Web Platform philosophy: **use built-in browser capabilities rather than reproducing them in JavaScript**.
 
 ---
 
-### Почему раньше это было невозможно
+## 5.10. Popover Animation
 
-Исторически главной проблемой являлось свойство:
+One of the most interesting features of the modern Web Platform is full support for animation of built-in browser components. If previously the appearance and disappearance of popup elements required JavaScript or complex CSS hacks, in 2026 the Popover API and modern CSS allow implementing smooth transitions declaratively.
+
+The emergence of the Popover API coincided with the development of a new browser animation model that can work not only with changing CSS property values but also with **changes in the element's state itself**.
+
+That is why Popover became one of the first platform components to demonstrate the capabilities of the new generation of CSS.
+
+---
+
+### Why This Was Impossible Before
+
+Historically, the main problem was the property:
 
 ```css
 display: none;
 ```
 
-Элемент с `display: none` полностью исключается из процесса рендеринга.
+An element with `display: none` is completely excluded from the rendering process.
 
-Это означает, что браузер не создает для него:
+This means the browser does not create for it:
 
 - Render Object;
 - Layout Box;
 - Paint;
 - Composite Layer.
 
-Фактически элемент перестает существовать для движка отображения.
+In effect, the element ceases to exist for the rendering engine.
 
-Поэтому такой переход:
+Therefore, a transition like:
 
 ```css
 display: none;
@@ -2929,77 +2922,79 @@ display: none;
 display: block;
 ```
 
-не содержал промежуточных состояний.
+had no intermediate states.
 
-Браузеру было нечего интерполировать.
+The browser had nothing to interpolate.
 
-Получалось мгновенное переключение.
+This resulted in instant switching:
 
 ```
-нет элемента
+no element
 
 ↓
 
-есть элемент
+element exists
 ```
 
-Никакой анимации.
+No animation.
 
 ---
 
-### Как решает проблему современный CSS
+### How Modern CSS Solves the Problem
 
-Современная модель анимации вводит понятие **дискретных переходов (Discrete Transitions)**.
+The modern animation model introduces the concept of **Discrete Transitions**.
 
-Некоторые свойства не могут плавно изменяться.
+Some properties cannot change smoothly.
 
-Например:
+For example:
 
 ```
 display
 ```
 
-или
+or
 
 ```
 overlay
 ```
 
-У них нет промежуточных значений.
+They have no intermediate values.
 
-Но браузер теперь умеет синхронизировать момент изменения этих свойств с окончанием CSS-анимации.
+But the browser can now synchronize the moment of changing these properties with the end of a CSS animation.
 
-Именно для этого появился механизм
+This is precisely why the
 
 ```
 allow-discrete
 ```
 
+mechanism was introduced.
+
 ---
 
-#### Псевдокласс `:popover-open`
+#### The `:popover-open` Pseudo-class
 
-После открытия браузер автоматически добавляет поповеру специальное состояние
+After opening, the browser automatically adds a special state to the popover:
 
 ```css
 :popover-open;
 ```
 
-Это аналогично тому, как раньше JavaScript добавлял классы:
+This is similar to how JavaScript used to add classes:
 
 ```css
 .open
 ```
 
-или
+or
 
 ```css
 .visible
 ```
 
-Но теперь никаких дополнительных классов не требуется.
+But now no additional classes are required.
 
-Например,
+For example:
 
 ```css
 [popover] {
@@ -3013,27 +3008,27 @@ allow-discrete
 }
 ```
 
-HTML сам сообщает CSS:
+HTML itself tells CSS:
 
-> "Popover сейчас открыт."
+> "Popover is now open."
 
-Это делает стили значительно проще.
+This makes styles significantly simpler.
 
 ---
 
 #### `@starting-style`
 
-Следующая проблема, которую долгое время невозможно было решить средствами CSS, связана с первой отрисовкой элемента.
+The next problem that couldn't be solved in CSS for a long time is related to the first rendering of an element.
 
-Предположим,
+Suppose
 
-Popover открывается.
+a Popover opens.
 
-До открытия элемент отсутствовал.
+Before opening, the element didn't exist.
 
-После открытия браузер сразу рисует его в конечном состоянии.
+After opening, the browser immediately renders it in its final state.
 
-Получается
+So we get:
 
 ```
 opacity:1
@@ -3043,85 +3038,83 @@ opacity:1
 opacity:1
 ```
 
-Анимация не запускается.
+The animation doesn't start.
 
-Для решения этой проблемы появился новый механизм
+To solve this problem, a new mechanism appeared:
 
 ```css
 @starting-style;
 ```
 
-Он позволяет явно указать,
+It allows explicitly specifying
 
-с какого состояния должна начинаться первая анимация.
+which state the first animation should start from.
 
-Например
+For example:
 
 ```css
 [popover]:popover-open {
   opacity: 1;
-
   transform: scale(1);
 }
 
 @starting-style {
   [popover]:popover-open {
     opacity: 0;
-
     transform: scale(0.95);
   }
 }
 ```
 
-Теперь браузер знает:
+Now the browser knows:
 
 ```
-сначала
+first
 
 opacity:0
 
 ↓
 
-потом
+then
 
 opacity:1
 ```
 
-Даже если элемент только что появился в DOM.
+Even if the element has just appeared in the DOM.
 
 ---
 
 #### `allow-discrete`
 
-Ключевое нововведение современной модели CSS-анимации.
+A key innovation of the modern CSS animation model.
 
-Раньше запись
+Previously, writing
 
 ```css
 transition: display 0.3s;
 ```
 
-не работала.
+didn't work.
 
-Теперь можно написать
+Now you can write
 
 ```css
 transition: display 0.3s allow-discrete;
 ```
 
-или
+or
 
 ```css
 transition: overlay 0.3s allow-discrete;
 ```
 
-Это означает:
+This means:
 
-> изменение свойства должно произойти в строго определенный момент времени, согласованный с анимацией.
+> the property change should occur at a strictly defined moment in time, coordinated with the animation.
 
-Именно благодаря этому Popover может сначала красиво исчезнуть,
+It is precisely because of this that Popover can first disappear beautifully,
 
-а уже потом стать
+and only then become
 
 ```css
 display: none;
@@ -3129,52 +3122,52 @@ display: none;
 
 ---
 
-#### Свойство `overlay`
+#### The `overlay` Property
 
-Еще одна совершенно новая концепция.
+Another completely new concept.
 
-Popover располагается не в обычном DOM-потоке.
+Popover is not in the normal DOM flow.
 
-После открытия браузер переносит его в
+After opening, the browser moves it to the
 
 ```
 Top Layer
 ```
 
-Для этого используется специальное внутреннее состояние
+For this, a special internal state
 
 ```
 overlay
 ```
 
-Современный CSS позволяет синхронизировать изменение этого состояния с анимацией.
+is used.
 
-Например,
+Modern CSS allows synchronizing the change of this state with animation.
+
+For example:
 
 ```css
 transition: overlay 0.25s allow-discrete;
 ```
 
-Теперь браузер знает,
+Now the browser knows
 
-что удалять элемент из Top Layer нужно
+that the element should be removed from the Top Layer
 
-не сразу,
+not immediately,
 
-а после завершения анимации.
+but after the animation completes.
 
-Именно поэтому Popover больше не исчезает мгновенно.
+That is why Popover no longer disappears instantly.
 
 ---
 
-#### Полный пример
+#### Complete Example
 
 ```css
 [popover] {
   opacity: 0;
-
   transform: translateY(-8px);
-
   transition:
     opacity 0.25s,
     transform 0.25s,
@@ -3184,60 +3177,58 @@ transition: overlay 0.25s allow-discrete;
 
 [popover]:popover-open {
   opacity: 1;
-
   transform: translateY(0);
 }
 
 @starting-style {
   [popover]:popover-open {
     opacity: 0;
-
     transform: translateY(-8px);
   }
 }
 ```
 
-Получается полностью декларативная анимация.
+This results in fully declarative animation.
 
-Без JavaScript.
+Without JavaScript.
 
-Без таймеров.
+Without timers.
 
-Без удаления классов.
+Without removing classes.
 
-Без ожидания окончания transition.
+Without waiting for transition end.
 
 ---
 
-### Почему это важно архитектурно
+### Why This Matters Architecturally
 
-Раньше JavaScript был обязан управлять жизненным циклом компонента.
+Previously, JavaScript was responsible for managing the component's lifecycle.
 
-Типичный код выглядел так:
+Typical code looked like:
 
 ```
-добавить класс
+add class
 
 ↓
 
-ждать transitionend
+wait for transitionend
 
 ↓
 
-удалить display:none
+remove display:none
 
 ↓
 
-удалить DOM
+remove DOM
 
 ↓
 
-очистить обработчики
+clear handlers
 ```
 
-Современный браузер делает это самостоятельно.
+The modern browser does this on its own.
 
-Получается совершенно новая архитектура.
+This results in a completely new architecture.
 
 ```
 HTML
@@ -3259,54 +3250,54 @@ Top Layer
 Render Engine
 ```
 
-JavaScript больше не участвует.
+JavaScript is no longer involved.
 
 ---
 
-### Почему это особенно важно в 2026 году
+### Why This Is Especially Important in 2026
 
-Именно в последние годы CSS перестал быть исключительно языком оформления.
+In recent years, CSS has ceased to be exclusively a styling language.
 
-Он начинает управлять **состояниями компонентов платформы**.
+It is beginning to manage **platform component states**.
 
-Popover стал одним из первых встроенных элементов, который демонстрирует эту новую философию.
+Popover became one of the first built-in elements to demonstrate this new philosophy.
 
-Современный CSS способен анимировать не только цвета, размеры и прозрачность, но и **изменения состояний интерфейса**, связанные с работой самого браузера.
+Modern CSS can animate not only colors, sizes, and transparency, but also **interface state changes** related to the browser's own operation.
 
-Это означает переход от анимации отдельных свойств к анимации жизненного цикла компонентов.
+This means moving from animating individual properties to animating component lifecycles.
 
 ---
 
-### Вывод
+### Conclusion
 
-Поддержка `:popover-open`, `@starting-style`, `allow-discrete` и свойства `overlay` показывает, насколько глубоко интегрированы современные CSS и HTML.
+Support for `:popover-open`, `@starting-style`, `allow-discrete`, and the `overlay` property shows how deeply modern CSS and HTML are integrated.
 
-Если раньше анимация всплывающих элементов строилась вокруг JavaScript и ручного управления классами, то в 2026 году браузер сам знает, **когда** компонент появляется, **когда** он исчезает и **когда** его можно безопасно удалить из процесса рендеринга.
+If previously popup element animation was built around JavaScript and manual class management, in 2026 the browser itself knows **when** the component appears, **when** it disappears, and **when** it can be safely removed from the rendering process.
 
-Это еще один шаг к декларативной модели Web Platform, где разработчик описывает желаемое поведение, а реализацию берет на себя браузер.
+This is another step toward the declarative Web Platform model, where the developer describes desired behavior and the browser handles the implementation.
 
 ---
 
 ## 5.11. Popover + View Transition API
 
-Одним из наиболее интересных направлений развития современной Web Platform стало объединение различных браузерных API в единую систему. Если первые версии HTML и CSS представляли собой независимые технологии, то в 2026 году границы между ними постепенно исчезают.
+One of the most interesting directions in modern Web Platform development is the unification of various browser APIs into a single system. If the first versions of HTML and CSS were independent technologies, in 2026 the boundaries between them are gradually disappearing.
 
-Яркий пример этого процесса — совместная работа **Popover API**, **View Transition API**, **Top Layer** и современного CSS. Эти технологии проектировались независимо, однако современные браузеры начинают использовать их как части одной архитектуры пользовательского интерфейса.
+A vivid example of this process is the combined work of **Popover API**, **View Transition API**, **Top Layer**, and modern CSS. These technologies were designed independently, but modern browsers are beginning to use them as parts of a single user interface architecture.
 
-Именно это является одной из самых новых тенденций развития HTML, поэтому ей посвящено отдельное место в книге.
+This is one of the newest trends in HTML development, which is why it has a dedicated section in this book.
 
 ---
 
-### От отдельных API к единой платформе
+### From Separate APIs to a Unified Platform
 
-До недавнего времени большинство интерактивных компонентов строилось по следующей схеме:
+Until recently, most interactive components were built according to the following scheme:
 
 ```
 JavaScript
 
 ↓
 
-изменение class
+class change
 
 ↓
 
@@ -3317,9 +3308,9 @@ CSS Animation
 DOM
 ```
 
-Каждый уровень существовал практически самостоятельно.
+Each level existed almost independently.
 
-После появления современных API архитектура становится совершенно иной.
+After the emergence of modern APIs, the architecture becomes completely different.
 
 ```
 HTML
@@ -3345,62 +3336,62 @@ CSS Engine
 Rendering Engine
 ```
 
-Браузер начинает самостоятельно понимать:
+The browser begins to independently understand:
 
-- какой компонент появился;
-- какой компонент исчез;
-- какое состояние изменилось;
-- как следует выполнить переход.
+- which component appeared;
+- which component disappeared;
+- which state changed;
+- how the transition should be performed.
 
-Разработчик лишь описывает желаемое поведение.
-
----
-
-### Что такое View Transition API
-
-View Transition API появился как механизм плавного перехода между двумя состояниями пользовательского интерфейса.
-
-Изначально технология разрабатывалась для переходов между страницами.
-
-Например
-
-```
-Страница A
-
-↓
-
-Страница B
-```
-
-Однако современные браузеры позволяют использовать тот же механизм и внутри одной страницы.
-
-Получается
-
-```
-Popover закрыт
-
-↓
-
-Popover открыт
-```
-
-или
-
-```
-Меню скрыто
-
-↓
-
-Меню показано
-```
-
-Браузер воспринимает это как изменение состояния интерфейса.
+The developer only describes the desired behavior.
 
 ---
 
-### Popover становится частью перехода
+### What Is the View Transition API
 
-До появления View Transition API открытие меню происходило примерно так:
+The View Transition API emerged as a mechanism for smooth transitions between two user interface states.
+
+Initially, the technology was developed for page transitions.
+
+For example:
+
+```
+Page A
+
+↓
+
+Page B
+```
+
+However, modern browsers allow using the same mechanism within a single page.
+
+So we get:
+
+```
+Popover closed
+
+↓
+
+Popover open
+```
+
+or
+
+```
+Menu hidden
+
+↓
+
+Menu shown
+```
+
+The browser perceives this as an interface state change.
+
+---
+
+### Popover Becomes Part of the Transition
+
+Before the View Transition API, opening a menu happened roughly like this:
 
 ```
 display:none
@@ -3410,22 +3401,22 @@ display:none
 display:block
 ```
 
-Даже если использовались CSS-анимации,
+Even if CSS animations were used,
 
-браузер не понимал,
+the browser didn't understand
 
-что происходит.
+what was happening.
 
-Для него это были лишь изменения нескольких CSS-свойств.
+For it, these were just changes to a few CSS properties.
 
-Теперь ситуация изменилась.
+Now the situation has changed.
 
 ```
 Popover
 
 ↓
 
-новое состояние интерфейса
+new interface state
 
 ↓
 
@@ -3433,47 +3424,47 @@ View Transition
 
 ↓
 
-анимация
+animation
 ```
 
-Браузер знает,
+The browser knows
 
-что появился новый слой пользовательского интерфейса.
+that a new user interface layer has appeared.
 
 ---
 
-### Top Layer участвует в переходах
+### Top Layer Participates in Transitions
 
-Самое интересное изменение связано с Top Layer.
+The most interesting change is related to the Top Layer.
 
-Раньше существовала проблема.
+Previously, there was a problem.
 
-Во время анимации элемент мог:
+During animation, the element could:
 
 ```
-оказаться под другими слоями
+end up under other layers
 
-или
+or
 
-исчезнуть слишком рано
+disappear too early
 ```
 
-Теперь браузер знает,
+Now the browser knows
 
-что Popover находится внутри
+that the Popover is in the
 
 ```
 Top Layer
 ```
 
-Поэтому он способен одновременно управлять:
+Therefore, it can simultaneously manage:
 
-- отображением;
-- порядком наложения;
-- жизненным циклом компонента;
-- переходом между состояниями.
+- display;
+- stacking order;
+- component lifecycle;
+- transitions between states.
 
-Получается единая система.
+This results in a unified system.
 
 ```
 Top Layer
@@ -3491,18 +3482,18 @@ View Transition
 Composite
 ```
 
-Именно поэтому современные переходы выглядят значительно естественнее.
+That is why modern transitions look significantly more natural.
 
 ---
 
-### Красивые переходы меню
+### Beautiful Menu Transitions
 
-Одним из самых очевидных применений является открытие меню пользователя.
+One of the most obvious applications is opening a user menu.
 
-Раньше происходило следующее.
+Previously, the following would happen:
 
 ```
-Клик
+Click
 
 ↓
 
@@ -3513,14 +3504,14 @@ display:block
 opacity
 ```
 
-Теперь браузер может воспринимать это как изменение состояния интерфейса.
+Now the browser can perceive this as an interface state change.
 
 ```
-Клик
+Click
 
 ↓
 
-Popover открывается
+Popover opens
 
 ↓
 
@@ -3528,24 +3519,24 @@ View Transition
 
 ↓
 
-Плавное появление меню
+Smooth menu appearance
 ```
 
-Меню может:
+The menu can:
 
-- плавно увеличиваться;
-- менять прозрачность;
-- перемещаться;
-- появляться из кнопки;
-- красиво исчезать.
+- smoothly expand;
+- change transparency;
+- move;
+- emerge from the button;
+- beautifully disappear.
 
-При этом JavaScript практически отсутствует.
+At the same time, JavaScript is practically absent.
 
 ---
 
-### Командная палитра
+### Command Palette
 
-Еще более впечатляющим примером является Command Palette.
+An even more impressive example is the Command Palette.
 
 ```
 Ctrl + K
@@ -3560,42 +3551,42 @@ View Transition
 
 ↓
 
-Поисковая панель
+Search Panel
 ```
 
-Переход может выглядеть так:
+The transition might look like this:
 
 ```
-Кнопка поиска
+Search button
 
 ↓
 
-увеличивается
+expands
 
 ↓
 
-становится большой панелью
+becomes large panel
 
 ↓
 
-появляется поле поиска
+search field appears
 
 ↓
 
-появляются результаты
+results appear
 ```
 
-Фактически браузер анимирует изменение состояния интерфейса, а не просто изменение отдельных CSS-свойств.
+In effect, the browser animates an interface state change, not just changes to individual CSS properties.
 
 ---
 
-### Панель поиска
+### Search Panel
 
-Другой пример —
+Another example —
 
-современная строка поиска.
+a modern search bar.
 
-До появления новых API она обычно реализовывалась следующим образом.
+Before the new APIs, it was typically implemented as follows:
 
 ```
 display:none
@@ -3613,110 +3604,110 @@ opacity
 transform
 ```
 
-Теперь достаточно описать два состояния.
+Now it's enough to describe two states:
 
 ```
-Закрыто
+Closed
 
 ↓
 
-Открыто
+Open
 ```
 
-Дальнейшую работу выполняют:
+The rest is handled by:
 
 - Popover API;
 - View Transition API;
 - CSS Transition Engine;
 - Top Layer.
 
-Это значительно уменьшает объем JavaScript.
+This significantly reduces JavaScript volume.
 
 ---
 
-### Переход между состояниями интерфейса
+### Transitions Between Interface States
 
-Современная архитектура постепенно отказывается от мышления в терминах отдельных DOM-операций.
+Modern architecture is gradually moving away from thinking in terms of individual DOM operations.
 
-Раньше код выглядел примерно так:
-
-```
-добавить класс
-
-↓
-
-изменить opacity
-
-↓
-
-изменить transform
-
-↓
-
-дождаться transitionend
-
-↓
-
-удалить класс
-```
-
-Теперь браузер начинает мыслить иначе.
+Previously, the code looked roughly like this:
 
 ```
-Интерфейс
+add class
 
 ↓
 
-старое состояние
+change opacity
 
 ↓
 
-новое состояние
+change transform
 
 ↓
 
-анимация перехода
+wait for transitionend
+
+↓
+
+remove class
 ```
 
-Это значительно ближе к декларативному программированию.
+Now the browser begins to think differently:
+
+```
+Interface
+
+↓
+
+old state
+
+↓
+
+new state
+
+↓
+
+transition animation
+```
+
+This is much closer to declarative programming.
 
 ---
 
-### Почему это особенно важно в 2026 году
+### Why This Is Especially Important in 2026
 
-В предыдущие годы View Transition API чаще всего рассматривали исключительно как средство красивой смены страниц.
+In previous years, the View Transition API was most often considered exclusively as a means for beautiful page transitions.
 
-Однако в 2026 году становится очевидно, что область его применения гораздо шире.
+However, in 2026 it becomes obvious that its scope of application is much broader.
 
-Он начинает интегрироваться с другими API платформы:
+It is beginning to integrate with other platform APIs:
 
 - Popover API;
 - Navigation API;
 - Top Layer;
 - CSS Transitions;
 - Anchor Positioning;
-- современными механизмами рендеринга браузера.
+- modern browser rendering mechanisms.
 
-Получается новая архитектурная идея.
+This creates a new architectural idea.
 
-Не отдельные технологии,
+Not separate technologies,
 
-а **взаимодействующие подсистемы Web Platform**.
+but **interacting Web Platform subsystems**.
 
-Именно поэтому современные браузеры постепенно становятся похожими не просто на средство отображения HTML, а на полноценную декларативную UI-платформу.
+That is why modern browsers are gradually becoming less like simple HTML rendering tools and more like a full-fledged declarative UI platform.
 
 ---
 
-### Архитектура будущего
+### Architecture of the Future
 
-Если посмотреть на развитие платформы целиком, можно заметить закономерность.
+If we look at the platform's development as a whole, we can notice a pattern:
 
 ```
 HTML
 
 ↓
 
-описывает структуру
+describes structure
 ```
 
 ```
@@ -3724,7 +3715,7 @@ Popover API
 
 ↓
 
-описывает состояние
+describes state
 ```
 
 ```
@@ -3732,7 +3723,7 @@ View Transition API
 
 ↓
 
-описывает переход
+describes transition
 ```
 
 ```
@@ -3740,7 +3731,7 @@ CSS
 
 ↓
 
-описывает внешний вид
+describes appearance
 ```
 
 ```
@@ -3748,49 +3739,49 @@ Rendering Engine
 
 ↓
 
-реализует всё автоматически
+implements everything automatically
 ```
 
-Каждая технология отвечает только за свою область ответственности.
+Each technology is responsible only for its own area of responsibility.
 
-Именно это считается одной из главных тенденций развития Web Platform после 2025 года.
-
----
-
-### Вывод
-
-Интеграция Popover API с View Transition API показывает направление развития современной веб-платформы. Браузер перестает быть пассивным исполнителем HTML и CSS и становится активным участником управления пользовательским интерфейсом.
-
-Вместо ручного изменения DOM и сложной координации JavaScript разработчик описывает структуру, состояние и желаемый переход, а браузер берет на себя синхронизацию Top Layer, анимаций и жизненного цикла компонентов.
-
-Для разработчика это означает переход от программирования отдельных эффектов к проектированию целостных интерфейсных состояний — подходу, который, вероятно, станет основой разработки веб-приложений в ближайшие годы.
+This is considered one of the main trends in Web Platform development after 2025.
 
 ---
 
-## 5.12. Popover и современные фреймворки
+### Conclusion
 
-Одним из самых интересных последствий появления **Popover API** стало изменение архитектуры современных фронтенд-фреймворков. Если раньше практически каждая UI-библиотека содержала собственную реализацию выпадающих меню, контекстных меню, тултипов и командных палитр, то в 2026 году ситуация постепенно меняется.
+The integration of the Popover API with the View Transition API shows the direction of modern web platform development. The browser is ceasing to be a passive executor of HTML and CSS and is becoming an active participant in user interface management.
 
-Главный вопрос больше звучит не как:
+Instead of manual DOM changes and complex JavaScript coordination, the developer describes structure, state, and desired transitions, while the browser takes on synchronization of the Top Layer, animations, and component lifecycle.
 
-> **«Как реализовать Popover?»**
-
-а как:
-
-> **«Стоит ли вообще его реализовывать самостоятельно?»**
-
-Именно этот сдвиг мышления является одной из ключевых особенностей современной Web Platform.
+For the developer, this means moving from programming individual effects to designing holistic interface states — an approach that will likely become the foundation of web application development in the coming years.
 
 ---
 
-### Почему раньше все писали собственные Popover
+## 5.12. Popover and Modern Frameworks
 
-До появления Popover API браузер вообще не предоставлял подобной возможности.
+One of the most interesting consequences of the **Popover API** has been the change in architecture of modern frontend frameworks. If previously almost every UI library contained its own implementation of dropdown menus, context menus, tooltips, and command palettes, in 2026 the situation is gradually changing.
 
-Каждая библиотека была вынуждена самостоятельно решать огромное количество задач:
+The main question is no longer:
+
+> **"How do I implement a Popover?"**
+
+but:
+
+> **"Should I even implement it myself?"**
+
+This mindset shift is one of the key features of the modern Web Platform.
+
+---
+
+### Why Everyone Wrote Their Own Popovers Before
+
+Before the Popover API, the browser simply didn't provide such a capability.
+
+Each library was forced to independently solve a huge number of tasks:
 
 ```
-позиционирование
+positioning
 
 ↓
 
@@ -3806,7 +3797,7 @@ overflow:hidden
 
 ↓
 
-закрытие по клику вне элемента
+outside click closing
 
 ↓
 
@@ -3814,7 +3805,7 @@ Escape
 
 ↓
 
-управление фокусом
+focus management
 
 ↓
 
@@ -3822,14 +3813,14 @@ ARIA
 
 ↓
 
-анимации
+animations
 
 ↓
 
 SSR
 ```
 
-Поэтому появились целые экосистемы:
+Therefore, entire ecosystems emerged:
 
 - Floating UI
 - Popper.js
@@ -3840,27 +3831,27 @@ SSR
 - Angular CDK Overlay
 - Material Overlay
 
-Каждая решала примерно одинаковый набор проблем.
+Each solved roughly the same set of problems.
 
 ---
 
-### Что изменилось в 2026
+### What Changed in 2026
 
-Сегодня значительная часть этой логики уже реализована внутри браузера.
+Today, a significant portion of this logic is already implemented inside the browser.
 
-HTML предоставляет:
+HTML provides:
 
 - Popover API;
 - Top Layer;
 - Light Dismiss;
-- события жизненного цикла;
-- управление состояниями;
-- интеграцию с Anchor Positioning;
-- встроенную доступность.
+- lifecycle events;
+- state management;
+- integration with Anchor Positioning;
+- built-in accessibility.
 
-Получается совершенно новая архитектура.
+This creates a completely new architecture.
 
-Раньше:
+Previously:
 
 ```
 HTML
@@ -3882,7 +3873,7 @@ Overlay Library
 Browser
 ```
 
-Теперь:
+Now:
 
 ```
 HTML
@@ -3896,27 +3887,27 @@ Browser
 Framework
 ```
 
-Фреймворк начинает использовать возможности платформы вместо их повторной реализации.
+The framework begins to use platform capabilities instead of re-implementing them.
 
 ---
 
 ### Angular
 
-Angular одним из первых начал активно двигаться в сторону **Platform First**.
+Angular was one of the first to actively move toward **Platform First**.
 
-Еще несколько лет назад практически любой Popover строился через:
+Just a few years ago, almost any Popover was built through:
 
 ```
 Angular CDK Overlay
 ```
 
-или
+or
 
 ```
 Angular Material Overlay
 ```
 
-Эти компоненты создавали собственую инфраструктуру:
+These components created their own infrastructure:
 
 - OverlayContainer
 - OverlayRef
@@ -3925,15 +3916,15 @@ Angular Material Overlay
 - ScrollStrategy
 - FocusTrap
 
-По сути Angular был вынужден строить собственную систему поверх браузера.
+Essentially, Angular was forced to build its own system on top of the browser.
 
 ---
 
-### Что происходит теперь
+### What Happens Now
 
-Современный Angular все чаще использует нативные возможности HTML там, где это возможно.
+Modern Angular increasingly uses native HTML capabilities where possible.
 
-Вместо собственного overlay можно написать:
+Instead of its own overlay, you can write:
 
 ```html
 <button popovertarget="settings">Settings</button>
@@ -3941,24 +3932,24 @@ Angular Material Overlay
 <div id="settings" popover>...</div>
 ```
 
-Angular остается ответственным только за:
+Angular remains responsible only for:
 
-- данные;
-- реактивность;
-- сигналы (Signals);
-- шаблоны;
+- data;
+- reactivity;
+- Signals;
+- templates;
 - DI;
-- маршрутизацию.
+- routing.
 
-Сам Popover становится частью платформы.
+The Popover itself becomes part of the platform.
 
 ---
 
 ### React
 
-React никогда не содержал собственного компонента Popover.
+React has never contained its own Popover component.
 
-Поэтому огромное количество библиотек появилось вокруг него:
+Therefore, a huge number of libraries appeared around it:
 
 - Radix UI
 - Headless UI
@@ -3968,15 +3959,15 @@ React никогда не содержал собственного компон
 - MUI
 - React Aria
 
-Все они реализовывали одну и ту же задачу.
+All of them implemented the same task.
 
-После появления Popover API многие библиотеки начали постепенно переходить на использование нативного HTML.
+After the introduction of the Popover API, many libraries began to gradually transition to using native HTML.
 
 ---
 
-### Что остается React
+### What Remains with React
 
-React продолжает управлять:
+React continues to manage:
 
 ```
 state
@@ -3990,7 +3981,7 @@ props
 render
 ```
 
-но сам механизм открытия теперь может выглядеть так:
+but the opening mechanism itself can now look like this:
 
 ```jsx
 <button popovertarget="menu">
@@ -4004,72 +3995,72 @@ render
 </div>
 ```
 
-Количество JavaScript становится значительно меньше.
+The amount of JavaScript becomes significantly smaller.
 
 ---
 
 ### Vue
 
-Во Vue ситуация аналогична.
+In Vue, the situation is similar.
 
-Раньше практически любой Popover использовал:
+Previously, almost any Popover used:
 
 - Teleport;
 - Floating UI;
 - Popper.js.
 
-Теперь многие компоненты начинают использовать платформенные возможности браузера.
+Now many components are beginning to use the browser's platform capabilities.
 
-Vue концентрируется на:
+Vue focuses on:
 
-- реактивности;
-- шаблонах;
-- вычисляемых свойствах;
-- состоянии приложения.
+- reactivity;
+- templates;
+- computed properties;
+- application state.
 
 ---
 
 ### Svelte
 
-Для Svelte переход оказался особенно естественным.
+For Svelte, the transition turned out to be especially natural.
 
-Философия Svelte всегда заключалась в генерации минимального JavaScript.
+Svelte's philosophy has always been to generate minimal JavaScript.
 
-Поэтому использование:
+Therefore, using:
 
 ```
 popover
 ```
 
-вместо большого количества runtime-кода полностью соответствует идеологии проекта.
+instead of a large amount of runtime code fully aligns with the project's ideology.
 
 ---
 
 ### Qwik
 
-Для Qwik Popover API имеет еще большее значение.
+For Qwik, the Popover API has even greater significance.
 
-Главная цель Qwik —
+Qwik's main goal is
 
-**не выполнять JavaScript до тех пор, пока пользователь действительно не начал взаимодействовать со страницей.**
+**not to execute JavaScript until the user has actually started interacting with the page.**
 
-Если открытие Popover выполняется самим браузером,
+If opening a Popover is done by the browser itself,
 
-то вообще не требуется загрузка клиентского кода.
+then client-side code loading is not required at all.
 
-Это прекрасно сочетается с концепцией **Resumability**.
+This pairs perfectly with the concept of **Resumability**.
 
 ---
 
 ### Astro
 
-Astro придерживается философии:
+Astro follows the philosophy:
 
 > HTML first.
 
-Поэтому Popover API идеально вписывается в архитектуру Islands.
+Therefore, the Popover API fits perfectly into the Islands architecture.
 
-Можно получить полностью рабочий Popover вообще без гидратации.
+You can get a fully working Popover with no hydration at all.
 
 ```
 HTML
@@ -4087,34 +4078,34 @@ Browser
 0 KB JavaScript
 ```
 
-Именно поэтому Astro считается одним из главных бенефициаров развития HTML.
+That is why Astro is considered one of the main beneficiaries of HTML development.
 
 ---
 
-### Что происходит с Angular Material
+### What Happens to Angular Material
 
-Сам Angular Material никуда не исчезает.
+Angular Material itself is not disappearing anywhere.
 
-Но его роль постепенно меняется.
+But its role is gradually changing.
 
-Раньше библиотека отвечала одновременно за:
+Previously, the library was responsible simultaneously for:
 
-- внешний вид;
-- поведение;
-- позиционирование;
-- доступность;
-- управление состоянием.
+- appearance;
+- behavior;
+- positioning;
+- accessibility;
+- state management.
 
-Теперь часть ответственности переходит браузеру.
+Now part of the responsibility shifts to the browser.
 
-Например:
+For example:
 
 ```
 Top Layer
 
 ↓
 
-браузер
+browser
 ```
 
 ```
@@ -4122,7 +4113,7 @@ Light Dismiss
 
 ↓
 
-браузер
+browser
 ```
 
 ```
@@ -4130,7 +4121,7 @@ Escape
 
 ↓
 
-браузер
+browser
 ```
 
 ```
@@ -4138,189 +4129,189 @@ ARIA
 
 ↓
 
-браузер
+browser
 ```
 
 ```
-позиционирование
+positioning
 
 ↓
 
 Anchor Positioning
 ```
 
-Material начинает больше концентрироваться на:
+Material begins to focus more on:
 
-- дизайне;
-- теме оформления;
-- токенах;
-- адаптации под Material Design;
-- интеграции с Angular.
+- design;
+- theme;
+- tokens;
+- adaptation to Material Design;
+- integration with Angular.
 
 ---
 
-### Что происходит с React UI-библиотеками
+### What Happens to React UI Libraries
 
-Практически все современные React UI-библиотеки пересматривают архитектуру своих компонентов.
+Almost all modern React UI libraries are rethinking their component architecture.
 
-Раньше:
+Previously:
 
 ```
 Popover
 
 ↓
 
-2000–5000 строк JS
+2000–5000 lines of JS
 ```
 
-Теперь:
+Now:
 
 ```
 Popover API
 
 ↓
 
-небольшая обертка
+small wrapper
 
 ↓
 
 React Component
 ```
 
-Сам компонент становится значительно проще.
+The component itself becomes significantly simpler.
 
 ---
 
-### Почему Floating UI не исчезнет
+### Why Floating UI Won't Disappear
 
-Несмотря на появление Popover API и Anchor Positioning, **Floating UI** и аналогичные библиотеки не исчезнут.
+Despite the emergence of the Popover API and Anchor Positioning, **Floating UI** and similar libraries will not disappear.
 
-Причина проста: браузер решает наиболее распространенные сценарии, но не все возможные задачи.
+The reason is simple: the browser solves the most common scenarios, but not all possible tasks.
 
-Floating UI остается востребованной, когда необходимы:
+Floating UI remains relevant when you need:
 
-- поддержка старых браузеров;
-- сложные алгоритмы позиционирования с пользовательскими стратегиями;
-- привязка к элементам, которые не являются popover;
-- динамическое следование за движущимися объектами;
-- виртуальные элементы (например, курсор мыши или выделение текста);
-- сложные системы подсказок и редакторов;
-- полностью кастомная логика взаимодействия.
+- legacy browser support;
+- complex positioning algorithms with custom strategies;
+- binding to elements that are not popovers;
+- dynamic following of moving objects;
+- virtual elements (e.g., mouse cursor or text selection);
+- complex tooltip and editor systems;
+- completely custom interaction logic.
 
-Таким образом, роль подобных библиотек меняется: они становятся специализированными инструментами, а не обязательной зависимостью каждого проекта.
+Thus, the role of such libraries changes: they become specialized tools rather than a mandatory dependency for every project.
 
 ---
 
 ### Platform First
 
-Все больше современных проектов придерживаются нового принципа проектирования интерфейсов:
+More and more modern projects are adopting a new interface design principle:
 
 ```
 Platform First
 ```
 
-Алгоритм разработки выглядит следующим образом:
+The development algorithm looks like this:
 
 ```
-Можно решить средствами HTML?
+Can it be solved with HTML?
 
 ↓
 
-Да
+Yes
 
 ↓
 
-Используем HTML
+Use HTML
 ```
 
 ```
-Нет
+No
 
 ↓
 
-Добавляем CSS
+Add CSS
 ```
 
 ```
-Недостаточно CSS
+CSS insufficient
 
 ↓
 
-Подключаем JavaScript
+Add JavaScript
 ```
 
 ```
-Только после этого
+Only after this
 
 ↓
 
-используем библиотеку
+use a library
 ```
 
-Это противоположность подходу десятилетней давности, когда разработка начиналась с выбора UI-фреймворка.
+This is the opposite of the approach from a decade ago, when development started with choosing a UI framework.
 
 ---
 
-### Архитектурный сдвиг 2026 года
+### The Architectural Shift of 2026
 
-Самое важное изменение состоит не в появлении нового атрибута `popover`, а в изменении распределения ответственности между платформой и приложением.
+The most important change is not the appearance of the new `popover` attribute, but the redistribution of responsibility between the platform and the application.
 
-Раньше браузер предоставлял лишь примитивные строительные блоки, а вся интерактивность создавалась поверх них библиотеками. Теперь браузер сам реализует значительную часть поведения интерфейсов, а фреймворки сосредотачиваются на бизнес-логике, состоянии приложения и композиции компонентов.
+Previously, the browser provided only primitive building blocks, and all interactivity was created on top of them by libraries. Now the browser itself implements a significant portion of interface behavior, and frameworks focus on business logic, application state, and component composition.
 
-Именно поэтому **Modern HTML 2026** рассматривает Popover API не как очередной HTML-атрибут, а как пример новой философии Web Platform, в которой браузер постепенно становится полноценной платформой пользовательского интерфейса, а не только механизмом отображения страниц.
-
----
-
-## 5.13. Почему Floating UI не исчезнет
-
-После появления **Popover API** многие разработчики сделали поспешный вывод:
-
-> **«Теперь Floating UI больше не нужен.»**
-
-На первый взгляд это кажется логичным. Браузер научился самостоятельно открывать всплывающие элементы, помещать их в **Top Layer**, закрывать по клику вне элемента и даже позиционировать их рядом с элементом управления при помощи **CSS Anchor Positioning**.
-
-Однако реальность значительно сложнее.
-
-Popover API и Floating UI решают **разные классы задач**.
-
-Если Popover API — это часть платформы HTML, то Floating UI — это универсальный вычислительный движок для пространственного размещения элементов интерфейса.
-
-Именно поэтому в 2026 году эти технологии **не конкурируют**, а **дополняют друг друга**.
+That is why **Modern HTML 2026** considers the Popover API not as another HTML attribute, but as an example of the new Web Platform philosophy, where the browser is gradually becoming a full-fledged user interface platform, rather than just a page display mechanism.
 
 ---
 
-### Две философии
+## 5.13. Why Floating UI Won't Disappear
 
-Главное различие можно сформулировать одной фразой.
+After the introduction of the **Popover API**, many developers made a hasty conclusion:
 
-**Popover отвечает на вопрос:**
+> **"Now Floating UI is no longer needed."**
 
-> Нужно показать всплывающий элемент?
+At first glance, this seems logical. The browser has learned to independently open popup elements, place them in the **Top Layer**, close them on outside click, and even position them next to the control element using **CSS Anchor Positioning**.
 
-**Floating UI отвечает на вопрос:**
+However, reality is much more complex.
 
-> Где именно его разместить в любой возможной ситуации?
+The Popover API and Floating UI solve **different classes of problems**.
 
-Это принципиально разные уровни абстракции.
+If the Popover API is part of the HTML platform, Floating UI is a universal computational engine for spatial placement of interface elements.
+
+That is why in 2026 these technologies **do not compete**, but **complement each other**.
 
 ---
 
-### Popover решает стандартные задачи
+### Two Philosophies
 
-Большинство пользовательских интерфейсов состоит из вполне типичных компонентов:
+The main difference can be summarized in one phrase.
 
-- меню пользователя;
-- выпадающие списки;
-- панели настроек;
-- панели фильтров;
-- небольшие подсказки;
-- командные палитры;
-- контекстные панели.
+**Popover answers the question:**
 
-Для них браузер уже умеет практически всё самостоятельно.
+> Do you need to show a popup element?
+
+**Floating UI answers the question:**
+
+> Where exactly should it be placed in any possible situation?
+
+These are fundamentally different levels of abstraction.
+
+---
+
+### Popover Solves Standard Tasks
+
+Most user interfaces consist of fairly typical components:
+
+- user menus;
+- dropdown lists;
+- settings panels;
+- filter panels;
+- small tooltips;
+- command palettes;
+- context panels.
+
+For them, the browser can already do almost everything on its own.
 
 ```text
-Кнопка
+Button
 
 ↓
 
@@ -4339,17 +4330,17 @@ Anchor Positioning
 Light Dismiss
 ```
 
-Практически без JavaScript.
+Practically without JavaScript.
 
 ---
 
-### Floating UI — это вычислительная библиотека
+### Floating UI Is a Computational Library
 
-Floating UI никогда не была библиотекой исключительно для Popover.
+Floating UI was never a library exclusively for Popover.
 
-Она представляет собой систему вычисления координат.
+It is a coordinate calculation system.
 
-На вход подается:
+Input:
 
 ```text
 Anchor
@@ -4359,7 +4350,7 @@ Anchor
 Floating Element
 ```
 
-На выходе получается:
+Output:
 
 ```text
 x
@@ -4375,26 +4366,26 @@ overflow
 visibility
 ```
 
-То есть библиотека отвечает за **геометрию интерфейса**, а не за его семантику.
+That is, the library is responsible for **interface geometry**, not its semantics.
 
 ---
 
-### Когда Popover уже недостаточно
+### When Popover Is No Longer Enough
 
-Существует огромное количество интерфейсов, которые невозможно описать декларативными средствами HTML.
+There are a huge number of interfaces that cannot be described by declarative HTML means.
 
 ---
 
-#### Сложные Tooltip
+#### Complex Tooltips
 
-Например, профессиональные системы подсказок.
+For example, professional tooltip systems.
 
 ```text
 IDE
 
 ↓
 
-наведение
+hover
 
 ↓
 
@@ -4402,67 +4393,67 @@ IDE
 
 ↓
 
-показать tooltip
+show tooltip
 
 ↓
 
-следовать за курсором
+follow cursor
 
 ↓
 
-исчезнуть
+disappear
 ```
 
-Такие подсказки требуют:
+Such tooltips require:
 
-- сложной логики появления;
-- задержек;
-- пользовательских правил;
-- динамического изменения размеров;
-- интеллектуального выбора положения.
+- complex appearance logic;
+- delays;
+- custom rules;
+- dynamic resizing;
+- intelligent position selection.
 
-Popover здесь оказывается слишком простым.
+Popover is too simple here.
 
 ---
 
 #### Drag & Drop
 
-Представим редактор интерфейсов.
+Imagine an interface editor.
 
-Во время перетаскивания элемент постоянно изменяет координаты.
+During dragging, an element constantly changes coordinates.
 
 ```text
-мышь
+mouse
 
 ↓
 
-движение
+movement
 
 ↓
 
-новые координаты
+new coordinates
 
 ↓
 
-новое положение панели
+new panel position
 ```
 
-Здесь положение необходимо пересчитывать десятки раз в секунду.
+Here the position needs to be recalculated dozens of times per second.
 
-Popover для этого не предназначен.
+Popover is not designed for this.
 
 ---
 
-#### Контекстные меню курсора
+#### Cursor Context Menus
 
-Обычный Popover привязывается к элементу.
+A regular Popover binds to an element.
 
-Но иногда якорем становится не HTML-элемент.
+But sometimes the anchor is not an HTML element.
 
-Например:
+For example:
 
 ```text
-координата мыши
+mouse coordinates
 
 ↓
 
@@ -4471,168 +4462,169 @@ x = 534
 y = 210
 ```
 
-Именно так работают:
+This is how they work:
 
 - Photoshop;
 - Figma;
 - Blender;
 - VS Code;
-- игровые редакторы.
+- game editors.
 
-Floating UI умеет работать с **виртуальными элементами** (Virtual Elements), которых вообще нет в DOM.
+Floating UI can work with **Virtual Elements** that don't exist in the DOM at all.
 
 ---
 
 #### Canvas
 
-Представим редактор изображений.
+Imagine an image editor.
 
 ```text
 Canvas
 
 ↓
 
-объект
+object
 
 ↓
 
 Popup
 ```
 
-Сам объект существует внутри Canvas.
+The object itself exists inside the Canvas.
 
-HTML-элемента нет.
+There is no HTML element.
 
-Popover здесь не к чему привязаться.
+Popover has nothing to bind to.
 
-Floating UI может вычислять положение относительно любых координат.
+Floating UI can calculate position relative to any coordinates.
 
 ---
 
 #### SVG
 
-Та же ситуация возникает внутри SVG.
+The same situation occurs inside SVG.
 
-Например:
+For example:
 
 ```text
-вершина графа
+graph vertex
 
 ↓
 
 Tooltip
 ```
 
-или
+or
 
 ```text
-узел диаграммы
+diagram node
 
 ↓
 
-контекстное меню
+context menu
 ```
 
-SVG-объекты требуют собственной логики вычисления координат.
+SVG objects require their own coordinate calculation logic.
 
 ---
 
-#### Редакторы документов
+#### Document Editors
 
-Современные редакторы работают иначе.
+Modern editors work differently.
 
-Например:
+For example:
 
 ```text
-выделение текста
+text selection
 
 ↓
 
-панель форматирования
+formatting panel
 ```
 
-Или
+Or
 
 ```text
-каретка
+
+caret
 
 ↓
 
-автодополнение
+autocomplete
 ```
 
-Якорем становится диапазон текста (**Range**), а не HTML-кнопка.
+The anchor becomes a text **Range**, not an HTML button.
 
-Popover подобных сценариев не знает.
+Popover doesn't know about such scenarios.
 
 ---
 
-#### IDE
+#### IDEs
 
-Возьмем Visual Studio Code.
+Take Visual Studio Code.
 
-Подсказка может быть привязана к:
+A tooltip may be bound to:
 
-- символу;
-- строке;
-- каретке;
-- области выделения;
-- диагностике;
-- точке останова.
+- a symbol;
+- a line;
+- the caret;
+- a selection area;
+- diagnostics;
+- a breakpoint.
 
-Все координаты постоянно изменяются.
+All coordinates are constantly changing.
 
-Их приходится вычислять.
+They have to be calculated.
 
 ---
 
 #### Figma
 
-Практически весь интерфейс Figma состоит из плавающих элементов.
+Almost the entire Figma interface consists of floating elements.
 
-Например:
+For example:
 
 ```text
-выбран объект
+object selected
 
 ↓
 
-показать панель
+show panel
 
 ↓
 
-масштаб изменился
+zoom changed
 
 ↓
 
-панель должна остаться рядом
+panel should stay nearby
 ```
 
-При каждом изменении масштаба координаты необходимо пересчитывать.
+With every zoom change, coordinates need to be recalculated.
 
-Popover подобных вычислений не выполняет.
+Popover doesn't perform such calculations.
 
 ---
 
 #### Miro
 
-То же относится к бесконечным доскам.
+The same applies to infinite boards.
 
-Панель должна следовать за:
+The panel should follow:
 
-- карточкой;
-- заметкой;
-- фигурой;
-- стрелкой;
-- группой объектов.
+- a card;
+- a note;
+- a shape;
+- an arrow;
+- a group of objects.
 
-Все они постоянно перемещаются.
+All of them are constantly moving.
 
 ---
 
-#### Диаграммы
+#### Diagrams
 
-Например:
+For example:
 
 - BPMN;
 - UML;
@@ -4640,51 +4632,51 @@ Popover подобных вычислений не выполняет.
 - Mind Map;
 - Flow Chart.
 
-Каждый узел может иметь собственные правила позиционирования.
+Each node may have its own positioning rules.
 
-Иногда всплывающая панель должна избегать пересечения с другими объектами.
+Sometimes a popup panel must avoid intersecting with other objects.
 
-Popover этого не умеет.
+Popover can't do this.
 
 ---
 
 #### Collision Detection
 
-Это одна из сильнейших сторон Floating UI.
+This is one of Floating UI's strongest features.
 
-Библиотека умеет автоматически выбирать положение.
+The library can automatically choose a position.
 
-Например.
+For example:
 
-Есть кнопка возле края окна.
+There's a button near the edge of the window.
 
-Вместо
+Instead of
 
 ```text
 Bottom
 ```
 
-можно автоматически выбрать
+you can automatically choose
 
 ```text
 Top
 ```
 
-или
+or
 
 ```text
 Left
 ```
 
-или
+or
 
 ```text
 Right
 ```
 
-или вычислить совершенно новую позицию.
+or calculate a completely new position.
 
-Кроме того, можно использовать цепочки стратегий:
+In addition, you can use chains of strategies:
 
 ```text
 Bottom
@@ -4706,17 +4698,17 @@ Left
 Best Fit
 ```
 
-или собственные алгоритмы.
+or custom algorithms.
 
-Это полноценная система пространственных вычислений.
+This is a full-fledged spatial computing system.
 
 ---
 
 #### Middleware
 
-Еще одна уникальная возможность Floating UI — **middleware**.
+Another unique feature of Floating UI is **middleware**.
 
-Например:
+For example:
 
 ```text
 offset()
@@ -4742,41 +4734,41 @@ arrow()
 hide()
 ```
 
-Каждый этап может изменять положение элемента.
+Each stage can change the element's position.
 
-Получается настоящий конвейер вычислений.
+This is a real computation pipeline.
 
-В HTML подобной концепции нет.
-
----
-
-### Popover против Floating UI
-
-| Popover API           | Floating UI                 |
-| --------------------- | --------------------------- |
-| Часть HTML            | JavaScript-библиотека       |
-| Встроен в браузер     | Подключается отдельно       |
-| Декларативный         | Императивный                |
-| Baseline Web Platform | Пользовательский код        |
-| Top Layer             | Вычисление координат        |
-| Простые интерфейсы    | Любая сложность интерфейсов |
-| Меню                  | IDE                         |
-| Командная палитра     | Figma                       |
-| Панель пользователя   | Miro                        |
-| Выпадающий список     | Canvas                      |
-| Tooltip               | SVG                         |
-| Anchor Positioning    | Virtual Elements            |
-| Light Dismiss         | Collision Detection         |
-| Минимум JS            | Middleware                  |
-| Простота              | Максимальная гибкость       |
+HTML has no such concept.
 
 ---
 
-### Будущее
+### Popover vs. Floating UI
 
-В 2026 году начинает складываться новая архитектурная модель.
+| Popover API           | Floating UI              |
+| --------------------- | ------------------------ |
+| Part of HTML          | JavaScript library       |
+| Built into browser    | Loaded separately        |
+| Declarative           | Imperative               |
+| Baseline Web Platform | Custom code              |
+| Top Layer             | Coordinate calculation   |
+| Simple interfaces     | Any interface complexity |
+| Menus                 | IDEs                     |
+| Command palette       | Figma                    |
+| User panel            | Miro                     |
+| Dropdown              | Canvas                   |
+| Tooltip               | SVG                      |
+| Anchor Positioning    | Virtual Elements         |
+| Light Dismiss         | Collision Detection      |
+| Minimal JS            | Middleware               |
+| Simplicity            | Maximum flexibility      |
 
-Для **80–90% интерфейсов** достаточно возможностей самой платформы:
+---
+
+### The Future
+
+In 2026, a new architectural model is beginning to take shape.
+
+For **80–90% of interfaces**, the platform's capabilities are sufficient:
 
 ```text
 HTML
@@ -4790,108 +4782,107 @@ Popover API
 Anchor Positioning
 ```
 
-Если же требуется профессиональный уровень взаимодействия — графические редакторы, IDE, диаграммы, визуальные конструкторы, сложные системы подсказок или произвольные алгоритмы позиционирования — на помощь приходят специализированные библиотеки вроде Floating UI.
+If professional-level interaction is required — graphic editors, IDEs, diagrams, visual builders, complex tooltip systems, or arbitrary positioning algorithms — specialized libraries like Floating UI come to the rescue.
 
-Именно поэтому вопрос больше не звучит как **«Popover или Floating UI?»**.
+That is why the question is no longer **"Popover or Floating UI?"**.
 
-Правильный вопрос:
+The right question is:
 
-> **«Можно ли решить задачу средствами платформы, или проект действительно требует полноценного вычислительного движка позиционирования?»**
+> **"Can this task be solved with platform capabilities, or does the project really require a full-fledged positioning computation engine?"**
 
-В этом и заключается одна из главных идей **Modern HTML 2026**: современная Web Platform постепенно берет на себя решение массовых задач интерфейса, а специализированные библиотеки смещаются в область сложных профессиональных сценариев, где необходимы вычисления, недоступные декларативному HTML.
-
----
-
-## 5.14. Архитектурные рекомендации (Best Practices)
-
-Popover API — один из тех HTML API, который легко использовать неправильно.
-
-Большинство ошибок возникает не из-за незнания синтаксиса, а из-за попыток перенести в современную Web Platform архитектурные решения десятилетней давности. Многие разработчики по привычке продолжают писать JavaScript, который уже реализован самим браузером.
-
-Современный подход можно сформулировать одной фразой:
-
-> **Доверяйте платформе. Добавляйте JavaScript только там, где возможности HTML действительно заканчиваются.**
-
-Именно этот принцип лежит в основе большинства современных API Web Platform и является одной из ключевых идей книги **Modern HTML 2026**.
+This is one of the main ideas of **Modern HTML 2026**: the modern Web Platform is gradually taking on the solution of mass interface tasks, while specialized libraries are moving into the area of complex professional scenarios where calculations beyond declarative HTML's reach are needed.
 
 ---
 
-### Используйте `auto` по умолчанию
+## 5.14. Architectural Recommendations (Best Practices)
 
-В большинстве случаев именно режим **`auto`** является правильным выбором.
+The Popover API is one of those HTML APIs that is easy to use incorrectly.
 
-Он предоставляет весь необходимый функционал "из коробки":
+Most errors occur not because of syntax ignorance, but because of attempts to transfer architectural solutions from a decade ago into the modern Web Platform. Many developers out of habit continue to write JavaScript that is already implemented by the browser itself.
 
-- открытие;
-- закрытие;
+The modern approach can be summed up in one phrase:
+
+> **Trust the platform. Add JavaScript only where HTML's capabilities truly end.**
+
+This principle underlies most modern Web Platform APIs and is one of the key ideas of the book **Modern HTML 2026**.
+
+---
+
+### Use `auto` by Default
+
+In most cases, **`auto`** mode is the correct choice.
+
+It provides all the necessary functionality out of the box:
+
+- opening;
+- closing;
 - **Light Dismiss**;
-- обработку клавиши `Escape`;
-- работу с Top Layer;
-- взаимодействие с другими popover.
+- `Escape` key handling;
+- Top Layer integration;
+- interaction with other popovers.
 
 ```html
-<button popovertarget="menu">Меню</button>
+<button popovertarget="menu">Menu</button>
 
 <div id="menu" popover="auto">...</div>
 ```
 
-Никакого дополнительного JavaScript не требуется.
+No additional JavaScript is required.
 
-> **Правило:** если вы не можете объяснить, зачем нужен `manual`, используйте `auto`.
+> **Rule:** if you can't explain why you need `manual`, use `auto`.
 
 ---
 
-### Используйте `manual` только при полном контроле
+### Use `manual` Only When Full Control Is Needed
 
-Режим
+Mode
 
 ```html
 popover="manual"
 ```
 
-не является «улучшенной» версией `auto`.
+is not an "enhanced" version of `auto`.
 
-Это совершенно другая модель работы.
+It is a completely different working model.
 
-В этом режиме браузер перестает автоматически управлять состоянием компонента.
+In this mode, the browser stops automatically managing the component's state.
 
-Разработчик берет ответственность на себя.
+The developer takes responsibility.
 
-Например:
+For example:
 
-- панели инструментов;
+- tool panels;
 - docking windows;
-- профессиональные редакторы;
-- постоянные панели;
-- сложные системы управления.
+- professional editors;
+- persistent panels;
+- complex control systems.
 
-Если Light Dismiss необходим — значит `manual`, скорее всего, выбран ошибочно.
+If Light Dismiss is required — then `manual` is most likely chosen incorrectly.
 
 ---
 
-### Используйте Anchor Positioning вместо JavaScript
+### Use Anchor Positioning Instead of JavaScript
 
-До появления Anchor Positioning практически любой Popover сопровождался большим количеством кода.
+Before Anchor Positioning, almost any Popover was accompanied by a lot of code.
 
-Например:
+For example:
 
 ```javascript
 const rect = button.getBoundingClientRect();
-
 popover.style.left = `${rect.left}px`;
 popover.style.top = `${rect.bottom}px`;
 ```
 
-Добавлялись обработчики:
+Event handlers were added:
 
 - `scroll`;
 - `resize`;
 - `MutationObserver`;
 - `IntersectionObserver`.
 
-В результате десятки строк кода занимались исключительно вычислением координат.
+As a result, dozens of lines of code were dedicated exclusively to coordinate calculation.
 
-Современный HTML позволяет полностью отказаться от этой практики.
+Modern HTML allows completely abandoning this practice.
 
 ```css
 button {
@@ -4904,57 +4895,57 @@ button {
 }
 ```
 
-Теперь браузер самостоятельно:
+Now the browser independently:
 
-- вычисляет положение;
-- учитывает прокрутку;
-- реагирует на изменение размеров окна;
-- обновляет координаты.
+- calculates the position;
+- accounts for scrolling;
+- responds to window resizing;
+- updates coordinates.
 
-> **Best Practice:** если задачу можно решить через Anchor Positioning, не используйте JavaScript для вычисления координат.
+> **Best Practice:** if the task can be solved with Anchor Positioning, do not use JavaScript for coordinate calculation.
 
 ---
 
-### Не используйте Popover API для модальных окон
+### Don't Use the Popover API for Modal Windows
 
-Одна из самых распространенных ошибок — использование Popover API в качестве замены `<dialog>`.
+One of the most common mistakes is using the Popover API as a replacement for `<dialog>`.
 
-Например:
+For example:
 
 ```html
-<div popover>Подтвердите удаление аккаунта</div>
+<div popover>Confirm account deletion</div>
 ```
 
-Это архитектурно неверно.
+This is architecturally incorrect.
 
-Popover предназначен для **немодальных интерфейсов**.
+Popover is intended for **non-modal interfaces**.
 
-Для сценариев, требующих полного внимания пользователя, необходимо использовать:
+For scenarios requiring the user's full attention, you should use:
 
 ```html
 <dialog></dialog>
 ```
 
-Потому что только `<dialog>` обеспечивает:
+Because only `<dialog>` provides:
 
-- блокировку фонового содержимого;
-- перевод страницы в состояние `inert`;
-- корректное управление фокусом;
-- семантику модального окна;
-- соответствие требованиям доступности.
+- background content blocking;
+- setting the page to `inert` state;
+- correct focus management;
+- modal window semantics;
+- accessibility compliance.
 
-Простое правило:
+A simple rule:
 
-| Используйте | Когда                                             |
-| ----------- | ------------------------------------------------- |
-| `<dialog>`  | подтверждение действий, формы, мастера, настройки |
-| `popover`   | меню, панели, фильтры, подсказки, поиск           |
+| Use        | When                                          |
+| ---------- | --------------------------------------------- |
+| `<dialog>` | action confirmation, forms, wizards, settings |
+| `popover`  | menus, panels, filters, tooltips, search      |
 
 ---
 
-### Не дублируйте встроенную логику браузера
+### Don't Duplicate Built-in Browser Logic
 
-Очень часто можно встретить код вида:
+It's very common to see code like:
 
 ```javascript
 document.addEventListener('keydown', (event) => {
@@ -4964,7 +4955,7 @@ document.addEventListener('keydown', (event) => {
 });
 ```
 
-или
+or
 
 ```javascript
 document.addEventListener('click', (event) => {
@@ -4974,46 +4965,46 @@ document.addEventListener('click', (event) => {
 });
 ```
 
-Для `popover="auto"` подобный код чаще всего не нужен.
+For `popover="auto"`, such code is usually unnecessary.
 
-Браузер уже реализует:
+The browser already implements:
 
-- обработку `Escape`;
-- закрытие по клику вне элемента;
-- корректную работу Top Layer;
-- взаимодействие нескольких Popover;
-- синхронизацию состояний.
+- `Escape` handling;
+- outside click closing;
+- correct Top Layer behavior;
+- interaction between multiple Popovers;
+- state synchronization.
 
-Дублирование этой логики приводит к:
+Duplicating this logic leads to:
 
-- двойному закрытию;
-- конфликтам состояний;
-- трудноуловимым ошибкам;
-- ухудшению совместимости с будущими версиями платформы.
+- double closing;
+- state conflicts;
+- hard-to-find bugs;
+- poor compatibility with future platform versions.
 
-> **Best Practice:** не переопределяйте поведение браузера без веской причины.
+> **Best Practice:** don't override browser behavior without a good reason.
 
 ---
 
-### Используйте современную CSS-анимацию
+### Use Modern CSS Animation
 
-До появления Popover API открытие меню обычно выглядело так:
+Before the Popover API, opening a menu usually looked like this:
 
 ```javascript
 element.classList.add('open');
 ```
 
-после чего JavaScript синхронизировал:
+after which JavaScript synchronized:
 
 - `display`;
 - `opacity`;
 - `transform`;
-- таймеры;
-- события окончания анимации.
+- timers;
+- animation end events.
 
-Сегодня большую часть этой логики можно перенести в CSS.
+Today, most of this logic can be moved to CSS.
 
-Например:
+For example:
 
 ```css
 [popover] {
@@ -5035,59 +5026,59 @@ element.classList.add('open');
 }
 ```
 
-Браузер самостоятельно координирует изменение состояния элемента и выполнение анимации.
+The browser independently coordinates the element's state change and animation execution.
 
-Это делает код проще и надежнее.
+This makes the code simpler and more reliable.
 
 ---
 
-### Проектируйте интерфейсы с учетом Progressive Enhancement
+### Design Interfaces with Progressive Enhancement in Mind
 
-Popover API является современной возможностью Web Platform.
+The Popover API is a modern Web Platform feature.
 
-Однако архитектура приложения не должна полностью зависеть от него.
+However, the application architecture should not depend entirely on it.
 
-Следуйте принципу Progressive Enhancement:
+Follow the Progressive Enhancement principle:
 
 ```text
 HTML
 
 ↓
 
-работает
+works
 
 ↓
 
-CSS улучшает
+CSS improves
 
 ↓
 
-JavaScript расширяет
+JavaScript extends
 ```
 
-Если браузер поддерживает Popover API — пользователь получает современный интерфейс.
+If the browser supports the Popover API — the user gets a modern interface.
 
-Если нет — базовая функциональность должна оставаться доступной.
+If not — basic functionality should remain accessible.
 
-Например, меню навигации должно оставаться рабочим даже без красивой анимации или автоматического позиционирования.
+For example, a navigation menu should remain usable even without beautiful animation or automatic positioning.
 
 ---
 
-### Минимизируйте объем JavaScript
+### Minimize JavaScript Volume
 
-Одной из главных целей современного HTML является перенос логики с уровня приложения на уровень платформы.
+One of the main goals of modern HTML is moving logic from the application level to the platform level.
 
-Вместо:
+Instead of:
 
 ```text
 JavaScript
 
 ↓
 
-управляет всем
+controls everything
 ```
 
-современная архитектура выглядит так:
+modern architecture looks like:
 
 ```text
 HTML
@@ -5101,143 +5092,145 @@ Browser
 JavaScript
 ```
 
-JavaScript подключается только там, где действительно требуется бизнес-логика.
+JavaScript is included only where business logic is truly required.
 
-Например:
+For example:
 
-- загрузка данных;
-- работа с сервером;
-- сложные вычисления;
-- управление состоянием приложения.
+- data loading;
+- server communication;
+- complex calculations;
+- application state management.
 
-Но не для открытия обычного меню пользователя.
+But not for opening a regular user menu.
 
 ---
 
-### Используйте семантически правильный элемент
+### Use the Semantically Correct Element
 
-Popover отвечает только за поведение.
+Popover is only responsible for behavior.
 
-Он не определяет смысл элемента.
+It does not define the meaning of the element.
 
-Поэтому выбирайте контейнер, соответствующий содержимому:
+Therefore, choose a container that matches the content:
 
 ```html
 <nav popover></nav>
 ```
 
-для навигационного меню,
+for a navigation menu,
 
 ```html
 <section popover></section>
 ```
 
-для панели настроек,
+for a settings panel,
 
 ```html
 <aside popover></aside>
 ```
 
-для дополнительной информации,
+for additional information,
 
 ```html
 <form popover></form>
 ```
 
-для компактной формы поиска или фильтрации.
+for a compact search or filter form.
 
-Такой подход улучшает доступность, читаемость кода и облегчает сопровождение приложения.
-
----
-
-### Следите за поддержкой платформы, а не только библиотек
-
-Одной из особенностей Web Platform после появления **Baseline** стало быстрое распространение новых возможностей.
-
-Перед подключением очередной UI-библиотеки полезно задать себе вопрос:
-
-> **Не умеет ли браузер уже решать эту задачу самостоятельно?**
-
-Во многих случаях ответ в 2026 году будет положительным.
-
-Это позволяет:
-
-- уменьшить размер JavaScript-бандла;
-- сократить количество зависимостей;
-- повысить производительность;
-- снизить сложность сопровождения проекта.
+This approach improves accessibility, code readability, and application maintainability.
 
 ---
 
-### Основные рекомендации
+### Track Platform Support, Not Just Libraries
 
-В качестве краткого резюме можно сформулировать следующие правила.
+One of the features of the Web Platform after the introduction of **Baseline** is the rapid spread of new capabilities.
 
-| Рекомендация                                                     | Причина                                                                                                   |
-| ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| Используйте `auto` по умолчанию                                  | Это наиболее естественный и безопасный режим работы Popover API                                           |
-| Выбирайте `manual` только при полном контроле                    | Не отключайте встроенную функциональность без необходимости                                               |
-| Используйте Anchor Positioning                                   | Избавляет от вычисления координат и обработчиков `scroll`/`resize`                                        |
-| Не заменяйте `<dialog>` на `popover`                             | Эти API предназначены для разных сценариев                                                                |
-| Не дублируйте Light Dismiss                                      | Браузер уже реализует обработку `Escape` и кликов вне элемента                                            |
-| Используйте современные CSS-анимации                             | `:popover-open`, `@starting-style` и `allow-discrete` делают JavaScript для анимации практически ненужным |
-| Следуйте принципу Progressive Enhancement                        | Интерфейс должен работать даже при отсутствии современных возможностей                                    |
-| Минимизируйте JavaScript                                         | Используйте платформу там, где она уже предоставляет готовое решение                                      |
-| Выбирайте семантически правильные элементы                       | Popover определяет поведение, а не смысл содержимого                                                      |
-| Проверяйте возможности Web Platform перед подключением библиотек | Современный браузер часто уже умеет то, что раньше требовало стороннего кода                              |
+Before including another UI library, it's useful to ask yourself:
+
+> **Can't the browser already solve this task on its own?**
+
+In many cases in 2026, the answer will be yes.
+
+This allows:
+
+- reducing JavaScript bundle size;
+- reducing the number of dependencies;
+- improving performance;
+- lowering project maintenance complexity.
 
 ---
 
-### Почему эта глава актуальна именно в 2026 году
+### Key Recommendations
 
-Еще несколько лет назад рекомендации по созданию всплывающих интерфейсов неизбежно сводились к выбору подходящей JavaScript-библиотеки. В 2026 году архитектурная точка отсчета изменилась: сначала оцениваются возможности самой платформы, и лишь затем принимается решение о необходимости дополнительного кода.
+As a brief summary, the following rules can be formulated:
 
-Именно поэтому современный подход можно выразить новым правилом:
+| Recommendation                                             | Reason                                                                                                          |
+| ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| Use `auto` by default                                      | This is the most natural and safest Popover API mode                                                            |
+| Choose `manual` only when full control is needed           | Don't disable built-in functionality without a reason                                                           |
+| Use Anchor Positioning                                     | Eliminates coordinate calculation and `scroll`/`resize` handlers                                                |
+| Don't replace `<dialog>` with `popover`                    | These APIs are for different scenarios                                                                          |
+| Don't duplicate Light Dismiss                              | The browser already implements `Escape` and outside click handling                                              |
+| Use modern CSS animations                                  | `:popover-open`, `@starting-style`, and `allow-discrete` make JavaScript for animations practically unnecessary |
+| Follow Progressive Enhancement                             | The interface should work even without modern capabilities                                                      |
+| Minimize JavaScript                                        | Use the platform where it already provides a ready solution                                                     |
+| Choose semantically correct elements                       | Popover defines behavior, not the meaning of content                                                            |
+| Check Web Platform capabilities before including libraries | The modern browser often already does what used to require third-party code                                     |
+
+---
+
+### Why This Chapter Is Relevant in 2026
+
+Just a few years ago, recommendations for creating popup interfaces inevitably came down to choosing a suitable JavaScript library. In 2026, the architectural starting point has changed: first, the platform's capabilities are evaluated, and only then is the decision made about the need for additional code.
+
+That is why the modern approach can be expressed by a new rule:
 
 > **Platform First → HTML First → CSS → JavaScript → Library.**
 
-Эта последовательность отражает главное изменение философии разработки: браузер перестает быть пассивным исполнителем JavaScript и становится полноценной платформой, предоставляющей готовые механизмы для построения пользовательских интерфейсов. Popover API — один из наиболее ярких примеров этой трансформации.
+This sequence reflects the main change in development philosophy: the browser ceases to be a passive executor of JavaScript and becomes a full-fledged platform providing ready-made mechanisms for building user interfaces. The Popover API is one of the most vivid examples of this transformation.
 
-## Заключение главы
+---
 
-Popover API стал одним из наиболее значимых нововведений современного HTML. Его появление означает не просто добавление еще одного атрибута в спецификацию, а изменение самой архитектуры Web Platform.
+## Chapter Conclusion
 
-На протяжении почти двадцати лет всплывающие интерфейсы считались исключительно задачей JavaScript. Каждая UI-библиотека реализовывала собственные механизмы открытия и закрытия элементов, вычисления координат, управления слоями, обработки клавиши <kbd>Escape</kbd>, кликов вне элемента, доступности и анимаций. Эта логика многократно дублировалась в тысячах проектов и миллионах строк кода.
+The Popover API has become one of the most significant innovations in modern HTML. Its emergence means not just adding another attribute to the specification, but changing the very architecture of the Web Platform.
 
-Современная платформа предлагает иной подход.
+For almost twenty years, popup interfaces were considered exclusively a JavaScript task. Every UI library implemented its own mechanisms for opening and closing elements, coordinate calculation, layer management, <kbd>Escape</kbd> handling, outside clicks, accessibility, and animations. This logic was duplicated thousands of times across millions of lines of code.
 
-Сегодня браузер берет на себя значительную часть этой работы:
+The modern platform offers a different approach.
 
-- управляет **Top Layer**;
-- реализует **Light Dismiss**;
-- предоставляет декларативную модель состояний;
-- поддерживает жизненный цикл компонентов через события `beforetoggle` и `toggle`;
-- интегрируется с **CSS Anchor Positioning**;
-- обеспечивает базовую поддержку доступности;
-- предоставляет современные механизмы анимации.
+Today, the browser takes on a significant portion of this work:
 
-В результате роль JavaScript постепенно меняется. Вместо реализации базовой инфраструктуры интерфейса он все чаще отвечает только за бизнес-логику приложения, работу с данными и взаимодействие с сервером.
+- manages the **Top Layer**;
+- implements **Light Dismiss**;
+- provides a declarative state model;
+- supports component lifecycle via `beforetoggle` and `toggle` events;
+- integrates with **CSS Anchor Positioning**;
+- provides basic accessibility support;
+- offers modern animation mechanisms.
 
-Однако Popover API не является универсальным решением для всех задач. Профессиональные графические редакторы, IDE, системы проектирования интерфейсов, диаграммы, Canvas- и SVG-приложения, сложные алгоритмы позиционирования и пользовательские стратегии размещения по-прежнему требуют специализированных библиотек, таких как Floating UI. В этом нет противоречия: платформа берет на себя массовые сценарии, а специализированные инструменты остаются для сложных случаев.
+As a result, JavaScript's role is gradually changing. Instead of implementing basic interface infrastructure, it is increasingly responsible only for application business logic, data handling, and server communication.
 
-Еще одна важная мысль этой главы заключается в том, что Popover API следует рассматривать не изолированно, а как часть более широкой эволюции Web Platform. Он тесно связан с другими современными технологиями:
+However, the Popover API is not a universal solution for all tasks. Professional graphic editors, IDEs, interface design systems, diagrams, Canvas and SVG applications, complex positioning algorithms, and custom placement strategies still require specialized libraries like Floating UI. There is no contradiction here: the platform takes on mass scenarios, and specialized tools remain for complex cases.
 
-- **Top Layer** — общей системой отображения поверх документа;
-- **Anchor Positioning** — декларативным позиционированием элементов;
-- **View Transition API** — плавными переходами между состояниями интерфейса;
-- современным CSS — `:popover-open`, `@starting-style`, `overlay`, `allow-discrete`;
-- концепцией **Baseline**, обеспечивающей надежную поддержку возможностей платформы в основных браузерах.
+Another important takeaway from this chapter is that the Popover API should not be viewed in isolation, but as part of a broader Web Platform evolution. It is closely related to other modern technologies:
 
-Все эти технологии появились практически одновременно и дополняют друг друга, формируя новое поколение декларативных интерфейсов.
+- **Top Layer** — a common overlay system above the document;
+- **Anchor Positioning** — declarative element positioning;
+- **View Transition API** — smooth transitions between interface states;
+- modern CSS — `:popover-open`, `@starting-style`, `overlay`, `allow-discrete`;
+- the **Baseline** concept, ensuring reliable platform feature support across major browsers.
 
-### Главный вывод главы
+All these technologies emerged at roughly the same time and complement each other, forming a new generation of declarative interfaces.
 
-Самая важная идея заключается не в том, что появился новый атрибут `popover`.
+### Main Takeaway
 
-Гораздо важнее другое: **HTML постепенно превращается из языка описания документов в декларативный API браузера**. Разработчик все чаще описывает **что** должно произойти, а браузер самостоятельно определяет **как** это реализовать наиболее эффективно, безопасно и доступно.
+The most important idea is not that a new `popover` attribute appeared.
 
-Именно этот переход от императивного программирования к декларативному взаимодействию с платформой является одной из центральных тем книги **Modern HTML 2026**.
+What's much more important is this: **HTML is gradually transforming from a document description language into a declarative browser API**. The developer increasingly describes **what** should happen, and the browser independently determines **how** to implement it most efficiently, securely, and accessibly.
 
-Можно сказать, что `<dialog>` и Popover API открыли новую эпоху развития HTML. Они показали, что современные браузеры способны предоставлять высокоуровневые пользовательские компоненты как часть самой платформы, а не как функциональность сторонних библиотек. Вероятнее всего, в ближайшие годы этот подход будет только развиваться, и все больше возможностей, которые сегодня реализуются на JavaScript, будут становиться встроенными возможностями Web Platform.
+This transition from imperative programming to declarative interaction with the platform is one of the central themes of the book **Modern HTML 2026**.
 
-В следующей главе мы рассмотрим еще один пример этой тенденции — элементы `<details>` и `<summary>`, которые позволяют создавать раскрывающиеся интерфейсы, аккордеоны и FAQ-разделы декларативно, без написания собственного JavaScript, продолжая философию **HTML First** и **Platform First**.
+It can be said that `<dialog>` and the Popover API opened a new era in HTML's evolution. They showed that modern browsers are capable of providing high-level user components as part of the platform itself, rather than as third-party library functionality. It's likely that in the coming years, this approach will only develop further, and more and more capabilities that are currently implemented in JavaScript will become built-in Web Platform features.
+
+In the next chapter, we will look at another example of this trend — the `<details>` and `<summary>` elements, which allow creating disclosure widgets, accordions, and FAQ sections declaratively, without writing custom JavaScript, continuing the **HTML First** and **Platform First** philosophy.

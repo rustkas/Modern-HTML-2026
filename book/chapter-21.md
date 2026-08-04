@@ -1,59 +1,61 @@
-# Часть VII. HTML и производительность
+# Part VII. HTML and Performance
 
-## Глава 21. HTML как инструмент оптимизации и управления производительностью
+## Chapter 21. HTML as an Optimization and Performance Management Tool
 
-В современной веб-разработке HTML давно вышел за рамки простой статической разметки структуры документа. Сегодня это мощный декларативный инструмент, который позволяет разработчикам напрямую управлять производительностью страницы, эффективно «договариваясь» с браузером о приоритетах, очередности и способах загрузки жизненно важных ресурсов.
-
----
-
-## 21.1. Lazy Loading (Ленивая загрузка ресурсов)
-
-Стратегия **Lazy Loading** заключается в отсрочке загрузки некритичных или скрытых «ниже сгиба» (_below the fold_) ресурсов до того момента, когда они действительно понадобятся пользователю. Это позволяет существенно сократить объем трафика при первом посещении и разгрузить критический путь рендеринга.
-
-- **Атрибут `loading`:** Применяется к ключевым ресурсам разметки — тегам `<img>`, `<iframe>`, а также медиаэлементам `<audio>` и `<video>`.
-- **Доступные состояния:** Значение `lazy` откладывает загрузку до приближения объекта к зоне видимости (_viewport_), в то время как `eager` (поведение по умолчанию) предписывает немедленную загрузку.
-- **Внутренний механизм:** Современные браузеры используют оптимизированный нативный аналог `IntersectionObserver`. Он самостоятельно отслеживает скролл и начинает подгрузку ресурсов заранее, оставляя адаптивный «запас» (_scroll margin_), чтобы картинка или фрейм успели отобразиться ровно в момент появления на экране.
+In modern web development, HTML has long outgrown the role of simple static document structure markup. Today, it is a powerful declarative tool that allows developers to directly manage page performance, effectively "negotiating" with the browser about priorities, ordering, and methods for loading critical resources.
 
 ---
 
-## 21.2. Resource Hints (Подсказки браузеру)
+## 21.1. Lazy Loading
 
-Для реализации спекулятивной загрузки и опережения сетевых задержек HTML предоставляет гибкий набор значений атрибута `rel` для тега `<link>`:
+The **Lazy Loading** strategy consists of deferring the loading of non-critical or hidden "below the fold" resources until they are actually needed by the user. This allows significantly reducing traffic volume on the first visit and offloading the critical rendering path.
 
-- **`dns-prefetch`:** Заблаговременно выполняет поиск IP-адреса по доменному имени для сторонних ресурсов, минимизируя задержки при будущих запросах.
-- **`preconnect`:** Производит полное рукопожатие (_DNS + TCP + TLS_, а для HTTPS еще и согласование соединения), что критически важно для подключения внешних шрифтов, API или CDN-серверов.
-- **`prefetch`:** Дает браузеру команду скачать ресурс с низким приоритетом в фоновом режиме, так как он с высокой вероятностью понадобится пользователю при переходе на следующую страницу.
-- **`preload`:** Принудительно заставляет браузер начать скачивание ресурса с наивысшим приоритетом, поскольку он критически необходим для текущей страницы. При использовании `preload` **обязательно** указывать атрибут `as` (например, `as="image"`, `as="style"` или `as="script"`), чтобы браузер корректно распределял системные ресурсы.
-
----
-
-## 21.3. Priority Hints (Управление приоритетами)
-
-Атрибут **`fetchpriority`** позволяет разработчикам явно указать браузеру относительную важность конкретного сетевого ресурса, независимо от стандартных эвристик движка:
-
-- **Доступные значения:** `high` (повышенный приоритет), `low` (пониженный) и `auto` (стандартное автоопределение).
-- **Практическое применение:** Установка `fetchpriority="high"` на ключевое изображение-баннер, являющееся кандидатом на метрику **LCP** (_Largest Contentful Paint_), позволяет форсировать его скачивание в ущерб второстепенным элементам, заметно улучшая показатели производительности.
+- **The `loading` Attribute:** Applied to key markup resources — `<img>`, `<iframe>`, as well as `<audio>` and `<video>` media elements.
+- **Available States:** The value `lazy` defers loading until the object approaches the viewport, while `eager` (default behavior) prescribes immediate loading.
+- **Internal Mechanism:** Modern browsers use an optimized native equivalent of `IntersectionObserver`. It independently tracks scrolling and starts loading resources in advance, maintaining an adaptive "margin" so that an image or frame has time to render exactly at the moment it appears on screen.
 
 ---
 
-## 21.4. Responsive Images (Адаптивная графика)
+## 21.2. Resource Hints
 
-Чтобы исключить передачу избыточного веса изображений на мобильные устройства, современный HTML предлагает декларативные механизмы адаптивного выбора графики:
+To implement speculative loading and preempt network delays, HTML provides a flexible set of `rel` attribute values for the `<link>` tag:
 
-- **Атрибуты `srcset` и `sizes`:** Позволяют описать коллекцию вариантов одного изображения с разной физической шириной в пикселях (`w`) или плотностью экранов (`x`). На основе этих данных браузер самостоятельно решает, какой файл скачать.
-- **Элемент `<picture>`:** Предназначен для сложного art direction (изменение кадрирования и композиции под разные типы экранов) и внедрения современных форматов (WebP, AVIF) с надежным фолбэком до классического JPEG/PNG через вложенные теги `<source>`.
-- **Ключевое слово `auto`:** Использование `auto` в атрибуте `sizes` (в комбинации с `loading="lazy"`) делегирует браузеру задачу вычисления реального размера изображения в макете до момента завершения стилизации.
+- **`dns-prefetch`:** Performs IP address lookup by domain name in advance for third-party resources, minimizing latency for future requests.
+- **`preconnect`:** Performs a full handshake (_DNS + TCP + TLS_, and for HTTPS also connection negotiation), which is critically important for connecting external fonts, APIs, or CDN servers.
+- **`prefetch`:** Tells the browser to download a resource with low priority in the background, as it will most likely be needed by the user when navigating to the next page.
+- **`preload`:** Forcefully makes the browser start downloading the resource with the highest priority, as it is critically necessary for the current page. When using `preload`, it is **mandatory** to specify the `as` attribute (for example, `as="image"`, `as="style"`, or `as="script"`) so that the browser correctly allocates system resources.
 
 ---
 
-## 21.5. Streaming HTML и Partial Hydration
+## 21.3. Priority Hints
 
-Архитектура веб-платформы поддерживает концепцию потоковой передачи и инкрементального парсинга, позволяя браузеру выводить интерфейс по мере поступления данных:
+The **`fetchpriority`** attribute allows developers to explicitly indicate to the browser the relative importance of a specific network resource, regardless of the engine's standard heuristics:
 
-- **Streaming DSD:** Интеграция Declarative Shadow DOM с атрибутом `shadowrootmode` дает возможность серверу передавать инкапсулированные структуры прямо в потоке HTML-ответа. Браузер отрисовывает компоненты мгновенно, не дожидаясь загрузки объемных скриптов.
-- **Partial Hydration (Частичная гидратация):** Благодаря нативным механизмам апгрейда (_upgrades_), кастомные элементы могут находиться в DOM в виде «тихих» статических структур и оживать (_гидратироваться_) по мере подгрузки соответствующих модулей, не блокируя основной поток рендеринга.
-- **Асинхронное декодирование:** Добавление атрибута `decoding="async"` для тегов `<img>` указывает браузеру обрабатывать растровую графику в фоновом потоке, предотвращая фриз интерфейса при отрисовке тяжелого текста.
+- **Available Values:** `high` (increased priority), `low` (decreased), and `auto` (standard auto-detection).
+- **Practical Application:** Setting `fetchpriority="high"` on a key banner image that is a candidate for the **LCP** (Largest Contentful Paint) metric allows forcing its download at the expense of secondary elements, noticeably improving performance metrics.
 
-### Заключение главы
+---
 
-Комплексное использование встроенных HTML-инструментов оптимизации превращает верстку в тонко настраиваемый инструмент управления производительностью. Правильное применение подсказок, приоритетов и декларативных стратегий загрузки позволяет добиться максимальных показателей скорости работы приложений без подключения тяжелых сторонних библиотек.
+## 21.4. Responsive Images
+
+To eliminate sending excessive image weight to mobile devices, modern HTML offers declarative mechanisms for adaptive image selection:
+
+- **The `srcset` and `sizes` Attributes:** Allow describing a collection of variants of the same image with different physical widths in pixels (`w`) or screen densities (`x`). Based on this data, the browser independently decides which file to download.
+- **The `<picture>` Element:** Designed for complex art direction (changing framing and composition for different screen types) and implementing modern formats (WebP, AVIF) with reliable fallback to classic JPEG/PNG via nested `<source>` tags.
+- **The `auto` Keyword:** Using `auto` in the `sizes` attribute (in combination with `loading="lazy"`) delegates to the browser the task of calculating the image's actual size in the layout before styling is complete.
+
+---
+
+## 21.5. Streaming HTML and Partial Hydration
+
+The web platform architecture supports the concept of streaming and incremental parsing, allowing the browser to render the interface as data arrives:
+
+- **Streaming DSD:** The integration of Declarative Shadow DOM with the `shadowrootmode` attribute enables the server to deliver encapsulated structures directly in the HTML response stream. The browser renders components instantly, without waiting for large scripts to load.
+- **Partial Hydration:** Thanks to native upgrade mechanisms, custom elements can exist in the DOM as "quiet" static structures and come to life (hydrate) as their corresponding modules load, without blocking the main rendering thread.
+- **Asynchronous Decoding:** Adding the `decoding="async"` attribute to `<img>` tags instructs the browser to process raster graphics in a background thread, preventing interface freezing when rendering heavy content.
+
+---
+
+## Chapter Conclusion
+
+Comprehensive use of built-in HTML optimization tools transforms markup into a finely tunable performance management instrument. Correct application of hints, priorities, and declarative loading strategies allows achieving maximum application speed metrics without the need to include heavy third-party libraries.

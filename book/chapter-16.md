@@ -1,63 +1,63 @@
-# Часть VI. Web Components
+# Part VI. Web Components
 
-## Глава 16. Custom Elements (Пользовательские элементы)
+## Chapter 16. Custom Elements
 
-**Custom Elements** (пользовательские элементы) — это фундамент технологии Web Components, позволяющий разработчикам создавать собственные полнофункциональные HTML-теги с уникальной бизнес-логикой, инкапсулированным визуальным оформлением и поведением. Данная спецификация является частью глобальной стратегии «рационализации веб-платформы» (_platform rationalization_), которая дает возможность авторам сайтов использовать те же механизмы расширения, на которых построены стандартные элементы браузера.
+**Custom Elements** are the foundation of Web Components technology, allowing developers to create their own fully-featured HTML tags with unique business logic, encapsulated visual design, and behavior. This specification is part of the global strategy of "platform rationalization," which enables site authors to use the same extension mechanisms on which the browser's standard elements are built.
 
 ---
 
-## 16.1. Архитектура и регистрация компонентов
+## 16.1. Architecture and Component Registration
 
-Создание пользовательского элемента начинается с описания стандартного JavaScript-класса, который наследует встроенный интерфейс `HTMLElement` (для полностью уникальных элементов) или специализированный интерфейс существующего тега (например, `HTMLButtonElement`).
+Creating a custom element begins with defining a standard JavaScript class that inherits from the built-in `HTMLElement` interface (for completely unique elements) or from a specialized interface of an existing tag (for example, `HTMLButtonElement`).
 
-Для регистрации нового тега в глобальном реестре браузера используется метод **`customElements.define()`**. Спецификация выделяет два типа пользовательских элементов:
+To register a new tag in the browser's global registry, the **`customElements.define()`** method is used. The specification distinguishes two types of custom elements:
 
-1. **Autonomous custom elements (Автономные элементы):** Абсолютно новые теги, которые не наследуют поведение существующих элементов. Они расширяют базовый `HTMLElement` и используются в HTML напрямую.
-2. **Customized built-in elements (Модифицированные встроенные элементы):** Наследники конкретных элементов платформы (например, `<button>`). При их регистрации в метод передается дополнительный параметр `{ extends: 'button' }`, а в разметке они применяются через стандартный тег с указанием атрибута **`is`** (например, `<button is="my-button">`).
+1. **Autonomous custom elements:** Completely new tags that do not inherit the behavior of existing elements. They extend the base `HTMLElement` and are used directly in HTML.
+2. **Customized built-in elements:** Descendants of specific platform elements (for example, `<button>`). When registering them, an additional parameter `{ extends: 'button' }` is passed to the method, and in markup they are applied through the standard tag with the **`is`** attribute (for example, `<button is="my-button">`).
 
-### Жёсткие правила именования
+### Strict Naming Rules
 
-Имя пользовательского элемента **обязательно** должно содержать дефис (`-`), начинаться со строчной латинской буквы и не содержать заглавных символов (например, `<user-card>` или `<data-grid>`). Это архитектурное требование гарантирует, что браузер никогда не за Конфликтует с будущими стандартными тегами HTML.
+The name of a custom element **must** contain a hyphen (`-`), start with a lowercase Latin letter, and not contain uppercase characters (for example, `<user-card>` or `<data-grid>`). This architectural requirement guarantees that the browser will never conflict with future standard HTML tags.
 
 ```javascript
-// Пример определения автономного пользовательского элемента
+// Example of defining an autonomous custom element
 class UserCard extends HTMLElement {
   constructor() {
     super();
-    // Инициализация состояния и привязка shadow DOM
+    // Initialize state and bind shadow DOM
   }
 }
 
-// Регистрация тега в глобальном реестре браузера
+// Register the tag in the browser's global registry
 customElements.define('user-card', UserCard);
 ```
 
 ---
 
-## 16.2. Жизненный цикл компонента (Lifecycle Callbacks)
+## 16.2. Component Lifecycle
 
-Поведение пользовательских элементов контролируется набором специальных встроенных методов жизненного цикла (_lifecycle callbacks_), которые браузер вызывает автоматически при изменении статуса элемента:
+The behavior of custom elements is controlled by a set of special built-in lifecycle callbacks that the browser automatically invokes when the element's status changes:
 
-- **`constructor()`:** Вызывается в момент создания экземпляра компонента (или при его апгрейде браузером). Идеально подходит для установки начального состояния и привязки теневого дерева. **Важное правило:** первой строкой конструктора всегда должен идти вызов `super()`.
-- **`connectedCallback()`:** Срабатывает сразу после того, как элемент физически добавляется в DOM-дерево документа. Это оптимальное место для выполнения сетевых запросов, подписки на события и первичной отрисовки.
-- **`disconnectedCallback()`:** Вызывается при удалении элемента из DOM. Используется для очистки ресурсов, удаления глобальных слушателей событий и таймеров.
-- **`adoptedCallback()`:** Активируется, если элемент переносится из одного документа в другой (например, между разными `<iframe>` на странице).
-- **`attributeChangedCallback(name, oldValue, newValue)`:** Срабатывает при любых манипуляциях с отслеживаемыми атрибутами элемента.
+- **`constructor()`:** Called at the moment the component instance is created (or when it is upgraded by the browser). Ideal for setting initial state and binding the shadow tree. **Important rule:** the first line of the constructor must always be a call to `super()`.
+- **`connectedCallback()`:** Fires immediately after the element is physically added to the document's DOM tree. This is the optimal place for making network requests, subscribing to events, and performing initial rendering.
+- **`disconnectedCallback()`:** Called when the element is removed from the DOM. Used for resource cleanup, removing global event listeners, and clearing timers.
+- **`adoptedCallback()`:** Activated if the element is moved from one document to another (for example, between different `<iframe>`s on a page).
+- **`attributeChangedCallback(name, oldValue, newValue)`:** Fires upon any manipulation of the element's tracked attributes.
 
 ---
 
-## 16.3. Синхронизация атрибутов и свойств (Properties & Attributes)
+## 16.3. Synchronizing Attributes and Properties
 
-Взаимодействие с веб-компонентами из JavaScript строится на совмещении HTML-атрибутов и свойств объекта (_IDL-attributes_). Для обеспечения предсказуемого поведения разработчику необходимо реализовать **рефлексию (reflection)** — двустороннюю синхронизацию, при которой изменение свойства объекта мгновенно меняет атрибут в разметке, и наоборот.
+Interaction with web components from JavaScript is built on the combination of HTML attributes and object properties (IDL attributes). To ensure predictable behavior, the developer must implement **reflection** — two-way synchronization where changing an object property instantly changes the attribute in the markup, and vice versa.
 
-- **Статическое свойство `observedAttributes`:** Возвращает массив строк с именами атрибутов, за изменениями которых должен следить браузер. Только они активируют метод `attributeChangedCallback`.
-- **Геттеры и сеттеры:** Используются для создания свойств класса, которые прозрачно транслируют данные в разметку через `getAttribute()` и `setAttribute()`.
+- **Static `observedAttributes` Property:** Returns an array of strings with attribute names whose changes the browser should track. Only these attributes will trigger the `attributeChangedCallback` method.
+- **Getters and Setters:** Used to create class properties that transparently translate data to the markup via `getAttribute()` and `setAttribute()`.
 
-### Пример реализации рефлексии свойств
+### Example of Property Reflection Implementation
 
 ```javascript
 class RangeSlider extends HTMLElement {
-  // Указываем атрибуты для прослушивания
+  // Specify attributes to observe
   static get observedAttributes() {
     return ['value'];
   }
@@ -77,23 +77,23 @@ class RangeSlider extends HTMLElement {
   }
 
   updateUI(val) {
-    // Внутренняя логика перерисовки компонента
+    // Internal component re-render logic
   }
 }
 ```
 
 ---
 
-## 16.4. Событийная модель (Events)
+## 16.4. Event Model
 
-Поскольку все пользовательские элементы наследуют интерфейс `EventTarget`, они обладают полноценным доступом к стандартной системе генерации и перехвата событий браузера.
+Since all custom elements inherit the `EventTarget` interface, they have full access to the browser's standard event generation and capture system.
 
-- **Диспетчеризация (`dispatchEvent`):** Для информирования внешнего окружения о внутренних изменениях компонент генерирует события.
-- **Интерфейс `CustomEvent`:** Рекомендуемый стандарт для передачи произвольных структурированных данных во внешнюю среду. Данные передаются внутри свойства `detail` объекта события.
-- **Всплытие и пересечение границ:** События, сгенерированные внутри `Shadow DOM`, по умолчанию проходят через его границы (всплывают), хотя их целевой объект (_target_) автоматически корректируется для сохранения инкапсуляции, если не указан флаг `composed: true`.
+- **Dispatching (`dispatchEvent`):** To inform the external environment about internal changes, the component generates events.
+- **The `CustomEvent` Interface:** The recommended standard for passing arbitrary structured data to the external environment. Data is passed inside the `detail` property of the event object.
+- **Bubbling and Boundary Crossing:** Events generated inside `Shadow DOM` by default bubble through its boundaries, although their target object is automatically adjusted to preserve encapsulation, unless the `composed: true` flag is specified.
 
 ```javascript
-// Отправка кастомного события наружу из компонента
+// Sending a custom event outward from the component
 this.dispatchEvent(
   new CustomEvent('user-select', {
     detail: { userId: 42, username: 'Anatoly' },
@@ -103,6 +103,8 @@ this.dispatchEvent(
 );
 ```
 
-### Заключение главы
+---
 
-Custom Elements предоставляют чистый, стандартизированный и высокопроизводительный способ создания независимых компонентов пользовательского интерфейса. Благодаря нативной интеграции с жизненным циклом браузера и событийной моделью, они органично встраиваются в любые архитектурные паттерны и фреймворки без необходимости подключения тяжелых сторонних абстракций.
+## Chapter Conclusion
+
+Custom Elements provide a clean, standardized, and high-performance way to create independent user interface components. Thanks to native integration with the browser lifecycle and event model, they seamlessly fit into any architectural patterns and frameworks without the need to include heavy third-party abstractions.

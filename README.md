@@ -1,26 +1,26 @@
 # Modern HTML 2026
 
-## Семантика, Web Platform и архитектура современных интерфейсов
+## Semantics, Web Platform, and Architecture of Modern Interfaces
 
-> Книга о современном HTML как фундаментальной технологии Web Platform.  
-> Не просто набор тегов, а язык структуры, поведения, доступности и взаимодействия с возможностями современного браузера.
+> A book about modern HTML as the foundational technology of the Web Platform.  
+> Not just a set of tags, but a language of structure, behavior, accessibility, and interaction with modern browser capabilities.
 
 ---
 
-## 📖 О книге
+## 📖 About the Book
 
-За последние десять лет HTML сильно изменился.
+Over the past ten years, HTML has changed dramatically.
 
-Сегодня HTML — это уже не просто язык разметки документов. Это полноценный декларативный интерфейс к возможностям браузера:
+Today, HTML is no longer just a document markup language. It is a fully-fledged declarative interface to browser capabilities:
 
-- интерактивные элементы без JavaScript;
-- встроенные механизмы доступности;
-- управление загрузкой ресурсов;
-- современные API браузера;
+- Interactive elements without JavaScript;
+- Built-in accessibility mechanisms;
+- Resource loading management;
+- Modern browser APIs;
 - Web Components;
-- поддержка SSR и современных архитектур приложений.
+- Support for SSR and modern application architectures.
 
-Современные фреймворки:
+Modern frameworks:
 
 - Angular
 - React
@@ -29,60 +29,60 @@
 - Astro
 - Qwik
 
-не заменяют HTML.
+do not replace HTML.
 
-Они строятся **поверх HTML**, используя его как основу.
+They are built **on top of HTML**, using it as their foundation.
 
-Эта книга показывает HTML как часть современной Web Platform.
-
----
-
-# 🎯 Цель книги
-
-После изучения книги читатель должен понимать:
-
-- как браузер превращает HTML в работающий интерфейс;
-- как строить семантические документы;
-- как использовать современные HTML API;
-- как создавать доступные компоненты;
-- как оптимизировать загрузку приложения;
-- как использовать Web Components;
-- как проектировать HTML-архитектуру больших приложений.
+This book presents HTML as an integral part of the modern Web Platform.
 
 ---
 
-# 👥 Для кого эта книга
+# 🎯 Book's Goal
 
-Книга предназначена для:
+After studying this book, the reader should understand:
 
-- Frontend-разработчиков;
-- Angular / React / Vue / Svelte разработчиков;
-- архитекторов интерфейсов;
-- разработчиков дизайн-систем;
-- специалистов по Web Performance;
-- всех, кто хочет понимать современную веб-платформу.
+- how the browser transforms HTML into a working interface;
+- how to build semantic documents;
+- how to use modern HTML APIs;
+- how to create accessible components;
+- how to optimize application loading;
+- how to use Web Components;
+- how to design HTML architecture for large applications.
 
 ---
 
-# 🧠 Главная идея
+# 👥 Who This Book Is For
 
-Современный frontend строится на трёх фундаментальных технологиях:
+This book is intended for:
+
+- Frontend developers;
+- Angular / React / Vue / Svelte developers;
+- UI architects;
+- Design system developers;
+- Web Performance specialists;
+- Anyone who wants to understand the modern web platform.
+
+---
+
+# 🧠 The Main Idea
+
+Modern frontend is built on three fundamental technologies:
 
 ```
 HTML
  |
- |-- структура и смысл
+ |-- structure and meaning
 
 CSS
  |
- |-- внешний вид и layout
+ |-- appearance and layout
 
 JavaScript / TypeScript
  |
- |-- логика и поведение
+ |-- logic and behavior
 ```
 
-Фреймворки являются дополнительным уровнем:
+Frameworks serve as an additional layer:
 
 ```
 Angular
@@ -101,44 +101,46 @@ Browser Web Platform
 
 ---
 
-# 📚 Содержание
+# 📚 Table of Contents
 
-# Предисловие
+# Preface
 
-## Почему HTML снова стал одной из важнейших технологий фронтенда
+## Why HTML Has Once Again Become One of the Most Important Frontend Technologies
 
-- От HTML4 к HTML Living Standard
-- Почему современные фреймворки не заменяют HTML
-- HTML как часть Web Platform
-- Что изменилось за последние десять лет
+- From HTML4 to HTML Living Standard
+- Why modern frameworks don't replace HTML
+- HTML as part of the Web Platform
+- What has changed over the past ten years
 
-* [📖 Читать главу](./book/preface.md)  
-* [📚 Литература](./references/preface.md)  
-* [💻 Примеры](./examples/preface.md)
-*  [🧪 Практика](./exercises/preface.md)
+* [📖 Read chapter](./book/preface.md)
+* [📚 References](./references/preface.md)
+* [💻 Examples](./examples/preface.md)
+* [🧪 Exercises](./exercises/preface.md)
+
 ---
 
-# Часть I. HTML как язык структуры
+# Part I. HTML as a Language of Structure
 
-## Глава 1. Документ как модель данных
+## Chapter 1. The Document as a Data Model
 
-Темы:
+Topics:
 
-- DOM как дерево документа
-- Семантика против оформления
-- Документ против приложения
-- HTML и доступность
-- HTML и SEO
+- DOM as the document tree
+- Semantics vs. presentation
+- Document vs. application
+- HTML and accessibility
+- HTML and SEO
 
-* [📖 Читать главу](./book/chapter-01.md)  
-* [📚 Литература](./references/chapter-01.md)  
-* [💻 Примеры](./examples/chapter-01.md)  
-* [🧪 Практика](./exercises/chapter-01.md)
+* [📖 Read chapter](./book/chapter-01.md)
+* [📚 References](./references/chapter-01.md)
+* [💻 Examples](./examples/chapter-01.md)
+* [🧪 Exercises](./exercises/chapter-01.md)
+
 ---
 
-## Глава 2. Современная семантика
+## Chapter 2. Modern Semantics
 
-Темы:
+Topics:
 
 - `<header>`
 - `<main>`
@@ -150,61 +152,58 @@ Browser Web Platform
 - `<figcaption>`
 - `<time>`
 - `<address>`
-- Когда использовать `<div>`
+- When to use `<div>`
 
+* [📖 Read chapter](./book/chapter-02.md)
+* [📚 References](./references/chapter-02.md)
+* [💻 Examples](./examples/chapter-02.md)
+* [🧪 Exercises](./exercises/chapter-02.md)
 
-* [📖 Читать главу](./book/chapter-02.md)
-* [📚 Литература](./references/chapter-02.md)
-* [💻 Примеры](./examples/chapter-02.md)
-* [🧪 Практика](./exercises/chapter-02.md)
-  
 ---
 
-## Глава 3. HTML как API браузера
+## Chapter 3. HTML as a Browser API
 
-Темы:
+Topics:
 
-- Эволюция HTML Living Standard
-- Новые элементы появляются постоянно
-- HTML как декларативный интерфейс браузера
-- Declarative vs Imperative Programming
+- Evolution of HTML Living Standard
+- New elements are constantly emerging
+- HTML as a declarative browser interface
+- Declarative vs. Imperative Programming
 
+* [📖 Read chapter](./book/chapter-03.md)
+* [📚 References](./references/chapter-03.md)
+* [💻 Examples](./examples/chapter-03.md)
+* [🧪 Exercises](./exercises/chapter-03.md)
 
-* [📖 Читать главу](./book/chapter-03.md)
-* [📚 Литература](./references/chapter-03.md)
-* [💻 Примеры](./examples/chapter-03.md)
-* [🧪 Практика](./exercises/chapter-03.md)
-  
 ---
 
-# Часть II. Современные интерактивные элементы
+# Part II. Modern Interactive Elements
 
-## Глава 4. `<dialog>`
+## Chapter 4. `<dialog>`
 
-Темы:
+Topics:
 
-- Почему модальные окна перестали быть JavaScript-компонентами
+- Why modal dialogs are no longer JavaScript components
 - `show()`
 - `showModal()`
 - `close()`
 - Focus management
 - Accessibility
-- Вложенные диалоги
-- Типичные ошибки
+- Nested dialogs
+- Common mistakes
 
+* [📖 Read chapter](./book/chapter-04.md)
+* [📚 References](./references/chapter-04.md)
+* [💻 Examples](./examples/chapter-04.md)
+* [🧪 Exercises](./exercises/chapter-04.md)
 
-* [📖 Читать главу](./book/chapter-04.md)
-* [📚 Литература](./references/chapter-04.md)
-* [💻 Примеры](./examples/chapter-04.md)
-* [🧪 Практика](./exercises/chapter-04.md)
-  
 ---
 
-## Глава 5. Popover API
+## Chapter 5. Popover API
 
-Темы:
+Topics:
 
-- История появления
+- History of its emergence
 - `popover`
 - `popovertarget`
 - `auto`
@@ -216,54 +215,51 @@ Browser Web Platform
 - Command Palette
 - Popover + CSS Anchor Positioning
 
+* [📖 Read chapter](./book/chapter-05.md)
+* [📚 References](./references/chapter-05.md)
+* [💻 Examples](./examples/chapter-05.md)
+* [🧪 Exercises](./exercises/chapter-05.md)
 
-* [📖 Читать главу](./book/chapter-05.md)
-* [📚 Литература](./references/chapter-05.md)
-* [💻 Примеры](./examples/chapter-05.md)
-* [🧪 Практика](./exercises/chapter-05.md)
-  
 ---
 
-## Глава 6. `<details>` и `<summary>`
+## Chapter 6. `<details>` and `<summary>`
 
-Темы:
+Topics:
 
 - FAQ
 - Accordion
 - Disclosure Widget
-- Без JavaScript
-- Анимации
+- Without JavaScript
+- Animations
 
+* [📖 Read chapter](./book/chapter-06.md)
+* [📚 References](./references/chapter-06.md)
+* [💻 Examples](./examples/chapter-06.md)
+* [🧪 Exercises](./exercises/chapter-06.md)
 
-* [📖 Читать главу](./book/chapter-06.md)
-* [📚 Литература](./references/chapter-06.md)
-* [💻 Примеры](./examples/chapter-06.md)
-* [🧪 Практика](./exercises/chapter-06.md)
-  
 ---
 
-# Часть III. Формы нового поколения
+# Part III. Next-Generation Forms
 
-## Глава 7. Современные формы
+## Chapter 7. Modern Forms
 
-Темы:
+Topics:
 
 - HTML Constraint Validation
-- Пользовательский опыт
+- User experience
 - Browser Validation API
 - Progressive Enhancement
 
+* [📖 Read chapter](./book/chapter-07.md)
+* [📚 References](./references/chapter-07.md)
+* [💻 Examples](./examples/chapter-07.md)
+* [🧪 Exercises](./exercises/chapter-07.md)
 
-* [📖 Читать главу](./book/chapter-07.md)
-* [📚 Литература](./references/chapter-07.md)
-* [💻 Примеры](./examples/chapter-07.md)
-* [🧪 Практика](./exercises/chapter-07.md)
-  
 ---
 
-## Глава 8. Новые атрибуты форм
+## Chapter 8. New Form Attributes
 
-Темы:
+Topics:
 
 - `enterkeyhint`
 - `inputmode`
@@ -275,17 +271,16 @@ Browser Web Platform
 - `pattern`
 - `inert`
 
+* [📖 Read chapter](./book/chapter-08.md)
+* [📚 References](./references/chapter-08.md)
+* [💻 Examples](./examples/chapter-08.md)
+* [🧪 Exercises](./exercises/chapter-08.md)
 
-* [📖 Читать главу](./book/chapter-08.md)
-* [📚 Литература](./references/chapter-08.md)
-* [💻 Примеры](./examples/chapter-08.md)
-* [🧪 Практика](./exercises/chapter-08.md)
-  
 ---
 
-## Глава 9. Формы и Accessibility
+## Chapter 9. Forms and Accessibility
 
-Темы:
+Topics:
 
 - Label
 - Fieldset
@@ -294,19 +289,18 @@ Browser Web Platform
 - Live Regions
 - Keyboard Navigation
 
+* [📖 Read chapter](./book/chapter-09.md)
+* [📚 References](./references/chapter-09.md)
+* [💻 Examples](./examples/chapter-09.md)
+* [🧪 Exercises](./exercises/chapter-09.md)
 
-* [📖 Читать главу](./book/chapter-09.md)
-* [📚 Литература](./references/chapter-09.md)
-* [💻 Примеры](./examples/chapter-09.md)
-* [🧪 Практика](./exercises/chapter-09.md)
-  
 ---
 
-# Часть IV. Производительность начинается с HTML
+# Part IV. Performance Starts with HTML
 
-## Глава 10. Современная загрузка ресурсов
+## Chapter 10. Modern Resource Loading
 
-Темы:
+Topics:
 
 - `preload`
 - `prefetch`
@@ -316,35 +310,34 @@ Browser Web Platform
 - `prerender`
 - Speculation Rules API
 
+* [📖 Read chapter](./book/chapter-10.md)
+* [📚 References](./references/chapter-10.md)
+* [💻 Examples](./examples/chapter-10.md)
+* [🧪 Exercises](./exercises/chapter-10.md)
 
-* [📖 Читать главу](./book/chapter-10.md)
-* [📚 Литература](./references/chapter-10.md)
-* [💻 Примеры](./examples/chapter-10.md)
-* [🧪 Практика](./exercises/chapter-10.md)
-  
 ---
 
-## Глава 11. Приоритеты загрузки
+## Chapter 11. Loading Priorities
 
-Темы:
+Topics:
 
 - `fetchpriority`
 - `async`
 - `defer`
 - `blocking`
 - Render Blocking
-- Приоритеты браузера
+- Browser priorities
 
+* [📖 Read chapter](./book/chapter-11.md)
+* [📚 References](./references/chapter-11.md)
+* [💻 Examples](./examples/chapter-11.md)
+* [🧪 Exercises](./exercises/chapter-11.md)
 
-* [📖 Читать главу](./book/chapter-11.md)
-* [📚 Литература](./references/chapter-11.md)
-* [💻 Примеры](./examples/chapter-11.md)
-* [🧪 Практика](./exercises/chapter-11.md)
 ---
 
-## Глава 12. Современная работа с изображениями
+## Chapter 12. Modern Image Handling
 
-Темы:
+Topics:
 
 - `<picture>`
 - `<source>`
@@ -356,133 +349,127 @@ Browser Web Platform
 - `decoding="async"`
 - Responsive Images
 
+* [📖 Read chapter](./book/chapter-12.md)
+* [📚 References](./references/chapter-12.md)
+* [💻 Examples](./examples/chapter-12.md)
+* [🧪 Exercises](./exercises/chapter-12.md)
 
-* [📖 Читать главу](./book/chapter-12.md)
-* [📚 Литература](./references/chapter-12.md)
-* [💻 Примеры](./examples/chapter-12.md)
-* [🧪 Практика](./exercises/chapter-12.md)
 ---
 
-# Часть V. HTML и современные браузерные API
+# Part V. HTML and Modern Browser APIs
 
-## Глава 13. View Transition API
+## Chapter 13. View Transition API
 
-Темы:
+Topics:
 
-- История появления
+- History of its emergence
 - Multi Page Applications
 - Single Page Applications
 - HTML Navigation API
-- Переходы между страницами
+- Page transitions
 - Shared Element Transition
-- Интеграция с CSS
+- Integration with CSS
 
+* [📖 Read chapter](./book/chapter-13.md)
+* [📚 References](./references/chapter-13.md)
+* [💻 Examples](./examples/chapter-13.md)
+* [🧪 Exercises](./exercises/chapter-13.md)
 
-* [📖 Читать главу](./book/chapter-13.md)
-* [📚 Литература](./references/chapter-13.md)
-* [💻 Примеры](./examples/chapter-13.md)
-* [🧪 Практика](./exercises/chapter-13.md)
 ---
 
-## Глава 14. Navigation API
+## Chapter 14. Navigation API
 
-Темы:
+Topics:
 
-- Современная навигация
-- История браузера
+- Modern navigation
+- Browser history
 - SPA
 - MPA
 - HTML Navigation
 
-
-* [📖 Читать главу](./book/chapter-14.md)
-* [📚 Литература](./references/chapter-14.md)
-* [💻 Примеры](./examples/chapter-14.md)
-* [🧪 Практика](./exercises/chapter-14.md)
+* [📖 Read chapter](./book/chapter-14.md)
+* [📚 References](./references/chapter-14.md)
+* [💻 Examples](./examples/chapter-14.md)
+* [🧪 Exercises](./exercises/chapter-14.md)
 
 ---
 
-## Глава 15. Declarative Shadow DOM
+## Chapter 15. Declarative Shadow DOM
 
-Темы:
+Topics:
 
-- Почему появился
+- Why it emerged
 - SSR
 - SEO
-- Производительность
-- Гидратация
+- Performance
+- Hydration
 - Shadow Root
-- Практические сценарии
+- Practical scenarios
 
+* [📖 Read chapter](./book/chapter-15.md)
+* [📚 References](./references/chapter-15.md)
+* [💻 Examples](./examples/chapter-15.md)
+* [🧪 Exercises](./exercises/chapter-15.md)
+*
 
-* [📖 Читать главу](./book/chapter-15.md)
-* [📚 Литература](./references/chapter-15.md)
-* [💻 Примеры](./examples/chapter-15.md)
-* [🧪 Практика](./exercises/chapter-15.md)
-* 
 ---
 
-# Часть VI. Web Components
+# Part VI. Web Components
 
-## Глава 16. Custom Elements
+## Chapter 16. Custom Elements
 
-Темы:
+Topics:
 
-- Регистрация компонентов
+- Component registration
 - Lifecycle
-- Атрибуты
+- Attributes
 - Properties
 - Events
 
-
-* [📖 Читать главу](./book/chapter-16.md)
-* [📚 Литература](./references/chapter-16.md)
-* [💻 Примеры](./examples/chapter-16.md)
-* [🧪 Практика](./exercises/chapter-16.md)
+* [📖 Read chapter](./book/chapter-16.md)
+* [📚 References](./references/chapter-16.md)
+* [💻 Examples](./examples/chapter-16.md)
+* [🧪 Exercises](./exercises/chapter-16.md)
 
 ---
 
-## Глава 17. Shadow DOM
+## Chapter 17. Shadow DOM
 
-Темы:
+Topics:
 
-- Изоляция компонентов
+- Component isolation
 - Slot
 - Template
 - Styling
 - Accessibility
 
-
-
-* [📖 Читать главу](./book/chapter-17.md)
-* [📚 Литература](./references/chapter-17.md)
-* [💻 Примеры](./examples/chapter-17.md)
-* [🧪 Практика](./exercises/chapter-17.md)
+* [📖 Read chapter](./book/chapter-17.md)
+* [📚 References](./references/chapter-17.md)
+* [💻 Examples](./examples/chapter-17.md)
+* [🧪 Exercises](./exercises/chapter-17.md)
 
 ---
 
-## Глава 18. HTML Templates
+## Chapter 18. HTML Templates
 
-Темы:
+Topics:
 
 - `<template>`
 - `<slot>`
-- Повторное использование
-- Клонирование
-- Серверный рендеринг
+- Reusability
+- Cloning
+- Server-side rendering
 
-
-
-* [📖 Читать главу](./book/chapter-18.md)
-* [📚 Литература](./references/chapter-18.md)
-* [💻 Примеры](./examples/chapter-18.md)
-* [🧪 Практика](./exercises/chapter-18.md)
+* [📖 Read chapter](./book/chapter-18.md)
+* [📚 References](./references/chapter-18.md)
+* [💻 Examples](./examples/chapter-18.md)
+* [🧪 Exercises](./exercises/chapter-18.md)
 
 ---
 
-## Глава 19. Web Components и современные фреймворки
+## Chapter 19. Web Components and Modern Frameworks
 
-Темы:
+Topics:
 
 - Angular Elements
 - React
@@ -490,22 +477,20 @@ Browser Web Platform
 - Svelte
 - Lit
 - Stencil
-- Межфреймворковое взаимодействие
+- Cross-framework interaction
 
-
-
-* [📖 Читать главу](./book/chapter-19.md)
-* [📚 Литература](./references/chapter-19.md)
-* [💻 Примеры](./examples/chapter-19.md)
-* [🧪 Практика](./exercises/chapter-19.md)
+* [📖 Read chapter](./book/chapter-19.md)
+* [📚 References](./references/chapter-19.md)
+* [💻 Examples](./examples/chapter-19.md)
+* [🧪 Exercises](./exercises/chapter-19.md)
 
 ---
 
-# Часть VII. HTML и производительность
+# Part VII. HTML and Performance
 
-## Глава 20. Critical Rendering Path
+## Chapter 20. Critical Rendering Path
 
-Темы:
+Topics:
 
 - HTML Parser
 - CSSOM
@@ -514,18 +499,16 @@ Browser Web Platform
 - Paint
 - Composite
 
-
-
-* [📖 Читать главу](./book/chapter-20.md)
-* [📚 Литература](./references/chapter-20.md)
-* [💻 Примеры](./examples/chapter-20.md)
-* [🧪 Практика](./exercises/chapter-20.md)
+* [📖 Read chapter](./book/chapter-20.md)
+* [📚 References](./references/chapter-20.md)
+* [💻 Examples](./examples/chapter-20.md)
+* [🧪 Exercises](./exercises/chapter-20.md)
 
 ---
 
-## Глава 21. HTML как инструмент оптимизации
+## Chapter 21. HTML as an Optimization Tool
 
-Темы:
+Topics:
 
 - Lazy Loading
 - Resource Hints
@@ -534,74 +517,67 @@ Browser Web Platform
 - Streaming HTML
 - Partial Hydration
 
-
-
-* [📖 Читать главу](./book/chapter-21.md)
-* [📚 Литература](./references/chapter-21.md)
-* [💻 Примеры](./examples/chapter-21.md)
-* [🧪 Практика](./exercises/chapter-21.md)
+* [📖 Read chapter](./book/chapter-21.md)
+* [📚 References](./references/chapter-21.md)
+* [💻 Examples](./examples/chapter-21.md)
+* [🧪 Exercises](./exercises/chapter-21.md)
 
 ---
 
-## Глава 22. Progressive Enhancement
+## Chapter 22. Progressive Enhancement
 
-Темы:
+Topics:
 
-- Почему идея снова актуальна
+- Why the idea is relevant again
 - HTML First
 - CSS First
 - JavaScript Last
 - Graceful Degradation
 
-
-
-* [📖 Читать главу](./book/chapter-22.md)
-* [📚 Литература](./references/chapter-22.md)
-* [💻 Примеры](./examples/chapter-22.md)
-* [🧪 Практика](./exercises/chapter-22.md)
+* [📖 Read chapter](./book/chapter-22.md)
+* [📚 References](./references/chapter-22.md)
+* [💻 Examples](./examples/chapter-22.md)
+* [🧪 Exercises](./exercises/chapter-22.md)
 
 ---
 
-# Часть VIII. Архитектура HTML
+# Part VIII. HTML Architecture
 
-## Глава 23. Компонентное мышление
+## Chapter 23. Component Thinking
 
-Темы:
+Topics:
 
-- HTML как контракт компонента
-- Семантика компонентов
-- Инварианты
-- API компонентов
+- HTML as a component contract
+- Component semantics
+- Invariants
+- Component APIs
 
-
-* [📖 Читать главу](./book/chapter-23.md)
-* [📚 Литература](./references/chapter-23.md)
-* [💻 Примеры](./examples/chapter-23.md)
-* [🧪 Практика](./exercises/chapter-23.md)
+* [📖 Read chapter](./book/chapter-23.md)
+* [📚 References](./references/chapter-23.md)
+* [💻 Examples](./examples/chapter-23.md)
+* [🧪 Exercises](./exercises/chapter-23.md)
 
 ---
 
-## Глава 24. HTML и Design Systems
+## Chapter 24. HTML and Design Systems
 
-Темы:
+Topics:
 
 - Design Tokens
-- Семантическая структура
-- Переиспользуемые шаблоны
+- Semantic structure
+- Reusable templates
 - Accessibility by Design
 
-
-* [📖 Читать главу](./book/chapter-24.md)
-* [📚 Литература](./references/chapter-24.md)
-* [💻 Примеры](./examples/chapter-24.md)
-* [🧪 Практика](./exercises/chapter-24.md)
-
+* [📖 Read chapter](./book/chapter-24.md)
+* [📚 References](./references/chapter-24.md)
+* [💻 Examples](./examples/chapter-24.md)
+* [🧪 Exercises](./exercises/chapter-24.md)
 
 ---
 
-## Глава 25. HTML в эпоху SSR
+## Chapter 25. HTML in the Age of SSR
 
-Темы:
+Topics:
 
 - Angular SSR
 - React Server Components
@@ -610,56 +586,52 @@ Browser Web Platform
 - Hydration
 - Islands Architecture
 
-
-* [📖 Читать главу](./book/chapter-25.md)
-* [📚 Литература](./references/chapter-25.md)
-* [💻 Примеры](./examples/chapter-25.md)
-* [🧪 Практика](./exercises/chapter-25.md)
+* [📖 Read chapter](./book/chapter-25.md)
+* [📚 References](./references/chapter-25.md)
+* [💻 Examples](./examples/chapter-25.md)
+* [🧪 Exercises](./exercises/chapter-25.md)
 
 ---
 
-## Глава 26. Полностью современное приложение
+## Chapter 26. A Fully Modern Application
 
-Практическая разработка приложения с использованием:
+Practical development of an application using:
 
-- Семантического HTML
+- Semantic HTML
 - `<dialog>`
 - Popover API
 - Declarative Shadow DOM
 - Web Components
-- Современных форм
+- Modern forms
 - Resource Hints
 - View Transition API
 - Progressive Enhancement
 
-
-* [📖 Читать главу](./book/chapter-26.md)
-* [📚 Литература](./references/chapter-26.md)
-* [💻 Примеры](./examples/chapter-26.md)
-* [🧪 Практика](./exercises/chapter-26.md)
-
-
-## Глава 27. HTML как основа Web Platform
-
-
-- Living Standard 
-- Новые API 
-- Влияние искусственного интеллекта на веб 
-- Declarative Web 
-- Что, вероятно, появится в HTML к 2030 году 
-
-
-
-* [📖 Читать главу](./book/chapter-27.md)
-* [📚 Литература](./references/chapter-27.md)
-* [💻 Примеры](./examples/chapter-27.md)
-* [🧪 Практика](./exercises/chapter-27.md)
+* [📖 Read chapter](./book/chapter-26.md)
+* [📚 References](./references/chapter-26.md)
+* [💻 Examples](./examples/chapter-26.md)
+* [🧪 Exercises](./exercises/chapter-26.md)
 
 ---
 
-# 📚 Источники
+## Chapter 27. HTML as the Foundation of the Web Platform
 
-Основные источники:
+- Living Standard
+- New APIs
+- The impact of artificial intelligence on the web
+- Declarative Web
+- What will likely appear in HTML by 2030
+
+* [📖 Read chapter](./book/chapter-27.md)
+* [📚 References](./references/chapter-27.md)
+* [💻 Examples](./examples/chapter-27.md)
+* [🧪 Exercises](./exercises/chapter-27.md)
+
+---
+
+# 📚 Sources
+
+Primary sources:
 
 - [WHATWG HTML Living Standard](https://html.spec.whatwg.org/)
 - [MDN Web Docs](https://developer.mozilla.org/)
@@ -670,31 +642,31 @@ Browser Web Platform
 
 ---
 
-# 🧪 Практический подход
+# 🧪 Practical Approach
 
-Каждая глава содержит:
+Each chapter contains:
 
-- объяснение концепций;
-- ссылки на спецификации;
-- практические примеры;
-- рекомендации;
-- типичные ошибки;
-- задания;
-- ссылки для дальнейшего изучения.
-
----
-
-# 📌 Статус проекта
-
-🚧 В разработке
-
-Версия: 0.1
-
-Цель:
-создать современный учебник по HTML, ориентированный на разработчиков 2026 года.
+- concept explanations;
+- links to specifications;
+- practical examples;
+- recommendations;
+- common mistakes;
+- assignments;
+- links for further study.
 
 ---
 
-# Лицензия
+# 📌 Project Status
+
+🚧 Under development
+
+Version: 0.1
+
+Goal:
+to create a modern HTML textbook aimed at 2026 developers.
+
+---
+
+# License
 
 MIT

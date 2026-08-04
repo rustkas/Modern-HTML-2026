@@ -1,68 +1,67 @@
-# Часть IV. Производительность начинается с HTML
+# Part IV. Performance Starts with HTML
 
-## Глава 12. Современная работа с изображениями и медиаконтентом
+## Chapter 12. Modern Image and Media Handling
 
-Оптимизация медиаконтента часто является наиболее простым и эффективным способом повышения производительности веб-страницы. Современный HTML предоставляет мощные декларативные инструменты для реализации **адаптивных изображений** (*Responsive Images*), которые позволяют браузеру выбирать оптимальный ресурс в зависимости от характеристик устройства пользователя, таких как физический размер экрана, плотность пикселей и поддержка современных форматов сжатия.
+Media content optimization is often the simplest and most effective way to improve web page performance. Modern HTML provides powerful declarative tools for implementing **Responsive Images**, which allow the browser to select the optimal resource depending on the user's device characteristics, such as physical screen size, pixel density, and support for modern compression formats.
 
 ---
 
-## 12.1. Адаптивные изображения: `srcset` и `sizes`
+## 12.1. Responsive Images: `srcset` and `sizes`
 
-Для базовой адаптации растровых изображений без использования громоздких JavaScript-библиотек применяются атрибуты `srcset` и `sizes` у элемента `<img>`. Этот декларативный подход решает две ключевые задачи:
+For basic adaptation of raster images without using bulky JavaScript libraries, the `srcset` and `sizes` attributes on the `<img>` element are used. This declarative approach solves two key tasks:
 
-* **Выбор на основе плотности пикселей (Pixel Density):** С помощью дескриптора **`x`** в атрибуте `srcset` разработчик может предоставить несколько версий одного изображения для дисплеев с разным коэффициентом `device-pixel-ratio` (например, стандартные экраны `1x` и Retina-дисплеи повышенной плотности `2x`). Браузер самостоятельно принимает решение о загрузке, учитывая также текущий уровень масштабирования страницы (*zoom*).
-* **Выбор на основе ширины вьюпорта (Viewport-based Selection):** Дескриптор **`w`** в паре с `srcset` указывает реальную физическую ширину каждого файла в пикселях. В связке с ним обязателен атрибут **`sizes`**, который сообщает браузеру, какую именно долю экрана (в CSS-пикселях) изображение будет занимать в макете при различных медиа-условиях.
+- **Pixel Density-Based Selection:** Using the **`x`** descriptor in the `srcset` attribute, the developer can provide several versions of the same image for displays with different `device-pixel-ratio` values (for example, standard `1x` screens and high-density Retina displays at `2x`). The browser independently decides which to load, also taking into account the current page zoom level.
+- **Viewport Width-Based Selection:** The **`w`** descriptor paired with `srcset` indicates the actual physical width of each file in pixels. It must be accompanied by the **`sizes`** attribute, which tells the browser what portion of the screen (in CSS pixels) the image will occupy in the layout under various media conditions.
 
-### Инновация со значением `auto` для `sizes`
+### Innovation: The `auto` Value for `sizes`
 
-Современные спецификации поддерживают ключевое слово **`auto`** для атрибута `sizes`. Если изображение загружается в отложенном режиме (`loading="lazy"`), браузер может автоматически определить размер на основе реальной отрисованной ширины элемента в макете, избавляя разработчика от необходимости вручную вычислять сложные размеры через медиазапросы.
+Modern specifications support the **`auto`** keyword for the `sizes` attribute. If the image is loaded lazily (`loading="lazy"`), the browser can automatically determine its size based on the actual rendered width of the element in the layout, eliminating the need for developers to manually calculate complex sizes via media queries.
 
-### Пример адаптивного изображения через `srcset`
+### Example of a Responsive Image Using `srcset`
 
 ```html
 <img src="photo-800.jpg"
      srcset="photo-400.jpg 400w, photo-800.jpg 800w, photo-1200.jpg 1200w"
      sizes="(max-width: 600px) 100vw, 800px"
-     alt="Пример адаптивного изображения"
+     alt="Example of a responsive image"
      width="800" height="500">
-
 ```
 
 ---
 
-## 12.2. Контейнер `<picture>` и `<source>` для гибких сценариев
+## 12.2. The `<picture>` Container and `<source>` for Flexible Scenarios
 
-Элемент `<picture>` выступает семантическим контейнером-оберткой, который предоставляет вложенному элементу `<img>` несколько альтернативных источников (*sources*). Это незаменимо для реализации продвинутых интерфейсных задач:
+The `<picture>` element serves as a semantic wrapper container that provides the nested `<img>` element with several alternative sources. This is indispensable for implementing advanced interface tasks:
 
-* **Art Direction (Художественное оформление):** Использование элемента `<source>` с атрибутом **`media`** позволяет кардинально менять само содержимое изображения (например, подменять горизонтальный панорамный баннер на вертикальный кадрированный вариант для мобильных экранов) в зависимости от размеров вьюпорта.
-* **Современные форматы сжатия (AVIF, WebP):** С помощью атрибута **`type`** можно предложить браузеру новейшие форматы изображений с беспрецедентным уровнем сжатия и качеством (например, `image/avif` или `image/webp`). Браузер последовательно перебирает источники, выбирает первый поддерживаемый формат, а для устаревших браузеров плавно откатывается к базовому тегу `<img>` с классическим JPEG или PNG.
+- **Art Direction:** Using the `<source>` element with the **`media`** attribute allows radically changing the image content itself (for example, replacing a horizontal panoramic banner with a vertically cropped version for mobile screens) depending on viewport dimensions.
+- **Modern Compression Formats (AVIF, WebP):** Using the **`type`** attribute, you can offer the browser the latest image formats with unprecedented compression levels and quality (for example, `image/avif` or `image/webp`). The browser sequentially iterates through the sources, selects the first supported format, and gracefully falls back to the base `<img>` tag with classic JPEG or PNG for older browsers.
 
-### Пример использования Art Direction и форматов
+### Example Using Art Direction and Formats
 
 ```html
 <picture>
-  <!-- Мобильная обрезанная версия в современном формате AVIF -->
+  <!-- Mobile cropped version in modern AVIF format -->
   <source media="(max-width: 768px)" srcset="hero-mobile.avif" type="image/avif">
-  <!-- Десктопная версия в формате AVIF -->
-  <srcset srcset="hero-desktop.avif" type="image/avif">
-  <!-- Запасной вариант для браузеров без поддержки AVIF -->
-  <img src="hero-desktop.jpg" alt="Главный экран" width="1200" height="600">
+  <!-- Desktop version in AVIF format -->
+  <source srcset="hero-desktop.avif" type="image/avif">
+  <!-- Fallback for browsers without AVIF support -->
+  <img src="hero-desktop.jpg" alt="Hero section" width="1200" height="600">
 </picture>
-
 ```
 
 ---
 
-## 12.3. Производительность отрисовки: `loading` и `decoding`
+## 12.3. Rendering Performance: `loading` and `decoding`
 
-HTML позволяет тонко управлять жизненным циклом загрузки и декодирования графики, снижая нагрузку на процессор и сеть:
+HTML allows fine-grained control over the loading and decoding lifecycle of graphics, reducing CPU and network load:
 
-* **`loading="lazy"` (Ленивая загрузка):** Откладывает загрузку изображений, находящихся за пределами видимой зоны экрана (*below the fold*), до момента, когда пользователь приближается к ним при скролле. Это радикально сокращает критический путь рендеринга и экономит трафик.
-* *Критически важно:* Для предотвращения неприятных сдвигов разметки во время подгрузки контента (**CLS** — *Cumulative Layout Shift*) всегда следует явно указывать атрибуты **`width`** и **`height`**, задавая правильное соотношение сторон.
+- **`loading="lazy"` (Lazy Loading):** Defers loading of images that are outside the visible area of the screen (below the fold) until the user scrolls close to them. This radically reduces the critical rendering path and saves bandwidth.
+- *Critically important:* To prevent unpleasant layout shifts during content loading (**CLS** — Cumulative Layout Shift), always explicitly specify the **`width`** and **`height`** attributes to define the correct aspect ratio.
 
+- **`decoding="async"` (Asynchronous Decoding):** Gives the browser a clear hint to perform the resource-intensive image decoding process in a background thread. Unlike synchronous mode, which can block the main interface thread and cause jank, asynchronous decoding allows instant rendering of text and page structure, displaying graphics immediately after processing completes.
 
-* **`decoding="async"` (Асинхронное декодирование):** Дает браузеру четкую подсказку выполнять ресурсоемкий процесс декодирования изображения в фоновом потоке. В отличие от синхронного режима, способного заблокировать основной поток интерфейса и вызвать подтормаживания, асинхронное декодирование позволяет мгновенно отрисовать текст и структуру страницы, выводя графику сразу после завершения обработки.
+---
 
-### Заключение главы
+## Chapter Conclusion
 
-Декларативный подход к работе с изображениями на уровне HTML превосходит любые скриптовые обертки. Современные браузеры способны анализировать разметку и агрессивно планировать сетевые запросы еще до старта выполнения JavaScript, гарантируя максимальную производительность и мгIновенную отзывчивость интерфейса.
+The declarative approach to image handling at the HTML level surpasses any script-based wrappers. Modern browsers are capable of analyzing markup and aggressively scheduling network requests even before JavaScript execution begins, guaranteeing maximum performance and instant interface responsiveness.

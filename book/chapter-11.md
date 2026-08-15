@@ -1,54 +1,55 @@
-# Part IV. Performance Starts with HTML
+# Часть IV. Производительность начинается с HTML
 
-## Chapter 11. Managing Resource Loading Priorities
+## Глава 11. Управление приоритетами загрузки ресурсов
 
-Effectively managing how and in what order the browser loads resources is a key factor in achieving high web page performance and optimizing Core Web Vitals metrics. The modern web platform provides developers with robust tools for fine-tuning these processes, allowing them to explicitly indicate the importance of each element in the rendering flow.
-
----
-
-## 11.1. Render Blocking
-
-The process of transforming raw HTML, CSS, and JavaScript into pixels on the screen is called the **Critical Rendering Path**. Some types of resources have the ability to temporarily pause this process.
-
-- **Render Blocking Elements:** These are critically important resources that the browser must fully load and process before it can continue building the render tree. These include:
-  - External stylesheets (`<link rel="stylesheet">`).
-  - Internal styles (`<style>`).
-  - Classic synchronous scripts (without `async` or `defer` attributes).
-
-- **The `blocking` Attribute:** Allows the developer to explicitly mark an element (e.g., `<link>`, `<script>`, `<style>`, or `<iframe>`) as render-blocking using the token `blocking="render"`. This ensures that the browser will not begin rendering the page until the resource has been processed.
-- **Management Mechanism:** Internally, the browser maintains a dynamic set of render-blocking elements. Rendering is delayed until this set becomes empty or until a built-in safety timeout triggers.
+Эффективное управление тем, как и в каком порядке браузер загружает ресурсы, является ключевым фактором для достижения высокой производительности веб-страниц и оптимизации метрик Core Web Vitals. Современная веб-платформа предоставляет разработчикам надежные инструменты для тонкой настройки этих процессов, позволяя явно указывать важность каждого элемента в потоке рендеринга.
 
 ---
 
-## 11.2. Script Loading Strategies: `async` and `defer`
+## 11.1. Блокировка отрисовки (Render Blocking)
 
-Scripts have traditionally been the main source of delays in the browser. Two key boolean attributes for `<script>` tags radically change their behavior:
+Процесс превращения сырого HTML, CSS и JavaScript в пиксели на экране называется **критическим путем рендеринга** (_Critical Rendering Path_). Некоторые типы ресурсов обладают способностью временно приостанавливать этот процесс.
 
-- **`async` (Asynchronous Loading):** The script begins downloading in parallel with HTML document parsing. As soon as the file is fully loaded, HTML parsing is temporarily paused for immediate execution of this script. The execution order of `async` scripts is not guaranteed — they execute as they become ready.
-- **`defer` (Deferred Loading):** The script also loads in the background in parallel with HTML parsing, but its execution is **strictly deferred** until the entire document has been fully parsed (`DOMContentLoaded`). Scripts with `defer` are guaranteed to execute in the order they are declared in the markup.
-- _Note:_ Modern ECMAScript modules (`type="module"`) behave by default as if they have the `defer` attribute applied.
+- **Render Blocking элементы:** Это критически важные ресурсы, которые браузер обязан полностью загрузить и обработать, прежде чем продолжить построение дерева отрисовки. К ним относятся:
+- Внешние таблицы стилей (`<link rel="stylesheet">`).
+- Внутренние стили (`<style>`).
+- Классические синхронные скрипты (без атрибутов `async` или `defer`).
 
-If neither of these attributes is specified, a classic script blocks the parser: HTML loading stops until the file is fully downloaded and executed.
+- **Атрибут `blocking`:** Позволяет разработчику явно пометить элемент как блокирующий рендеринг с помощью токена `blocking="render"`. Это гарантирует, что браузер не начнет отображение страницы, пока ресурс не будет обработан. Спецификация определяет этот атрибут только для трёх элементов: `<link>`, `<script>` и `<style>` — `<iframe>` в их число не входит и атрибут `blocking` не поддерживает.
+- **Механизм управления:** Внутренне браузер поддерживает динамический набор элементов, блокирующих рендеринг. Отрисовка страницы задерживается до тех пор, пока этот набор не станет пустым или пока не сработает встроенный тайм-аут безопасности.
+
+> **Оговорка о зрелости.** На момент написания книги `blocking="render"` официально не входит в Baseline: он поддерживается в Chromium-браузерах, WebKit объявил о намерении реализовать его для `<script>` и `<style>`, а Firefox официально занял позитивную позицию по спецификации, но ещё не отгрузил поддержку. Как и в случае с другими не-Baseline фичами этой книги, используйте его как точечную оптимизацию, а не как единственный механизм борьбы с FOUC — базовый рендер-блокирующий механизм для обычных синхронных `<link rel="stylesheet">` и `<script>` без `async`/`defer` (раздел 11.2) и так работает во всех браузерах без этого атрибута.
+---
+
+## 11.2. Стратегии загрузки скриптов: `async` и `defer`
+
+Скрипты традиционно являются главным источником задержек в браузере. Для тегов `<script>` предусмотрены два ключевых булевых атрибута, кардинально меняющих их поведение:
+
+- **`async` (Асинхронная загрузка):** Скрипт начинает скачиваться параллельно с парсингом HTML-документа. Как только файл полностью загружен, парсинг HTML временно приостанавливается для немедленного выполнения этого скрипта. Порядок выполнения скриптов с `async` не гарантируется — они выполняются по мере готовности.
+- **`defer` (Отложенная загрузка):** Скрипт также загружается в фоновом режиме параллельно с разбором HTML, но его выполнение **строго откладывается** до момента, пока весь документ не будет полностью разобран (_DOMContentLoaded_). Скрипты с `defer` гарантированно выполняются в том порядке, в котором они объявлены в разметке.
+- _Примечание:_ Современные ECMAScript-модули (`type="module"`) по умолчанию ведут себя так, будто к ним применен атрибут `defer`.
+
+Если ни один из этих атрибутов не указан, классический скрипт блокирует парсер: загрузка HTML останавливается, пока файл не будет скачан и выполнен полностью.
 
 ---
 
-## 11.3. Fine-Tuning with `fetchpriority`
+## 11.3. Тонкая настройка с помощью `fetchpriority`
 
-The **`fetchpriority`** attribute (part of the HTML Living Standard specification) allows the developer to directly influence the browser's internal network request scheduler by explicitly indicating the relative importance of a resource. It is applicable to `<link>` tags (for example, for fonts), `<img>`, and `<script>`.
+Атрибут **`fetchpriority`** (часть спецификации HTML Living Standard) позволяет разработчику напрямую влиять на внутренний планировщик сетевых запросов браузера, явно указывая относительную важность ресурса. Он применим к тегам `<link>` (например, для шрифтов), `<img>` и `<script>`.
 
-The attribute accepts three values:
+Атрибут принимает три значения:
 
-- **`high`:** Signals a high loading priority relative to other resources of the same type.
-- **`low`:** Indicates a low priority, allowing more important elements to take precedence.
-- **`auto`:** The default value, where the browser independently determines priority based on its own heuristics.
+- **`high`:** Сигнализирует о высоком приоритете загрузки относительно других ресурсов того же типа.
+- **`low`:** Указывает на низкий приоритет, позволяя уступить канал более важным элементам.
+- **`auto`:** Значение по умолчанию, при котором браузер самостоятельно определяет приоритет на основе собственной эвристики.
 
-> **Practical Example:** Setting `fetchpriority="high"` on the main screen image responsible for the **LCP** (Largest Contentful Paint) metric allows the browser to request it immediately, significantly accelerating the visual appearance of key content.
+> **Практический пример:** Установка `fetchpriority="high"` на изображение главного экрана, отвечающее за метрику **LCP** (_Largest Contentful Paint_), позволяет браузеру запросить его немедленно, значительно ускоряя визуальное появление ключевого контента.
 
 ```html
-<!-- Priority loading of the site's main banner -->
+<!-- Приоритетная загрузка главного баннера сайта -->
 <img
   src="hero-banner.webp"
-  alt="Banner"
+  alt="Баннер"
   fetchpriority="high"
   width="1200"
   height="600"
@@ -57,17 +58,15 @@ The attribute accepts three values:
 
 ---
 
-## 11.4. Internal Browser Priorities
+## 11.4. Внутренние приоритеты браузера
 
-Modern browsers use complex heuristics to determine the order of network requests, relying on several factors:
+Современные браузеры используют сложную эвристику для определения порядка сетевых запросов, опираясь на несколько факторов:
 
-1. **Base resource type (`destination`):** HTML and stylesheets always receive the highest priority, while background images or analytics scripts may load later.
-2. **Blocking status:** The presence of render blocking automatically increases an element's priority in the network queue.
-3. **`fetchpriority` influence:** Explicitly specifying the attribute adjusts the standard scheduler algorithm.
-4. **Speculative processes:** Background requests via `prefetch` or `prerender` are always executed with minimal priority to ensure they do not compete for bandwidth with critical elements of the current page.
+1. **Базовый тип ресурса (`destination`):** HTML и таблицы стилей всегда получают наивысший приоритет, в то время как фоновые изображения или скрипты аналитики могут загружаться позже.
+2. **Блокирующий статус:** Наличие блокировки рендеринга автоматически повышает приоритет элемента в очереди сети.
+3. **Влияние `fetchpriority`:** Явное указание атрибута корректирует стандартный алгоритм планировщика.
+4. **Спекулятивные процессы:** Фоновые запросы через `prefetch` или `prerender` всегда выполняются с минимальным приоритетом, чтобы гарантированно не создавать конкуренцию за пропускную способность канала для критических элементов текущей страницы.
 
----
+### Заключение главы
 
-## Chapter Conclusion
-
-Skilled use of flow control attributes (`async`, `defer`, `blocking`, `fetchpriority`) allows the developer to "negotiate" with the browser, eliminate interface blocking, and ensure maximum responsiveness to user actions.
+Грамотное использование атрибутов управления потоком (`async`, `defer`, `blocking`, `fetchpriority`) позволяет разработчику «договориться» с браузером, исключить блокировку интерфейса и обеспечить максимальную скорость отклика на действия пользователя.

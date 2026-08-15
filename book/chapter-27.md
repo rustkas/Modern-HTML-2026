@@ -1,57 +1,63 @@
-## Chapter 27. HTML as the Core of the Web Platform
+## Глава 27. HTML как ядро Web Platform
 
-The **HTML** language has undergone a colossal evolutionary journey — from a simple set of tags for marking up static scientific documents to a powerful, high-performance software environment that forms the foundation for building fully functional interactive applications. Today, HTML serves as the immutable and reliable core of the entire Web Platform.
-
----
-
-## 27.1. Living Standard: Continuous Evolution of the Standard
-
-Unlike the early stages of web development, when specifications would freeze for years in the form of bulky releases (such as HTML4 or XHTML), modern HTML evolves according to the **Living Standard** model:
-
-- **Abandonment of Artificial Versions:** The WHATWG community has abandoned the concept of "frozen" versions (such as HTML5). The specification is in a state of continuous updates.
-- **Dynamic Adaptation:** New capabilities are introduced as they become technically ready and as industry needs arise, allowing the platform to respond instantly to the challenges of the times without waiting for bureaucratic releases.
+Язык **HTML** прошел колоссальный эволюционный путь — от простого набора тегов для разметки статических научных документов до мощной, высокопроизводительной программной среды, формирующей базис для создания полнофункциональных интерактивных приложений. Сегодня HTML выступает неизменным и надежным ядром всей Web Platform.
 
 ---
 
-## 27.2. New APIs and Platform Rationalization
+## 27.1. Living Standard: Непрерывная эволюция стандарта
 
-The ecosystem's development follows the philosophy of _platform rationalization_ — translating closed or complex patterns into standardized low-level APIs:
+В отличие от ранних этапов развития веба, когда спецификации замирали на долгие годы в виде громоздких релизов (вроде HTML4 или XHTML), современный HTML развивается по модели **Living Standard** (*Живой стандарт*):
 
-- **Popover API:** A unified mechanism for managing popup content (menus, tooltips, notifications), automatically elevating elements to the `top layer` and supporting the native _light dismiss_ scenario (closing on click outside or via the `Esc` key).
-- **Navigation API:** The modern evolution of the legacy `history` and `location` interfaces, providing centralized programmatic control over routing and transitions in client applications.
-- **Sanitizer API:** A native security standard for declarative sanitization of HTML strings in browser memory, minimizing Cross-Site Scripting (XSS) risks during dynamic content injection.
-
----
-
-## 27.3. Back to the Roots: Declarative Web
-
-Modern architecture strives to maximize the share of declarative code, reducing the load on client-side JavaScript and ensuring maximum rendering speed:
-
-- **Declarative Shadow DOM (DSD):** Allows marking up encapsulated shadow tree structures directly in primary HTML using the `shadowrootmode` attribute on the `<template>` tag, ensuring instant component rendering by the browser even before scripts execute.
-- **Native Semantic Interactivity:** Using built-in tags such as `<dialog>` allows the browser to take over routine focus, accessibility, and layer management without involving third-party libraries.
+* **Отказ от искусственных версий:** Сообщество WHATWG отказалось от концепции «замороженных» версий (вроде HTML5). Спецификация находится в состоянии непрерывного обновления.
+* **Динамическая адаптация:** Новые возможности внедряются по мере их технической готовности и реальных потребностей индустрии, позволяя платформе мгновенно реагировать на вызовы времени без ожидания бюрократических релизов.
 
 ---
 
-## 27.4. Integration of Artificial Intelligence into the Web Platform
+## 27.2. Новые API и рационализация платформы
 
-With the development of intelligent agents and machine learning systems, the boundary between the interface and the browser is blurring. The web platform is beginning to natively support AI interaction scenarios:
+Развитие экосистемы следует философии *рационализации платформы* — перевода закрытых или сложных паттернов в стандартизированные низкоуровневые API:
 
-- **The `writingsuggestions` Attribute:** A new global markup property that allows or prevents the browser from activating system-integrated text autocomplete, suggestion, and predictive input algorithms in form fields.
-- **AI-Ready Interfaces:** Designing markup with the understanding that page structure will be parsed not only by classic search crawlers but also by local or cloud language models (LLMs) that require flawless semantics and DOM purity.
-
----
-
-## 27.5. Vectors for HTML Development Until 2030
-
-Analyzing current consortium working drafts and discussions in the developer community, key directions for the standard's transformation in the coming years can be identified:
-
-- **Integration of Custom Elements with Native Ones:** Eliminating the last architectural barriers between Web Components and built-in tags in terms of accessibility, form management, and state.
-- **Expansion of ARIA Semantics:** Deep integration of new roles and properties (including the development of the ARIA 1.3 specification) directly into the structure of basic elements (for example, `<meter>`, `<progress>`).
-- **Secure Script Isolation:** Improving mechanisms for encapsulating executed code within modules and shadow trees without global exposure.
-- **Declarative Animations and Transitions:** Moving logic for managing complex visual effects (building on the _View Transition API_) directly into declarative markup attributes.
+* **Popover API:** Унифицированный механизм управления всплывающим контентом (меню, тултипы, уведомления), автоматически поднимающий элементы в `top layer` и поддерживающий нативный сценарий *light dismiss* (закрытие по клику вне области или клавише `Esc`).
+* **Navigation API:** Современная эволюция устаревших интерфейсов `history` и `location`, предоставляющая централизованный программный контроль над маршрутизацией и переходами в клиентских приложениях.
+* **Sanitizer API:** Нативный механизм безопасности (`element.setHTML()`, класс `Sanitizer`) для очистки HTML-строк перед вставкой в DOM — безопасная альтернатива `innerHTML`, по умолчанию вырезающая `<script>`, `<iframe>`, `<object>` и обработчики событий вроде `onclick`. **Важная оговорка о зрелости**, отличающая этот пункт от Popover и Navigation API выше: Sanitizer API на момент написания книги официально помечен как *не входящий в Baseline*. Firefox 148 стал первым браузером, реализовавшим API (февраль 2026), позже к нему присоединился Chrome; Safari к реализации ещё не приступал, хотя команда сформулировала положительную позицию по спецификации. Используйте `setHTML()` только с проверкой поддержки и фолбэком на проверенную библиотеку (например, DOMPurify) для остальных браузеров:
+> ```javascript
+> if ("setHTML" in Element.prototype) {
+>   element.setHTML(untrustedHTML);
+> } else {
+>   element.innerHTML = DOMPurify.sanitize(untrustedHTML);
+> }
+> ```
+> Стоит также помнить: это клиентский инструмент, который не заменяет серверную санитизацию — вызов `setHTML()` можно обойти, обратившись к API напрямую, минуя интерфейс страницы.
 
 ---
 
-## Chapter Conclusion
+## 27.3. Возвращение к истокам: Declarative Web
 
-HTML has proven its absolute viability and versatility. Having transformed from a simple text markup tool into the dynamic core of the modern Web Platform, it continues to unite design, performance, and accessibility, remaining the main foundation of the entire digital ecosystem of the future.
+Современная архитектура стремится максимизировать долю декларативного кода, снижая нагрузку на клиентский JavaScript и обеспечивая максимальную скорость рендеринга:
+
+* **Declarative Shadow DOM (DSD):** Позволяет размечать инкапсулированные структуры теневого дерева прямо в первичном HTML с помощью атрибута `shadowrootmode` у тега `<template>`, обеспечивая мгновенную отрисовку компонентов браузером еще до выполнения скриптов.
+* **Нативная семантическая интерактивность:** Использование встроенных тегов вроде `<dialog>` позволяет браузеру брать на себя рутинное управление фокусом, доступностью и слоями без привлечения сторонних библиотек.
+
+---
+
+## 27.4. Интеграция искусственного интеллекта в веб-платформу
+
+С развитием интеллектуальных агентов и систем машинного обучения грань между интерфейсом и браузером стирается. Веб-платформа начинает нативно поддерживать сценарии взаимодействия с ИИ:
+
+* **Атрибут `writingsuggestions`:** Новое глобальное свойство разметки, разрешающее или запрещающее браузеру активировать встроенные в систему алгоритмы автодополнения текста, подсказок и предиктивного ввода в полях формы.
+* **AI-Ready Interfaces:** Проектирование разметки с учетом того, что структуру страницы будут парсить не только классические поисковые роботы, но и локальные или облачные языковые модели (*LLM*), требующие безупречной семантики и чистоты DOM.
+
+---
+
+## 27.5. Векторы развития HTML до 2030 года
+
+Анализируя текущие рабочие черновики консорциумов и обсуждения в сообществе разработчиков, можно выделить ключевые направления трансформации стандарта на ближайшие годы:
+
+* **Интеграция кастомных элементов с нативными:** Ликвидация последних архитектурных барьеров между Web Components и встроенными тегами в вопросах доступности, управления формами и состоянием.
+* **Расширение семантики ARIA:** Глубокая интеграция новых ролей и свойств (включая развитие спецификации ARIA 1.3) непосредственно в структуру базовых элементов (например, `<meter>`, `<progress>`).
+* **Безопасная изоляция скриптов:** Совершенствование механизмов инкапсуляции выполняемого кода в модулях и теневых деревьях без их глобального раскрытия.
+* **Декларативные анимации и переходы:** Перенос логики управления сложными визуальными эффектами (в развитие *View Transition API*) непосредственно в декларативные атрибуты разметки.
+
+### Заключение главы
+
+HTML доказал свою абсолютную жизнеспособность и универсальность. Превратившись из простого средства разметки текста в динамичное ядро современной Web Platform, он продолжает объединять дизайн, производительность и доступность, оставаясь главным фундаментом всей цифровой экосистемы будущего.

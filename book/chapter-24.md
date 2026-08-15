@@ -1,51 +1,49 @@
-# Part VIII. HTML Architecture
+# Часть VIII. Архитектура HTML
 
-## Chapter 24. HTML and Design Systems
+## Глава 24. HTML и Design Systems (Дизайн-системы)
 
-In modern web development, **Design Systems** serve as the primary guarantor of visual consistency, scalability, and maintainability of interfaces. At the same time, **HTML** acts as their fundamental construction layer, establishing an immutable structure, semantic framework, and content behavior contract. Using standardized approaches at the markup level allows designing autonomous, resilient components that integrate predictably into any technological ecosystem.
-
----
-
-## 24.1. Design Tokens and State Management
-
-Although visual interface parameters (color schemes, typography, spacing) are traditionally described in CSS, HTML provides effective mechanisms for storing data, integrating design tokens, and declaratively managing the lifecycle of widget states.
-
-- **Custom Data (`data-*`):** Custom attributes allow embedding design-system-specific configuration parameters, dynamic theme tokens, or analytics markers directly into the markup, where scripts can safely read them for adaptive component configuration.
-- **Centralized Stylesheets (`Constructable Stylesheets`):** The programmatic stylesheet interface allows design system architects to create unified encapsulated styles in JavaScript memory and efficiently share them across dozens of shadow tree instances, avoiding code duplication.
-- **Declarative States:** Using native state attributes (for example, `open` on the `<details>` element or `checked` on checkboxes) allows directly linking widget display logic with CSS state selectors, minimizing the need for writing fragile imperative JavaScript.
+В современной веб-разработке дизайн-системы (_Design Systems_) выступают главным гарантом визуальной консистентности, масштабируемости и поддерживаемости интерфейсов. При этом **HTML** служит их фундаментальным строительным слоем, задающим незыблемую структуру, смысловой каркас и контракт поведения контента. Использование стандартизированных подходов на уровне разметки позволяет проектировать автономные, устойчивые компоненты, которые одинаково предсказуемо интегрируются в любые технологические экосистемы.
 
 ---
 
-## 24.2. Semantic Structure as the System Framework
+## 24.1. Design Tokens и управление состояниями
 
-A solid foundation for any design system is uncompromising semantics, endowing each document node with clear roles understandable to both the browser and assistive technologies.
+Хотя визуальные параметры интерфейса (цветовые схемы, типографика, отступы) традиционно описываются в CSS, HTML предоставляет эффективные механизмы для хранения данных, интеграции дизайн-токенов и декларативного управления жизненным циклом состояний виджетов.
 
-- **Intrinsic Meaning:** DOM elements carry inherent logic (for example, the `<ol>` tag always defines an ordered list), imposing strict architectural obligations on how that component should be applied in the interface.
-- **Content Categories and Nesting:** The standard strictly classifies elements into flow, sectioning, interactive, and phrasing content. This allows design system architects to clearly control composition rules and valid nesting of elements within components.
-- **Media-Independent Markup:** The modern specification encourages strict separation of structure and presentation layer, ensuring that design system markup remains unchanged and adaptable when rendered on any device — from smartphone to speech synthesizer.
-
----
-
-## 24.3. Reusable Templates and Web Components
-
-To implement scalable interfaces, design system architecture actively relies on the standard set of Web Components technologies, ensuring isolation and reuse:
-
-- **The `<template>` Element:** Serves as a high-performance interface blueprint, keeping its content inert (without executing scripts or loading resources) until dynamic cloning occurs.
-- **The Slot Mechanism (`<slot>`):** Acts as a flexible placeholder, allowing seamless connection of the protected design system structure (Shadow DOM) with unique user content (Light DOM).
-- **Strict Encapsulation:** Shadow DOM boundaries protect the internal layout and styling rules of design system components from accidental or deliberate contamination by the host application's global styles.
+- **Кастомные данные (`data-*`):** Пользовательские атрибуты позволяют внедрять специфичные для дизайн-системы конфигурационные параметры, динамические токены темы или маркеры аналитики прямо в разметку, где скрипты могут безопасно считывать их для адаптивной настройки компонентов.
+- **Централизованные стили (`Constructable Stylesheets`):** Программный интерфейс таблиц стилей позволяет архитекторам дизайн-систем создавать единые инкапсулированные стили в памяти JavaScript и эффективно расшаривать их между десятками экземпляров теневых деревьев (_Shadow DOM_), избегая дублирования кода.
+- **Декларативные состояния:** Использование нативных атрибутов состояния (например, `open` у элемента `<details>` или `checked` у чекбоксов) позволяет напрямую увязывать логику отображения виджета с селекторами состояний в CSS, минимизируя необходимость написания хрупкого императивного JavaScript.
 
 ---
 
-## 24.4. Accessibility by Design
+## 24.2. Семантическая структура как каркас системы
 
-In a modern design system, accessibility (A11y) cannot be added "on top" of ready-made code — it must be embedded at the design stage of every foundational component.
+Надежный фундамент любой дизайн-системы — это бескомпромиссная семантика, наделяющая каждый узел документа четкими ролями, понятными как браузеру, так и вспомогательным технологиям.
 
-- **Preference for Native Elements:** The system architecture must prioritize built-in semantic tags (`<button>`, `<dialog>`, `<a>`), avoiding attempts to imitate their behavior through generic containers with ARIA roles, as native browser support is always more reliable.
-- **WAI-ARIA Roles for Complex Patterns:** In cases where standard tags are insufficient for implementing custom interactive patterns (for example, complex trees or comboboxes), WAI-ARIA specifications are used to precisely describe states and manage focus.
-- **Accessibility "Out of the Box" via `ElementInternals`:** When creating custom elements, design system authors can use the `ElementInternals` interface to pass native ARIA roles and component states to the browser without exposing them in the public markup, making components accessible without additional effort from the product developer.
+- **Внутренний смысл (_Intrinsic Meaning_):** Элементы DOM несут заложенную логику (например, тег `<ol>` всегда задает упорядоченный список), накладывая строгие архитектурные обязательства на то, как этот компонент должен применяться в интерфейсе.
+- **Категории и вложенность контента:** Стандарт строго классифицирует элементы на потоковые, секционные, интерактивные и текстовые. Это позволяет проектировщикам дизайн-систем четко контролировать правила композиции и допустимую вложенность элементов внутри компонентов.
+- **Медиа-независимая разметка:** Современная спецификация поощряет жесткое разделение структуры и презентационного слоя, гарантируя, что разметка дизайн-системы останется неизменной и адаптируемой при выводе на любые устройства — от смартфона до речевого синтезатора.
 
 ---
 
-## Chapter Conclusion
+## 24.3. Переиспользуемые шаблоны и Web Components
 
-Integrating HTML into the design system concept transforms markup from a set of static tags into a living, standardized contract between interface designers, the codebase, and users. Clear semantics, encapsulation, and native accessibility ensure the durability and predictability of digital products of any scale.
+Для реализации масштабируемых интерфейсов архитектура дизайн-систем активно опирается на стандартный набор технологий Web Components, обеспечивающих изоляцию и повторное использование:
+
+- **Элемент `<template>`:** Служит высокопроизводительным чертежом интерфейса, сохраняющим свое содержимое инертным (без выполнения скриптов и загрузки ресурсов) до момента динамического клонирования.
+- **Механизм слотов (`<slot>`):** Выполняет роль гибкого заполнителя, позволяя органично связывать защищенную структуру дизайн-системы (_Shadow DOM_) с уникальным пользовательским контентом (_Light DOM_).
+- **Жесткая инкапсуляция:** Границы Shadow DOM защищают внутреннюю верстку и правила оформления компонентов дизайн-системы от случайного или намеренного загрязнения глобальными стилями хост-приложения.
+
+---
+
+## 24.4. Accessibility by Design (Доступность на уровне архитектуры)
+
+В современной дизайн-системе доступность (_A11y_) не может быть привнесена «поверх» готового кода — она должна быть заложена на этапе проектирования каждого базового компонента.
+
+- **Приоритет нативных элементов:** Архитектура системы обязана отдавать предпочтение встроенным семантическим тегам (`<button>`, `<dialog>`, `<a>`), избегая попыток имитировать их поведение через универсальные контейнеры с ARIA-ролями, так как нативная поддержка браузера всегда надежнее.
+- **Роли WAI-ARIA для сложных паттернов:** В случаях, когда стандартных тегов недостаточно для реализации кастомных интерактивных паттернов (например, сложных деревьев или комбинированных списков), спецификации WAI-ARIA используются для точного описания состояний и управления фокусом.
+- **Доступность «из коробки» через `ElementInternals`:** При создании кастомных элементов авторы дизайн-систем могут задействовать интерфейс `ElementInternals`, чтобы передать браузеру нативные ARIA-роли и состояния компонента без вынесения их в открытую разметку, делая компоненты доступными без дополнительных усилий со стороны разработчика продукта.
+
+### Заключение главы
+
+Интеграция HTML в концепцию дизайн-систем превращает разметку из набора статичных тегов в живой, стандартизированный контракт между проектировщиками интерфейсов, кодовой базой и пользователями. Четкая семантика, инкапсуляция и нативная доступность обеспечивают долговечность и предсказуемость цифровых продуктов любого масштаба.

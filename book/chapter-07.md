@@ -1,77 +1,77 @@
-# Part III. Next-Generation Forms
+# Часть III. Формы нового поколения
 
-# Chapter 7. Modern Web Forms: Declarative Interaction Architecture
+# Глава 7. Современные веб-формы: декларативная архитектура взаимодействия
 
-Over the past few years, forms have become one of the most rapidly evolving parts of HTML.
+За последние несколько лет формы стали одной из наиболее быстро развивающихся частей HTML.
 
-If previously a form was perceived as a simple way to send data to a server, today it represents a full-fledged browser subsystem that includes:
+Если раньше форма воспринималась как простой способ отправки данных на сервер, то сегодня она представляет собой полноценную подсистему браузера, включающую:
 
-- built-in validation;
-- state management;
-- modern mobile keyboards;
-- system pickers;
-- declarative data serialization;
+- встроенную валидацию;
+- управление состояниями;
+- современные мобильные клавиатуры;
+- системные пикеры;
+- декларативную сериализацию данных;
 - Accessibility;
-- CSS integration;
-- Progressive Enhancement support.
+- интеграцию с CSS;
+- поддержку Progressive Enhancement.
 
-The modern Web Platform is gradually moving more and more form handling logic from JavaScript directly into the browser.
-
----
-
-## 7.1. Why Forms Have Become Modern Again
-
-Forms are one of the oldest mechanisms of the World Wide Web. They transformed the Web from a document viewing system into a platform for user interaction. Registration, search, order checkout, file uploads, payments, application management — virtually any web application begins with a form.
-
-However, the history of HTML forms is not only the history of browser development but also the history of constant tension between platform capabilities and developer needs.
-
-By 2026, this tension has practically resolved. After two decades of JavaScript dominance, modern browsers are once again becoming the primary handler of user input.
+Современная Web Platform постепенно переносит всё больше логики обработки форм из JavaScript непосредственно в браузер.
 
 ---
 
-## From HTML Forms to the JavaScript Era
+## 7.1. Почему формы снова стали современными
 
-In the early days of the Web, HTML forms were practically the only way to send data.
+Формы — один из старейших механизмов Всемирной паутины. Именно они превратили Web из системы просмотра документов в платформу для взаимодействия с пользователем. Регистрация, поиск, оформление заказов, загрузка файлов, платежи, управление приложениями — практически любое веб-приложение начинается с формы.
+
+Однако история HTML-форм — это не только история развития браузеров, но и история постоянного противостояния между возможностями платформы и потребностями разработчиков.
+
+К 2026 году это противостояние практически завершилось. После двух десятилетий доминирования JavaScript современные браузеры вновь становятся главным обработчиком пользовательского ввода.
+
+---
+
+## От HTML Forms к эпохе JavaScript
+
+В начале развития Web HTML-формы были практически единственным способом отправки данных.
 
 ```html
 <form action="/login" method="post">
   <input name="login" />
   <input type="password" name="password" />
-  <button>Log in</button>
+  <button>Войти</button>
 </form>
 ```
 
-The browser independently performed the entire chain of actions:
+Браузер самостоятельно выполнял всю цепочку действий:
 
-- collected form data;
-- serialized it;
-- sent an HTTP request;
-- displayed the server's response.
+- собирал данные формы;
+- сериализовал их;
+- отправлял HTTP-запрос;
+- отображал ответ сервера.
 
-The developer practically didn't need to write client-side code.
+Разработчику практически не требовалось писать клиентский код.
 
-However, as interactive web applications evolved, the limitations of classic HTML forms became increasingly noticeable.
+Однако по мере развития интерактивных веб-приложений ограничения классических HTML-форм становились всё более заметными.
 
-For example:
+Например:
 
-- instant field validation;
-- asynchronous submission without page reload;
-- complex dynamic forms;
-- dependent fields;
-- step-by-step wizards;
-- intermediate state persistence.
+- мгновенная валидация полей;
+- асинхронная отправка без перезагрузки страницы;
+- сложные динамические формы;
+- зависимые поля;
+- пошаговые мастера (Wizard);
+- сохранение промежуточного состояния.
 
-The HTML of that time provided practically no built-in mechanisms for such scenarios.
+HTML того времени практически не предоставлял встроенных механизмов для подобных сценариев.
 
 ---
 
-## The Era of JavaScript Forms
+## Эпоха JavaScript Forms
 
-In the mid-2000s, the situation changed dramatically.
+В середине 2000-х ситуация резко изменилась.
 
-AJAX allowed submitting forms without reloading the page.
+AJAX позволил отправлять формы без перезагрузки страницы.
 
-A new architecture emerged:
+Появилась новая архитектура:
 
 ```
 HTML
@@ -89,27 +89,27 @@ XHR / Fetch
 Server
 ```
 
-Almost all logic moved to JavaScript.
+Практически вся логика переместилась в JavaScript.
 
-Developers began to independently implement:
+Разработчики начали самостоятельно реализовывать:
 
-- data serialization;
-- field validation;
-- error display;
-- button disabling;
-- loading indicators;
-- form state management;
-- success handling.
+- сериализацию данных;
+- проверку полей;
+- отображение ошибок;
+- блокировку кнопок;
+- индикаторы загрузки;
+- управление состоянием формы;
+- обработку успешной отправки.
 
-The browser gradually became merely a means of displaying the interface.
+Браузер постепенно превращался лишь в средство отображения интерфейса.
 
 ---
 
-## The Era of React Forms
+## Эпоха React Forms
 
-With the advent of React, Angular, Vue, and other SPA frameworks, form management became even more complex.
+С появлением React, Angular, Vue и других SPA-фреймворков управление формами стало ещё более сложным.
 
-A huge number of libraries emerged:
+Появилось огромное количество библиотек:
 
 - React Hook Form;
 - Formik;
@@ -120,7 +120,7 @@ A huge number of libraries emerged:
 - Yup;
 - Zod.
 
-The architecture looked roughly like this:
+Архитектура выглядела примерно так:
 
 ```
 DOM
@@ -146,7 +146,7 @@ Validation State
 Network State
 ```
 
-Even a simple text field was often accompanied by a large amount of additional state:
+Даже простое текстовое поле часто сопровождалось большим количеством дополнительного состояния:
 
 ```text
 value
@@ -172,58 +172,58 @@ submitted
 loading
 ```
 
-In many projects, form management logic surpassed the HTML code itself in volume.
+Во многих проектах логика управления формами превосходила по объему сам HTML-код.
 
 ---
 
-## 7.1. Why Developers Abandoned Native Forms
+## 7.1. Почему разработчики отказались от нативных форм
 
-The reasons were quite objective.
+Причины были вполне объективными.
 
-For many years, HTML indeed couldn't do much of what modern applications required.
+В течение многих лет HTML действительно не умел многое из того, что требовали современные приложения.
 
-For example:
+Например:
 
-- declarative validation;
-- custom error messages;
-- convenient date handling;
-- intelligent autocomplete;
-- correct mobile keyboard behavior;
-- modern CSS states;
-- programmatic opening of system pickers;
-- convenient integration with component architecture.
+- декларативную валидацию;
+- пользовательские сообщения об ошибках;
+- удобную работу с датами;
+- интеллектуальное автозаполнение;
+- корректную работу мобильных клавиатур;
+- современные CSS-состояния;
+- программное открытие системных пикеров;
+- удобную интеграцию с компонентной архитектурой.
 
-Therefore, JavaScript was not a luxury but a necessity.
+Поэтому JavaScript был не роскошью, а необходимостью.
 
 ---
 
-### What Changed by 2026
+### Что изменилось к 2026 году
 
-The modern Web Platform is evolving completely differently.
+Современная Web Platform развивается совершенно иначе.
 
-If previously the browser provided only basic HTML elements, now it implements a significant portion of interface logic itself.
+Если раньше браузер предоставлял лишь базовые HTML-элементы, то теперь он сам реализует значительную часть интерфейсной логики.
 
-Modern browsers contain dozens of built-in form handling mechanisms:
+Современные браузеры содержат десятки встроенных механизмов работы с формами:
 
 - Constraint Validation API;
 - ValidityState;
 - `reportValidity()`;
 - `setCustomValidity()`;
 - `showPicker()`;
-- intelligent `autocomplete`;
-- specialized virtual keyboards;
-- new CSS pseudo-classes (`:user-valid`, `:user-invalid`);
-- improved accessibility;
-- automatic integration with password managers;
-- built-in serialization and data submission tools.
+- интеллектуальное `autocomplete`;
+- специализированные виртуальные клавиатуры;
+- новые CSS-псевдоклассы (`:user-valid`, `:user-invalid`);
+- улучшенную доступность;
+- автоматическую интеграцию с менеджерами паролей;
+- встроенные средства сериализации и отправки данных.
 
-In other words, the browser is once again becoming an active participant in processing user input, not just an HTML rendering mechanism.
+Другими словами, браузер снова становится активным участником обработки пользовательского ввода, а не просто механизмом отображения HTML.
 
 ---
 
-### The New Architecture of Modern HTML Forms
+### Новая архитектура Modern HTML Forms
 
-The evolution can be represented as follows:
+Эволюцию можно представить следующим образом:
 
 ```text
 HTML Forms (1995)
@@ -241,54 +241,54 @@ React Forms (2015)
 Modern HTML Forms (2026)
 ```
 
-The main change is not the appearance of new tags but the redistribution of responsibility between the browser and the application.
+Главное изменение заключается не в появлении новых тегов, а в перераспределении ответственности между браузером и приложением.
 
-| Approach          | Who Manages the Form         |
-| ----------------- | ---------------------------- |
-| Classic HTML      | Browser                      |
-| JavaScript Forms  | Developer                    |
-| React Forms       | JavaScript Framework         |
-| Modern HTML Forms | Browser + Minimal JavaScript |
+| Подход            | Кто управляет формой             |
+| ----------------- | -------------------------------- |
+| Классический HTML | Браузер                          |
+| JavaScript Forms  | Разработчик                      |
+| React Forms       | JavaScript-фреймворк             |
+| Modern HTML Forms | Браузер + минимальный JavaScript |
 
-This is an important architectural trend of recent years: everything the platform can do should be done by the platform.
-
----
-
-### Modern HTML 2026: The Browser as a User Input Engine
-
-One of the main ideas of the modern Web Platform is abandoning the duplication of built-in browser mechanisms.
-
-If previously developers wrote their own systems for:
-
-- validation;
-- state management;
-- opening pickers;
-- error handling;
-- data serialization;
-
-today, most of these capabilities are already built directly into HTML.
-
-JavaScript is increasingly used not to implement basic form behavior but only for the business logic of a specific application.
-
-This is what distinguishes **Modern HTML 2026** from the approaches of the previous decade.
-
-HTML is no longer passive markup. Forms are becoming a high-level declarative browser API that takes on a significant portion of the work involved in user interaction. The better a developer understands the platform's built-in capabilities, the less custom code they need to write, the faster applications run, and the easier they become to maintain.
+Это важная архитектурная тенденция последних лет: всё, что может сделать платформа, должно выполняться платформой.
 
 ---
 
-## 7.2. The Form as a Declarative Data Model
+### Modern HTML 2026: браузер как движок пользовательского ввода
 
-One of the most important ideas of modern HTML is that a form is not just a visual group of input fields. For the browser, a form represents a **structured data model** described declaratively.
+Одной из главных идей современной Web Platform является отказ от дублирования встроенных механизмов браузера.
 
-When a developer creates a form, they are not writing a data collection algorithm. They are merely describing the structure of the information, and the browser independently transforms it into an object suitable for transmission, serialization, and processing.
+Если раньше разработчики писали собственые системы:
 
-This idea fully aligns with the overall philosophy of **Modern HTML 2026**: HTML describes **what the data represents**, and the browser decides **how to work with it**.
+- валидации;
+- управления состоянием;
+- открытия пикеров;
+- обработки ошибок;
+- сериализации данных;
+
+то сегодня большинство этих возможностей уже встроено непосредственно в HTML.
+
+JavaScript всё чаще используется не для реализации базового поведения формы, а только для бизнес-логики конкретного приложения.
+
+Именно это отличает **Modern HTML 2026** от подходов предыдущего десятилетия.
+
+HTML больше не является пассивной разметкой. Формы становятся высокоуровневым декларативным API браузера, который берет на себя значительную часть работы по взаимодействию с пользователем. Чем лучше разработчик понимает встроенные возможности платформы, тем меньше собственного кода ему приходится писать, тем быстрее работают приложения и тем проще становится их сопровождение.
 
 ---
 
-### From a Set of Elements to a Data Object
+## 7.2. Форма как декларативная модель данных
 
-At first glance, a form is just a regular set of elements.
+Одной из важнейших идей современного HTML является то, что форма — это не просто визуальная группа полей ввода. Для браузера форма представляет собой **структурированную модель данных**, описанную декларативно.
+
+Когда разработчик создает форму, он не пишет алгоритм сбора данных. Он лишь описывает структуру информации, а браузер самостоятельно превращает её в объект, пригодный для передачи, сериализации и обработки.
+
+Эта идея полностью соответствует общей философии **Modern HTML 2026**: HTML описывает **что представляют данные**, а браузер решает **как с ними работать**.
+
+---
+
+### От набора элементов к объекту данных
+
+На первый взгляд форма представляет собой обычный набор элементов.
 
 ```html
 <form>
@@ -298,7 +298,7 @@ At first glance, a form is just a regular set of elements.
 </form>
 ```
 
-However, the browser perceives it completely differently.
+Однако браузер воспринимает её совершенно иначе.
 
 ```text
 Form
@@ -320,71 +320,72 @@ FormData
 HTTP Request
 ```
 
-Each control automatically becomes part of the form's data model.
+Каждый элемент управления автоматически становится частью модели данных формы.
 
-The browser tracks:
+Браузер отслеживает:
 
-- the field name (`name`);
-- the value (`value`);
-- the data type;
-- the element's state;
-- participation in serialization;
-- validation rules;
-- submittability.
+- имя поля (`name`);
+- значение (`value`);
+- тип данных;
+- состояние элемента;
+- участие в сериализации;
+- правила валидации;
+- возможность отправки.
 
-The developer does not need to traverse the DOM and collect all field values manually — the platform does this automatically.
+Разработчику не требуется самостоятельно обходить DOM и собирать значения всех полей — платформа делает это автоматически.
 
 ---
 
-### The `name` Attribute as the Data Model Key
+### Атрибут `name` как ключ модели данных
 
-The most important attribute of any form element is `name`.
+Наиболее важным атрибутом любого элемента формы является `name`.
 
-It determines whether the value will be included in the final data model.
+Именно он определяет, попадет ли значение в итоговую модель данных.
 
 ```html
 <form>
-  <input name="firstName" value="Ivan" />
-  <input name="lastName" value="Petrov" />
+  <input name="firstName" value="Иван" />
+  <input name="lastName" value="Петров" />
 </form>
 ```
 
-After serialization, the browser obtains a logical structure:
+После сериализации браузер получает логическую структуру:
 
 ```text
-firstName = "Ivan"
+firstName = "Иван"
 
-lastName = "Petrov"
+lastName = "Петров"
 ```
 
-If the `name` attribute is missing:
+Если атрибут `name` отсутствует:
 
 ```html
-<input value="Ivan" />
+<input value="Иван" />
 ```
 
-the element continues to work visually but becomes invisible to the serialization mechanism.
+элемент продолжает работать визуально, однако становится невидимым для механизма сериализации.
 
-For the browser, such a field effectively does not exist as part of the form's data.
+Для браузера такого поля фактически не существует как части данных формы.
 
-This is one of the most common mistakes made by beginner developers.
+Это одна из самых распространённых ошибок начинающих разработчиков.
 
 ---
 
-### FormData — The Universal Form Representation
+### FormData — универсальное представление формы
 
-Modern HTML provides the **FormData** object, which represents a form as a set of key-value pairs.
+Современный HTML предоставляет объект **FormData**, который представляет форму как набор пар «ключ — значение».
 
-You can obtain it with one line:
+Получить его можно одной строкой:
 
 ```javascript
 const form = document.querySelector('form');
+
 const data = new FormData(form);
 ```
 
-The browser then stores all form data in its own internal structure.
+Далее браузер уже хранит все данные формы в собственной внутренней структуре.
 
-For example,
+Например,
 
 ```html
 <form id="profile">
@@ -393,13 +394,13 @@ For example,
 </form>
 ```
 
-after creating the object:
+после создания объекта:
 
 ```javascript
 const data = new FormData(profile);
 ```
 
-logically becomes
+логически превращается в
 
 ```text
 name  → Alex
@@ -407,116 +408,117 @@ name  → Alex
 email → alex@example.com
 ```
 
-It is important to understand that **FormData is not a JavaScript object** but a specialized Web API interface designed for transferring data between HTML, JavaScript, and the browser's network stack.
+Важно понимать, что **FormData — это не объект JavaScript**, а специализированный интерфейс Web API, предназначенный для передачи данных между HTML, JavaScript и сетевым стеком браузера.
 
 ---
 
-### Automatic Data Serialization
+### Автоматическая сериализация данных
 
-After submitting a form, the browser independently performs several sequential steps.
+После отправки формы браузер самостоятельно выполняет несколько последовательных этапов.
 
 ```text
 HTML Form
 
 ↓
 
-Constraint Validation Check
+Проверка Constraint Validation
 
 ↓
 
-Element Collection
+Сбор элементов
 
 ↓
 
-Serialization
+Сериализация
 
 ↓
 
-HTTP Body Formation
+Формирование HTTP Body
 
 ↓
 
-Request Submission
+Отправка запроса
 ```
 
-The developer does not have to:
+Разработчику не приходится:
 
-- find elements via `querySelector()`;
-- read their values;
-- manually build an object;
-- encode parameters;
-- account for the submission type (`GET`, `POST`, `multipart/form-data`).
+- искать элементы через `querySelector()`;
+- считывать их значения;
+- формировать объект вручную;
+- кодировать параметры;
+- учитывать тип отправки (`GET`, `POST`, `multipart/form-data`).
 
-All these operations are part of the platform.
+Все эти операции являются частью платформы.
 
-This is precisely why HTML can be viewed as a **declarative data transfer API**.
+Именно поэтому HTML можно рассматривать как **декларативный API передачи данных**.
 
 ---
 
-### Which Elements Are Included in FormData
+### Какие элементы попадают в FormData
 
-Not every form element automatically participates in serialization.
+Не каждый элемент формы автоматически участвует в сериализации.
 
-The browser uses strict specification rules.
+Браузер использует строгие правила спецификации.
 
-The data model includes:
+В модель данных входят:
 
 - `<input>`;
 - `<textarea>`;
 - `<select>`;
-- selected `<option>`;
-- checked `checkbox`;
-- selected `radio`;
-- files (`<input type="file">`);
-- the submit button that initiated the form submission.
+- выбранные `<option>`;
+- отмеченные `checkbox`;
+- выбранные `radio`;
+- файлы (`<input type="file">`);
+- кнопка отправки, инициировавшая отправку формы.
 
-Excluded:
+Не включаются:
 
-- disabled elements (`disabled`);
-- fields without a `name` attribute;
-- unchecked `checkbox`;
-- unselected `radio`;
-- elements not belonging to the form.
+- отключённые элементы (`disabled`);
+- поля без атрибута `name`;
+- неотмеченные `checkbox`;
+- невыбранные `radio`;
+- элементы, не принадлежащие форме.
 
-Thus, the browser automatically forms the final data model even before sending the request.
+Таким образом, браузер автоматически формирует итоговую модель данных ещё до отправки запроса.
 
 ---
 
-### FormData as a Bridge Between HTML and JavaScript
+### FormData как мост между HTML и JavaScript
 
-The modern Web Platform architecture allows using the same data model regardless of the submission method.
+Современная архитектура Web Platform позволяет использовать одну и ту же модель данных независимо от способа отправки.
 
-A traditional HTML form:
+Традиционная HTML-форма:
 
 ```html
 <form action="/users" method="post"></form>
 ```
 
-and modern JavaScript:
+и современный JavaScript:
 
 ```javascript
 const formData = new FormData(form);
+
 await fetch('/users', {
   method: 'POST',
   body: formData,
 });
 ```
 
-use the same serialization mechanism.
+используют один и тот же механизм сериализации.
 
-JavaScript no longer has to independently build the request object.
+JavaScript больше не обязан самостоятельно собирать объект запроса.
 
-It simply uses the already prepared data model formed by the browser.
+Он лишь использует уже готовую модель данных, сформированную браузером.
 
 ---
 
-### HTML as a Declarative Information Transfer API
+### HTML как декларативный API передачи информации
 
-This is where one of the key ideas of the book **Modern HTML 2026** emerges.
+Именно здесь проявляется одна из ключевых идей книги **Modern HTML 2026**.
 
-HTML describes not the form's appearance but the **structure of the information** that needs to be collected from the user.
+HTML описывает не внешний вид формы, а **структуру информации**, которую необходимо получить от пользователя.
 
-The developer is essentially designing a data schema:
+Разработчик фактически проектирует схему данных:
 
 ```text
 User
@@ -532,61 +534,61 @@ User
 └── avatar
 ```
 
-and the browser automatically transforms this schema into:
+а браузер автоматически преобразует эту схему в:
 
-- a user interface;
-- a data model;
-- a serialization mechanism;
-- an HTTP request;
-- a `FormData` object.
+- пользовательский интерфейс;
+- модель данных;
+- механизм сериализации;
+- HTTP-запрос;
+- объект `FormData`.
 
-This is fundamentally different from traditional programming, where the developer manually describes each stage of data processing.
-
----
-
-### Modern HTML 2026: Declarative Data Instead of Imperative Code
-
-The modern web platform is gradually moving more and more responsibility from JavaScript to the browser.
-
-If previously developers manually wrote code for:
-
-- traversing the DOM;
-- reading field values;
-- building objects;
-- serialization;
-- preparing network requests;
-
-today, a significant portion of this work is already implemented inside the platform.
-
-That is why a form should be viewed not as a set of interface elements but as a **declarative data model** built into the browser. This is one of the most important architectural shifts of the modern Web Platform and one of the central ideas of **Modern HTML 2026**: HTML is becoming a high-level API for describing and transferring data, not just a page markup language.
+Это принципиально отличается от традиционного программирования, где разработчик вручную описывает каждый этап обработки данных.
 
 ---
 
-## 7.3. Constraint Validation as a Built-in Browser Engine
+### Modern HTML 2026: декларативные данные вместо императивного кода
 
-One of the most underestimated components of the modern Web Platform is the **Constraint Validation API** — a built-in data validation mechanism that is part of the HTML Living Standard. Many developers perceive attributes like `required`, `pattern`, `min`, or `max` as separate markup language features. In reality, they represent only a declarative interface to a full-fledged validation engine built directly into the browser.
+Современная веб-платформа постепенно переносит всё больше ответственности с JavaScript на браузер.
 
-This is an important shift in modern HTML philosophy.
+Если раньше разработчики вручную писали код для:
 
-Previously, data validation was almost entirely implemented in JavaScript. Each application contained its own system of rules, error messages, and event handling.
+- обхода DOM;
+- чтения значений полей;
+- формирования объектов;
+- сериализации;
+- подготовки сетевых запросов;
 
-Modern HTML offers a different approach.
+то сегодня значительная часть этой работы уже реализована внутри платформы.
 
-The developer **describes constraints**, and the browser independently:
-
-- determines the validation moment;
-- calculates the cause of the error;
-- displays understandable messages to the user;
-- reports element states via CSS;
-- provides a programmatic API for process management.
-
-In effect, HTML becomes a declarative language for describing domain constraints.
+Именно поэтому форму следует рассматривать не как набор элементов интерфейса, а как **декларативную модель данных**, встроенную в браузер. Это один из наиболее важных архитектурных сдвигов современной Web Platform и одна из центральных идей **Modern HTML 2026**: HTML становится высокоуровневым API для описания данных и их передачи, а не просто языком разметки страниц.
 
 ---
 
-### Constraint Validation — Not a Set of Attributes but a Browser Subsystem
+## 7.3. Constraint Validation как встроенный движок браузера
 
-During HTML parsing, the browser builds an internal form model.
+Одним из наиболее недооценённых компонентов современной Web-платформы является **Constraint Validation API** — встроенный механизм проверки данных, являющийся частью HTML Living Standard. Многие разработчики воспринимают атрибуты `required`, `pattern`, `min` или `max` как отдельные возможности языка разметки. На самом деле они представляют собой лишь декларативный интерфейс к полноценному движку валидации, встроенному непосредственно в браузер.
+
+Это важный сдвиг в философии современного HTML.
+
+Раньше проверка данных почти полностью реализовывалась средствами JavaScript. Каждое приложение содержало собственную систему правил, сообщений об ошибках и обработки событий.
+
+Современный HTML предлагает иной подход.
+
+Разработчик **описывает ограничения**, а браузер самостоятельно:
+
+- определяет момент проверки;
+- вычисляет причины ошибки;
+- отображает пользователю понятные сообщения;
+- сообщает о состоянии элементов через CSS;
+- предоставляет программный API для управления процессом.
+
+Фактически HTML становится декларативным языком описания ограничений предметной области.
+
+---
+
+### Constraint Validation — не набор атрибутов, а подсистема браузера
+
+Во время разбора HTML браузер строит внутреннюю модель формы.
 
 ```
 HTML
@@ -608,13 +610,13 @@ Constraint Validation Engine
 ValidityState
 ```
 
-Each control receives its own state object.
+Каждый элемент управления получает собственный объект состояния.
 
-When the user changes a value or attempts to submit the form, the browser runs the validation algorithm described in the HTML Living Standard specification.
+Когда пользователь изменяет значение или пытается отправить форму, браузер запускает алгоритм проверки, описанный в спецификации HTML Living Standard.
 
-The developer does not need to independently perform dozens of checks.
+Разработчику не требуется самостоятельно выполнять десятки проверок.
 
-It is enough to describe the constraints declaratively.
+Достаточно описать ограничения декларативно.
 
 ```html
 <form>
@@ -624,65 +626,65 @@ It is enough to describe the constraints declaratively.
   </label>
 
   <label>
-    Age
+    Возраст
     <input type="number" min="18" max="120" />
   </label>
 
-  <button>Submit</button>
+  <button>Отправить</button>
 </form>
 ```
 
-Each attribute becomes part of a unified validation model.
+Каждый атрибут становится частью единой модели проверки.
 
 ---
 
-### What Happens Inside the Browser
+### Что происходит внутри браузера
 
-During validation, the browser sequentially executes an algorithm.
+Во время проверки браузер последовательно выполняет алгоритм.
 
 ```
-User changed the value
+Пользователь изменил значение
 
 ↓
 
-Element type is determined
+Определяется тип элемента
 
 ↓
 
-Constraints are checked
+Проверяются ограничения
 
 ↓
 
-ValidityState is formed
+Формируется ValidityState
 
 ↓
 
-Element receives state
+Элемент получает состояние
 
 ↓
 
-Form may be submitted
+Форма может быть отправлена
 ```
 
-The following are taken into account:
+При этом учитываются:
 
-- required status;
-- value type;
-- ranges;
-- string length;
-- regular expressions;
-- custom constraints;
-- whether the element participates in validation.
+- обязательность заполнения;
+- тип значения;
+- диапазоны;
+- длина строки;
+- регулярные выражения;
+- пользовательские ограничения;
+- возможность участия элемента в проверке.
 
-This is a single algorithm for all browsers.
+Это единый алгоритм для всех браузеров.
 
-That is why modern forms behave identically regardless of the JavaScript framework used.
+Именно поэтому современные формы ведут себя одинаково независимо от используемого JavaScript-фреймворка.
 
 ---
 
-### The ValidityState Object
+### Объект ValidityState
 
-After validation, each element receives a `ValidityState` object.
+После проверки каждый элемент получает объект `ValidityState`.
 
 ```
 <input>
@@ -696,7 +698,7 @@ After validation, each element receives a `ValidityState` object.
 ValidityState
 ```
 
-It contains information about the cause of the error.
+Он содержит информацию о причине ошибки.
 
 ```
 ValidityState
@@ -714,7 +716,7 @@ ValidityState
 └── valid
 ```
 
-For example:
+Например:
 
 ```javascript
 const email = document.querySelector('#email');
@@ -724,23 +726,23 @@ if (!email.validity.valid) {
 }
 ```
 
-Instead of analyzing the string themselves, the developer receives a ready-made state model.
+Вместо самостоятельного анализа строки разработчик получает готовую модель состояния.
 
 ---
 
-### Validation Is Not a Boolean
+### Проверка — это не Boolean
 
-Many libraries return a simple result:
+Многие библиотеки возвращают простой результат:
 
 ```
 true
 
-or
+или
 
 false
 ```
 
-Constraint Validation works much more richly.
+Constraint Validation работает значительно богаче.
 
 ```
 Input
@@ -751,26 +753,26 @@ ValidityState
 
 ↓
 
-Error Cause
+Причина ошибки
 
 ↓
 
-Message
+Сообщение
 
 ↓
 
-CSS State
+CSS-состояние
 
 ↓
 
-Submittability
+Возможность отправки
 ```
 
-The browser knows **not only** that the field is invalid.
+Браузер знает **не только**, что поле неверно.
 
-It knows **exactly why** it is invalid.
+Он знает **почему именно** оно неверно.
 
-For example:
+Например:
 
 ```
 email
@@ -780,7 +782,7 @@ email
 typeMismatch
 ```
 
-or
+или
 
 ```
 age
@@ -790,7 +792,7 @@ age
 rangeUnderflow
 ```
 
-or
+или
 
 ```
 password
@@ -800,63 +802,63 @@ password
 tooShort
 ```
 
-This allows creating intelligent interfaces without a custom validation engine.
+Это позволяет создавать интеллектуальные интерфейсы без собственного движка проверки.
 
 ---
 
-### Constraint Validation API Methods
+### Методы Constraint Validation API
 
-The platform provides a small but very powerful API.
+Платформа предоставляет небольшой, но очень мощный API.
 
 #### `checkValidity()`
 
-Checks the constraints.
+Проверяет ограничения.
 
 ```javascript
 if (form.checkValidity()) {
-  console.log('Form is valid');
+  console.log('Форма корректна');
 }
 ```
 
-If there are errors, the browser generates an `invalid` event.
+Если имеются ошибки, браузер генерирует событие `invalid`.
 
 ---
 
 #### `reportValidity()`
 
-Performs the validation and displays the browser's built-in messages to the user.
+Выполняет проверку и отображает пользователю встроенные сообщения браузера.
 
 ```javascript
 form.reportValidity();
 ```
 
-This is the method modern applications use when they want to preserve native UX.
+Именно этот метод используют современные приложения, когда хотят сохранить нативный UX.
 
 ---
 
 #### `setCustomValidity()`
 
-Allows adding a custom rule.
+Позволяет добавить собственное правило.
 
 ```javascript
-password.setCustomValidity('Password is too weak.');
+password.setCustomValidity('Пароль слишком простой.');
 ```
 
-After fixing the error, the message must be cleared.
+После исправления ошибки сообщение необходимо очистить.
 
 ```javascript
 password.setCustomValidity('');
 ```
 
-Thus, custom logic integrates into the browser's overall mechanism rather than replacing it.
+Таким образом собственная логика интегрируется в общий механизм браузера, а не заменяет его.
 
 ---
 
-### CSS Gains Access to Validation State
+### CSS получает доступ к состоянию проверки
 
-One of the strongest aspects of the modern platform is the integration of the Validation Engine with CSS.
+Одной из сильнейших сторон современной платформы является интеграция Validation Engine с CSS.
 
-After validation, the browser automatically changes the state of elements.
+После проверки браузер автоматически изменяет состояние элементов.
 
 ```css
 input:valid {
@@ -868,7 +870,7 @@ input:invalid {
 }
 ```
 
-Modern browsers have also introduced more convenient pseudo-classes.
+В современных браузерах появились и более удобные псевдоклассы.
 
 ```
 :user-valid
@@ -876,35 +878,35 @@ Modern browsers have also introduced more convenient pseudo-classes.
 :user-invalid
 ```
 
-They activate **only after the user has interacted with the element**, preventing the common problem where an empty form immediately appears red.
+Они активируются **только после взаимодействия пользователя с элементом**, предотвращая распространённую проблему, когда пустая форма сразу отображается красной.
 
 ```
-User opened the page
+Пользователь открыл страницу
 
 ↓
 
-No errors yet
+Ошибок ещё нет
 
 ↓
 
-Started typing
+Начал ввод
 
 ↓
 
-Validation occurred
+Произошла проверка
 
 ↓
 
-:user-invalid state appeared
+Появилось состояние :user-invalid
 ```
 
-This is the UX considered recommended today.
+Именно такой UX сегодня считается рекомендуемым.
 
 ---
 
-### Why Modern Applications Are Using Built-in Validation Again
+### Почему современные приложения снова используют встроенную валидацию
 
-Just a few years ago, virtually every React, Angular, or Vue project included its own validation library:
+Ещё несколько лет назад практически каждый React-, Angular- или Vue-проект подключал собственную библиотеку проверки:
 
 - Yup;
 - Joi;
@@ -912,26 +914,26 @@ Just a few years ago, virtually every React, Angular, or Vue project included it
 - React Hook Form;
 - Angular Validators;
 - Vuelidate;
-- dozens of other solutions.
+- десятки других решений.
 
-The reason was simple: native validation was long considered insufficiently flexible.
+Причина была проста: нативная валидация долгое время считалась недостаточно гибкой.
 
-However, the modern Web Platform has changed significantly.
+Однако современная Web-платформа существенно изменилась.
 
-Today, browsers provide:
+Сегодня браузеры предоставляют:
 
-- a full-fledged Constraint Validation Engine;
-- consistent behavior across all major browsers (Baseline);
-- built-in error messages;
-- a programmatic API;
-- CSS integration;
-- Accessibility support;
-- correct screen reader operation;
-- optimized performance.
+- полноценный Constraint Validation Engine;
+- единое поведение во всех основных браузерах (Baseline);
+- встроенные сообщения об ошибках;
+- программный API;
+- интеграцию с CSS;
+- поддержку Accessibility;
+- корректную работу экранных дикторов;
+- оптимизированную производительность.
 
-As a result, the architecture is gradually changing.
+В результате архитектура постепенно меняется.
 
-Instead of completely replacing the built-in system, modern applications increasingly **extend** it.
+Вместо полной замены встроенной системы современные приложения всё чаще **расширяют** её.
 
 ```
 HTML Validation
@@ -942,24 +944,24 @@ Constraint Validation API
 
 ↓
 
-Small custom checks
+Небольшие пользовательские проверки
 
 ↓
 
-Data submission
+Отправка данных
 ```
 
-This aligns with one of the main ideas of **Modern HTML 2026**:
+Это соответствует одной из главных идей **Modern HTML 2026**:
 
-> Don't replace browser capabilities with custom code if the platform already provides a standard solution.
+> Не заменяйте возможности браузера собственным кодом, если платформа уже предоставляет стандартное решение.
 
 ---
 
-### Constraint Validation in the Modern HTML 2026 Architecture
+### Constraint Validation в архитектуре Modern HTML 2026
 
-If we look at the Web Platform's development over recent years, a general trend becomes apparent.
+Если посмотреть на развитие Web-платформы последних лет, становится заметна общая тенденция.
 
-HTML is gradually ceasing to be a markup language and becoming a declarative interface for managing the browser's internal subsystems.
+HTML постепенно перестаёт быть языком разметки и становится декларативным интерфейсом управления внутренними подсистемами браузера.
 
 ```
 HTML
@@ -985,25 +987,25 @@ Accessibility
 CSS State
 ```
 
-The developer no longer implements the validation mechanism themselves.
+Разработчик больше не реализует механизм проверки самостоятельно.
 
-They describe domain constraints, and the browser performs all the infrastructure work.
+Он описывает ограничения предметной области, а браузер выполняет всю инфраструктурную работу.
 
-That is why, in 2026, Constraint Validation should be viewed not as a set of convenient attributes but as a full-fledged built-in data validation engine that becomes the foundation of modern web form architecture.
+Именно поэтому в 2026 году Constraint Validation следует рассматривать не как набор удобных атрибутов, а как полноценный встроенный движок проверки данных, который становится фундаментом архитектуры современных веб-форм.
 
 ---
 
 ## 7.4. Constraint Validation API
 
-In the previous section, we examined the **Constraint Validation Engine** — the built-in constraint validation engine that is part of the browser. However, declarative attributes (`required`, `pattern`, `min`, `max`, and others) are insufficient for all scenarios. The modern Web Platform provides the developer with a programmatic interface for controlling this engine — the **Constraint Validation API**.
+В предыдущем разделе мы рассмотрели **Constraint Validation Engine** — встроенный движок проверки ограничений, являющийся частью браузера. Однако декларативных атрибутов (`required`, `pattern`, `min`, `max` и других) недостаточно для всех сценариев. Современная Web-платформа предоставляет разработчику программный интерфейс управления этим движком — **Constraint Validation API**.
 
-This fundamentally distinguishes modern HTML from the traditional approach where JavaScript completely replaced built-in validation. Now, JavaScript does not compete with the browser but interacts with its internal system.
+Это принципиально отличает современный HTML от традиционного подхода, где JavaScript полностью заменял встроенную проверку. Теперь JavaScript не конкурирует с браузером, а взаимодействует с его внутренней системой.
 
 ---
 
-### HTML API on Top of the Validation Engine
+### HTML API поверх Validation Engine
 
-Architecturally, the Validation API can be represented as follows:
+Архитектурно Validation API можно представить следующим образом:
 
 ```text
 HTML
@@ -1021,104 +1023,104 @@ Constraint Validation API
 JavaScript
 ```
 
-HTML describes the constraints.
+HTML описывает ограничения.
 
-The browser performs the validation.
+Браузер выполняет проверку.
 
-JavaScript gains the ability to manage this process without disrupting the platform's internal architecture.
+JavaScript получает возможность управлять этим процессом, не нарушая внутреннюю архитектуру платформы.
 
-This is precisely why the Validation API is part of the **HTML Living Standard**, not a separate JavaScript library.
+Именно поэтому Validation API является частью **HTML Living Standard**, а не отдельной JavaScript-библиотекой.
 
 ---
 
-### The Validation Lifecycle
+### Жизненный цикл проверки
 
-During form operation, the browser goes through several stages.
+Во время работы формы браузер проходит несколько этапов.
 
 ```text
-User enters data
+Пользователь вводит данные
 
 ↓
 
-Element state changes
+Изменяется состояние элемента
 
 ↓
 
-Validation Engine performs check
+Validation Engine выполняет проверку
 
 ↓
 
-ValidityState is formed
+Формируется ValidityState
 
 ↓
 
-Validation API provides result
+Validation API предоставляет результат
 
 ↓
 
-Form is submitted
-or
-errors are displayed
+Форма отправляется
+или
+отображаются ошибки
 ```
 
-JavaScript is only involved where additional business logic is truly necessary.
+JavaScript подключается только там, где действительно необходима дополнительная бизнес-логика.
 
 ---
 
-#### The `checkValidity()` Method
+#### Метод `checkValidity()`
 
-The simplest API method is `checkValidity()`.
+Самый простой метод API — `checkValidity()`.
 
-It runs the built-in validation algorithm and returns a boolean value.
+Он запускает встроенный алгоритм проверки и возвращает логическое значение.
 
 ```javascript
 const form = document.querySelector('form');
 
 if (form.checkValidity()) {
-  console.log('Form is valid.');
+  console.log('Форма корректна.');
 }
 ```
 
-If constraints are violated:
+Если ограничения нарушены:
 
-- the method returns `false`;
-- an `invalid` event is generated for the relevant elements;
-- the browser **does not show** built-in messages to the user.
+- метод возвращает `false`;
+- генерируется событие `invalid` для соответствующих элементов;
+- браузер **не показывает** встроенные сообщения пользователю.
 
-In other words:
+Иными словами:
 
 ```text
 checkValidity()
 
 ↓
 
-check
+проверить
 
 ↓
 
-return true/false
+вернуть true/false
 
 ↓
 
-without showing errors
+без отображения ошибок
 ```
 
-This is convenient when the application makes its own decisions about further actions.
+Это удобно, когда приложение самостоятельно принимает решение о дальнейших действиях.
 
-For example:
+Например:
 
-- executing an AJAX request;
-- saving a draft;
-- validating multiple forms simultaneously;
-- showing a custom error interface.
+- выполнить AJAX-запрос;
+- сохранить черновик;
+- проверить несколько форм одновременно;
+- показать собственный интерфейс ошибок.
 
 ---
 
-#### The `reportValidity()` Method
+#### Метод `reportValidity()`
 
-`reportValidity()` takes the next step.
+`reportValidity()` делает следующий шаг.
 
-It performs the same validation but additionally asks the browser to display the built-in user interface for errors.
+Он выполняет ту же самую проверку, но дополнительно просит браузер отобразить встроенный пользовательский интерфейс ошибок.
 
 ```javascript
 if (!form.reportValidity()) {
@@ -1126,54 +1128,54 @@ if (!form.reportValidity()) {
 }
 ```
 
-Inside the browser, the following happens:
+Внутри браузера происходит следующее:
 
 ```text
 Validation Engine
 
 ↓
 
-Constraint check
+Проверка ограничений
 
 ↓
 
-Find the first erroneous field
+Поиск первого ошибочного поля
 
 ↓
 
-Move focus
+Перевод фокуса
 
 ↓
 
-Show browser message
+Показ сообщения браузера
 
 ↓
 
-Cancel submission
+Отмена отправки
 ```
 
-This is the method that provides the user experience expected from the modern Web Platform.
+Именно этот метод обеспечивает тот пользовательский опыт, который ожидается от современной Web-платформы.
 
 ---
 
-#### The `setCustomValidity()` Method
+#### Метод `setCustomValidity()`
 
-Sometimes built-in constraints are not enough.
+Иногда встроенных ограничений недостаточно.
 
-For example:
+Например:
 
-- the username already exists;
-- the password is too weak;
-- the selected date is unavailable;
-- the user violates business rules.
+- логин уже существует;
+- пароль слишком простой;
+- выбранная дата недоступна;
+- пользователь нарушает бизнес-правила приложения.
 
-In such cases, `setCustomValidity()` is used.
+В таких случаях используется `setCustomValidity()`.
 
 ```javascript
-username.setCustomValidity('This username is already taken.');
+username.setCustomValidity('Такое имя пользователя уже занято.');
 ```
 
-After this, the element automatically becomes invalid.
+После этого элемент автоматически становится невалидным.
 
 ```text
 setCustomValidity()
@@ -1192,45 +1194,45 @@ reportValidity()
 
 ↓
 
-browser shows the message
+браузер показывает сообщение
 ```
 
-After fixing the error, the message must be removed.
+После исправления ошибки сообщение необходимо удалить.
 
 ```javascript
 username.setCustomValidity('');
 ```
 
-This returns the element to its normal state.
+Это возвращает элемент в обычное состояние.
 
-It is important to understand that the developer **does not replace** the Validation Engine.
+Важно понимать, что разработчик **не заменяет** Validation Engine.
 
-They only add one more validation rule.
+Он лишь добавляет ещё одно правило проверки.
 
 ---
 
-#### The `willValidate` Property
+#### Свойство `willValidate`
 
-Not every element participates in the validation process.
+Не каждый элемент участвует в процессе проверки.
 
-Before running the Validation Engine, the browser determines whether a particular element should be validated at all.
+Перед запуском Validation Engine браузер определяет, должен ли конкретный элемент вообще проверяться.
 
-This is reflected in the `willValidate` property.
+Это отражает свойство `willValidate`.
 
 ```javascript
 console.log(input.willValidate);
 ```
 
-For example,
+Например,
 
-the following do not participate in validation:
+не участвуют в проверке:
 
 - `disabled`;
-- `readonly` (for some element types);
+- `readonly` (для некоторых типов элементов);
 - `type="hidden"`;
-- elements excluded by specification rules.
+- элементы, исключённые правилами спецификации.
 
-Architecturally, this looks as follows:
+Архитектурно это выглядит следующим образом.
 
 ```text
 Form Control
@@ -1241,7 +1243,7 @@ willValidate ?
 
 ↓
 
-Yes
+Да
 
 ↓
 
@@ -1252,13 +1254,13 @@ Validation Engine
 ValidityState
 ```
 
-Thanks to this, the browser does not waste resources on elements that cannot affect the form submission result.
+Благодаря этому браузер не тратит ресурсы на элементы, которые не могут повлиять на результат отправки формы.
 
 ---
 
-### How the Validation API Interacts with ValidityState
+### Как Validation API взаимодействует с ValidityState
 
-All API methods work with the same data model.
+Все методы API работают с одной и той же моделью данных.
 
 ```text
 Input
@@ -1284,56 +1286,56 @@ Accessibility
 UI
 ```
 
-This is a very important architectural feature.
+Это очень важная архитектурная особенность.
 
-Instead of multiple independent mechanisms, the browser uses a single source of truth — the `ValidityState` object.
+Вместо множества независимых механизмов браузер использует единый источник истины (**Single Source of Truth**) — объект `ValidityState`.
 
-That is why:
+Именно поэтому:
 
-- CSS receives pseudo-classes `:valid`, `:invalid`, `:user-valid`, `:user-invalid`;
-- Screen Readers learn about errors;
-- the browser shows messages;
-- JavaScript receives the same information via the API.
+- CSS получает псевдоклассы `:valid`, `:invalid`, `:user-valid`, `:user-invalid`;
+- Screen Reader узнаёт об ошибках;
+- браузер показывает сообщения;
+- JavaScript получает одинаковую информацию через API.
 
-All subsystems work with a single state model.
-
----
-
-### When to Use the Built-in Validation Engine
-
-The modern approach recommends maximizing the use of platform capabilities.
-
-The Validation Engine is ideal for:
-
-- required fields;
-- email validation;
-- URL validation;
-- phone validation;
-- number ranges;
-- date validation;
-- length constraints;
-- regular expressions;
-- most standard forms.
-
-Practically all basic user input is already implemented inside the browser.
+Все подсистемы работают с одной моделью состояния.
 
 ---
 
-### When Custom Business Logic Is Necessary
+### Когда использовать встроенный Validation Engine
 
-However, there are validations that the browser cannot perform.
+Современный подход рекомендует максимально использовать возможности платформы.
 
-For example:
+Validation Engine идеально подходит для:
 
-- checking if a user exists;
-- checking email uniqueness;
-- server communication;
-- corporate security rules;
-- complex financial calculations;
-- access rights verification;
-- comparing data with external systems.
+- обязательных полей;
+- проверки email;
+- проверки URL;
+- проверки телефонов;
+- диапазонов чисел;
+- проверки дат;
+- ограничения длины;
+- регулярных выражений;
+- большинства стандартных форм.
 
-In such cases, the architecture looks different.
+Практически весь базовый пользовательский ввод уже реализован внутри браузера.
+
+---
+
+### Когда необходима собственная бизнес-логика
+
+Однако существуют проверки, которые браузер выполнить не может.
+
+Например:
+
+- проверка существования пользователя;
+- проверка уникальности email;
+- обращение к серверу;
+- корпоративные правила безопасности;
+- сложные финансовые расчёты;
+- проверка прав доступа;
+- сравнение данных с внешними системами.
+
+В таких случаях архитектура выглядит иначе.
 
 ```text
 HTML Validation
@@ -1351,24 +1353,24 @@ Business Validation
 Server Validation
 ```
 
-That is, the built-in engine becomes the **first validation level**, not the only one.
+То есть встроенный движок становится **первым уровнем проверки**, а не единственным.
 
 ---
 
-### Why the Validation API Is Part of HTML Architecture
+### Почему Validation API — часть архитектуры HTML
 
-The main idea of Modern HTML is that the browser is gradually becoming a full-fledged platform for executing user interfaces.
+Главная идея Modern HTML заключается в том, что браузер постепенно становится полноценной платформой исполнения пользовательских интерфейсов.
 
-The Validation API is one of the best examples of this philosophy.
+Validation API — один из лучших примеров этой философии.
 
-Before modern HTML standards, JavaScript fully controlled the validation process.
+До появления современных HTML-стандартов JavaScript полностью управлял процессом проверки.
 
 ```text
 JavaScript
 
 ↓
 
-Validation
+Проверка
 
 ↓
 
@@ -1379,7 +1381,7 @@ DOM
 UI
 ```
 
-The modern architecture looks different.
+Современная архитектура выглядит иначе.
 
 ```text
 HTML
@@ -1397,63 +1399,63 @@ Validation API
 JavaScript
 ```
 
-JavaScript no longer implements the validation infrastructure.
+JavaScript больше не реализует инфраструктуру проверки.
 
-It only extends the built-in mechanism where business logic requires it.
-
----
-
-### Constraint Validation API in Modern HTML 2026
-
-In the context of **Modern HTML 2026**, the Constraint Validation API should be viewed not as a set of helper methods but as a programmatic interface to one of the browser's internal subsystems.
-
-This trend is characteristic of the entire modern Web Platform:
-
-- `<dialog>` provides an API for managing modal windows;
-- Popover API — for popup interfaces;
-- `<details>` — for disclosure components;
-- View Transition API — for transitions between states;
-- Constraint Validation API — for built-in user data validation.
-
-All these technologies are evolving in one direction: **the browser takes on infrastructure tasks, and the developer describes behavior at a higher level of abstraction**.
-
-That is why, in 2026, the Validation API should be perceived not as an auxiliary JavaScript function but as a full-fledged programmatic interface of the built-in HTML engine, reflecting the overall direction of Web Platform development toward declarative, component-based, and platform-native architecture.
+Он лишь расширяет встроенный механизм там, где этого требует бизнес-логика.
 
 ---
 
-## 7.5. Form States and Modern CSS Pseudo-classes
+### Constraint Validation API в Modern HTML 2026
 
-One of the most visible trends in the development of the modern Web Platform is the gradual shift of interface state management from JavaScript to the browser itself. If previously developers manually added and removed CSS classes (`.error`, `.success`, `.filled`, `.empty`, `.dirty`, `.touched`), today a significant portion of this work is performed by the browser engine.
+В контексте **Modern HTML 2026** Constraint Validation API следует рассматривать не как набор вспомогательных методов, а как программный интерфейс к одной из внутренних подсистем браузера.
 
-Modern HTML forms can no longer be viewed as a set of independent input fields. For the browser, a form represents a system of interconnected objects, each constantly in a particular state.
+Эта тенденция характерна для всей современной Web-платформы:
 
-That is why it is increasingly said that the modern form is becoming a **declarative state machine**.
+- `<dialog>` предоставляет API для управления модальными окнами;
+- Popover API — для всплывающих интерфейсов;
+- `<details>` — для раскрывающихся компонентов;
+- View Transition API — для переходов между состояниями;
+- Constraint Validation API — для встроенной проверки пользовательских данных.
+
+Все эти технологии развиваются в одном направлении: **браузер берёт на себя инфраструктурные задачи, а разработчик описывает поведение на более высоком уровне абстракции**.
+
+Именно поэтому в 2026 году Validation API следует воспринимать не как вспомогательную JavaScript-функцию, а как полноценный программный интерфейс встроенного движка HTML, отражающий общий курс развития Web-платформы к декларативной, компонентной и платформенной архитектуре.
 
 ---
 
-### From a Set of Fields to a State Model
+## 7.5. Состояния формы и современные CSS-псевдоклассы
 
-Historically, the architecture looked like this:
+Одной из наиболее заметных тенденций развития современной Web-платформы является постепенный перенос управления состоянием интерфейса с JavaScript на уровень самого браузера. Если раньше разработчики вручную добавляли и удаляли CSS-классы (`.error`, `.success`, `.filled`, `.empty`, `.dirty`, `.touched`), то сегодня значительную часть этой работы выполняет движок браузера.
+
+Современные HTML-формы уже нельзя рассматривать как набор независимых полей ввода. Для браузера форма представляет собой систему взаимосвязанных объектов, каждый из которых постоянно находится в определённом состоянии.
+
+Именно поэтому всё чаще говорят, что современная форма превращается в **декларативную конечную машину состояний (Declarative State Machine)**.
+
+---
+
+### От набора полей к модели состояний
+
+Исторически архитектура выглядела следующим образом.
 
 ```text
 JavaScript
 
 ↓
 
-Validation
+Проверка
 
 ↓
 
-Adding CSS classes
+Добавление CSS-классов
 
 ↓
 
-Interface re-render
+Перерисовка интерфейса
 ```
 
-Almost every state change required writing custom code.
+Практически каждое изменение состояния требовало написания собственного кода.
 
-The modern Web Platform uses a completely different approach.
+Современная Web-платформа использует совершенно другой подход.
 
 ```text
 HTML
@@ -1475,43 +1477,43 @@ CSS Pseudo-classes
 Rendering
 ```
 
-The developer describes the form structure and constraints, and the browser independently determines the state of each element and passes this information to CSS.
+Разработчик описывает структуру формы и ограничения, а браузер самостоятельно определяет состояние каждого элемента и передаёт эту информацию CSS.
 
 ---
 
-# The Form as a Finite State Machine
+# Форма как конечная машина состояний
 
-Each form element constantly transitions between different states.
+Каждый элемент формы постоянно переходит между различными состояниями.
 
 ```text
-Empty field
+Пустое поле
 
 ↓
 
-User started typing
+Пользователь начал ввод
 
 ↓
 
-Constraint check
+Проверка ограничений
 
 ↓
 
-Valid value
+Корректное значение
 
-or
+или
 
-Invalid value
+Некорректное значение
 ```
 
-At each transition, the browser automatically changes the set of applied CSS pseudo-classes.
+При каждом переходе браузер автоматически изменяет набор применяемых CSS-псевдоклассов.
 
-As a result, the interface becomes reactive without writing JavaScript.
+В результате интерфейс становится реактивным без написания JavaScript.
 
 ---
 
-### The `:valid` Pseudo-class
+### Псевдокласс `:valid`
 
-The `:valid` pseudo-class applies to elements that have successfully passed the built-in constraint validation.
+Псевдокласс `:valid` применяется к элементам, успешно прошедшим встроенную проверку ограничений.
 
 ```html
 <input type="email" required />
@@ -1523,15 +1525,15 @@ input:valid {
 }
 ```
 
-After the user enters a valid email address, the browser automatically applies the style.
+После того как пользователь введёт корректный адрес электронной почты, браузер автоматически применит стиль.
 
-The developer does not need to track the `input` event or manually change CSS classes.
+Разработчику не требуется отслеживать событие `input` или самостоятельно изменять CSS-классы.
 
 ---
 
-### The `:invalid` Pseudo-class
+### Псевдокласс `:invalid`
 
-If an element violates at least one Constraint Validation constraint, it receives the `:invalid` state.
+Если элемент нарушает хотя бы одно ограничение Constraint Validation, он получает состояние `:invalid`.
 
 ```css
 input:invalid {
@@ -1539,49 +1541,49 @@ input:invalid {
 }
 ```
 
-For example,
+Например,
 
 ```html
 <input type="number" min="18" />
 ```
 
-When entering a value:
+При вводе значения
 
 ```text
 15
 ```
 
-the browser automatically detects the `min` constraint violation and applies `:invalid`.
+браузер автоматически определит нарушение ограничения `min` и применит `:invalid`.
 
 ---
 
-### The Problem with Early HTML Versions
+### Проблема ранних версий HTML
 
-For a long time, using `:invalid` came with a serious problem.
+Долгое время использование `:invalid` сопровождалось серьёзной проблемой.
 
-After the page opened, all required fields were already considered invalid.
+После открытия страницы все обязательные поля уже считались невалидными.
 
-As a result, the user saw a form roughly like this:
+В результате пользователь видел форму примерно так.
 
 ```text
 🔴 Email
 
-🔴 Password
+🔴 Пароль
 
-🔴 Phone
+🔴 Телефон
 
-🔴 Name
+🔴 Имя
 ```
 
-Even though they hadn't entered anything yet.
+Хотя ещё ничего не вводил.
 
-Such an interface was considered poor UX practice.
+Подобный интерфейс считался плохой практикой UX.
 
 ---
 
-#### The Emergence of `:user-valid` and `:user-invalid`
+#### Появление `:user-valid` и `:user-invalid`
 
-Modern browsers solved this problem by introducing new pseudo-classes.
+Современные браузеры решили эту проблему введением новых псевдоклассов.
 
 ```text
 :user-valid
@@ -1589,43 +1591,43 @@ Modern browsers solved this problem by introducing new pseudo-classes.
 :user-invalid
 ```
 
-They consider not only the validation result but also the fact of user interaction with the element.
+Они учитывают не только результат проверки, но и факт взаимодействия пользователя с элементом.
 
 ```text
-Page opened
+Страница открылась
 
 ↓
 
-Field is empty
+Поле пустое
 
 ↓
 
-No errors yet
+Ошибок ещё нет
 
 ↓
 
-User started typing
+Пользователь начал ввод
 
 ↓
 
-Validation
+Проверка
 
 ↓
 
 :user-invalid
 ```
 
-or
+или
 
 ```text
-User fixed the error
+Пользователь исправил ошибку
 
 ↓
 
 :user-valid
 ```
 
-This allows displaying errors only when they actually make sense.
+Это позволяет отображать ошибки только тогда, когда они действительно имеют смысл.
 
 ```css
 input:user-invalid {
@@ -1637,25 +1639,25 @@ input:user-valid {
 }
 ```
 
-Today, this approach is considered recommended for most interfaces.
+Сегодня именно этот подход считается рекомендуемым для большинства интерфейсов.
 
 ---
 
-#### `:required` and `:optional`
+#### `:required` и `:optional`
 
-The browser automatically knows which fields are required.
+Браузер автоматически знает, какие поля являются обязательными.
 
 ```html
 <input required />
 ```
 
-or
+или
 
 ```html
 <input />
 ```
 
-Different states are applied accordingly.
+Соответственно применяются разные состояния.
 
 ```text
 required
@@ -1665,7 +1667,7 @@ required
 :required
 ```
 
-or
+или
 
 ```text
 optional
@@ -1675,9 +1677,9 @@ optional
 :optional
 ```
 
-For example,
+Например,
 
-you can visually mark required fields.
+можно визуально отметить обязательные поля.
 
 ```css
 input:required {
@@ -1689,31 +1691,31 @@ input:optional {
 }
 ```
 
-Again, without a single line of JavaScript.
+Опять же, без единой строки JavaScript.
 
 ---
 
 #### `:placeholder-shown`
 
-Another useful pseudo-class is `:placeholder-shown`.
+Ещё один полезный псевдокласс — `:placeholder-shown`.
 
-It applies when the field does not yet contain a user value and displays a placeholder text.
+Он применяется тогда, когда поле ещё не содержит пользовательского значения и отображает текст подсказки (`placeholder`).
 
 ```html
-<input placeholder="Enter email" />
+<input placeholder="Введите e-mail" />
 ```
 
-As long as the user hasn't entered anything,
+Пока пользователь ничего не ввёл,
 
-the browser considers the element to be in the state:
+браузер считает элемент находящимся в состоянии
 
 ```text
 :placeholder-shown
 ```
 
-After the first character is entered, the state automatically disappears.
+После ввода первого символа состояние автоматически исчезает.
 
-This allows building modern interfaces with floating labels.
+Это позволяет строить современные интерфейсы с «плавающими» подписями (Floating Labels).
 
 ```css
 input:placeholder-shown + label {
@@ -1726,15 +1728,15 @@ input:not(:placeholder-shown) + label {
 }
 ```
 
-No event handlers are needed anymore.
+Никаких обработчиков событий больше не требуется.
 
 ---
 
-### Combining Pseudo-classes
+### Совместная работа псевдоклассов
 
-The main strength of the modern platform is that all states can be combined.
+Главная сила современной платформы заключается в том, что все состояния можно комбинировать.
 
-For example,
+Например,
 
 ```css
 input:required:user-invalid {
@@ -1742,7 +1744,7 @@ input:required:user-invalid {
 }
 ```
 
-or
+или
 
 ```css
 input:optional:user-valid {
@@ -1750,7 +1752,7 @@ input:optional:user-valid {
 }
 ```
 
-or
+или
 
 ```css
 input:placeholder-shown:user-invalid {
@@ -1758,13 +1760,13 @@ input:placeholder-shown:user-invalid {
 }
 ```
 
-Thus, CSS begins to work as a language for describing interface behavior, not just its appearance.
+Таким образом CSS начинает работать как язык описания поведения интерфейса, а не только его оформления.
 
 ---
 
-### How the Browser Manages States
+### Как браузер управляет состояниями
 
-Architecturally, the process looks like this:
+Архитектурно процесс выглядит следующим образом.
 
 ```text
 HTML
@@ -1794,28 +1796,29 @@ CSS Pseudo-classes
 Rendering
 ```
 
-It is important to understand that CSS does not compute anything on its own.
+Важно понимать, что CSS ничего не вычисляет самостоятельно.
 
-All states are already determined by the browser.
+Все состояния уже определены браузером.
 
-CSS only reacts to them.
+CSS лишь реагирует на них.
 
 ---
 
-### Why Less and Less JavaScript Is Needed
+### Почему всё меньше требуется JavaScript
 
-Just a few years ago, virtually every form contained code like this:
+Ещё несколько лет назад практически каждая форма содержала подобный код.
 
 ```javascript
 input.addEventListener('input', () => {
   input.classList.remove('error');
+
   input.classList.add('success');
 });
 ```
 
-Or large form state management libraries were used.
+Или использовались большие библиотеки управления состоянием форм.
 
-Today, most such tasks are performed automatically.
+Сегодня большинство подобных задач выполняется автоматически.
 
 ```text
 HTML
@@ -1829,42 +1832,42 @@ Browser
 CSS
 ```
 
-JavaScript is only involved when business logic is needed.
+JavaScript подключается только тогда, когда необходима бизнес-логика.
 
-For example:
+Например:
 
-- server-side data validation;
-- asynchronous validation;
-- complex corporate rules;
-- dynamic form structure changes.
+- проверка данных на сервере;
+- асинхронная валидация;
+- сложные корпоративные правила;
+- динамическое изменение структуры формы.
 
-In all other cases, the browser already knows how to independently maintain the current interface state.
+Во всех остальных случаях браузер уже умеет самостоятельно поддерживать актуальное состояние интерфейса.
 
 ---
 
-### Forms as a Declarative State Machine
+### Формы как декларативная State Machine
 
-If we look at the modern HTML platform as a whole, a general trend becomes obvious.
+Если посмотреть на современную HTML-платформу целиком, становится очевидной общая тенденция.
 
-Not only forms but also most new HTML components follow the same architectural model.
+Не только формы, но и большинство новых компонентов HTML развиваются по одинаковой архитектурной модели.
 
 ```text
 HTML
 
 ↓
 
-Browser Internal State
+Внутреннее состояние браузера
 
 ↓
 
-CSS States
+CSS-состояния
 
 ↓
 
-Rendering
+Отображение
 ```
 
-This idea is already used in:
+Эта идея уже используется в:
 
 - `<dialog>` (`open`);
 - Popover API (`:popover-open`);
@@ -1874,153 +1877,160 @@ This idea is already used in:
 - Fullscreen API;
 - Picture-in-Picture API.
 
-HTML is gradually ceasing to be a document structure description language and becoming a declarative language for describing user interface states.
+HTML постепенно перестаёт быть языком описания структуры документа и становится декларативным языком описания состояний пользовательского интерфейса.
 
 ---
 
-### Why This Section Is Important for Modern HTML 2026
+### Почему этот раздел важен для Modern HTML 2026
 
-One of the key features of the modern Web Platform is that the browser is increasingly becoming an **interface state manager**. Instead of manually changing classes and constantly synchronizing the DOM through JavaScript, the developer describes the desired rules, and the browser independently maintains the current state of elements.
+Одной из ключевых особенностей современной Web-платформы является то, что браузер всё чаще становится **менеджером состояния интерфейса**. Вместо ручного изменения классов и постоянной синхронизации DOM через JavaScript разработчик описывает желаемые правила, а браузер самостоятельно поддерживает актуальное состояние элементов.
 
-That is why, in **Modern HTML 2026**, CSS pseudo-classes should be viewed not as a styling tool but as a **declarative interface to the browser's internal state machine**. This is one of the most important architectural shifts of recent years, gradually changing the approach to designing modern web applications: less imperative code, more built-in platform capabilities, better performance, accessibility, and maintainability.
-
----
-
-## 7.6. Modern Input Capabilities
-
-If the first generations of HTML forms were only responsible for displaying fields and transmitting data to the server, modern browsers view input as an independent user interface subsystem. Today, HTML manages not only the form structure but also **exactly how the user interacts with the device**.
-
-When a form opens, the browser analyzes the semantics of each field and automatically makes dozens of decisions:
-
-- which virtual keyboard to show;
-- which button to place instead of **Enter**;
-- whether to perform autocorrection;
-- whether to use autocomplete;
-- whether to apply automatic capitalization;
-- which spell-check dictionaries to use.
-
-In other words, HTML is gradually becoming a **declarative user input API**. The developer describes the intent, and the browser independently chooses the optimal behavior for the specific platform.
+Именно поэтому в **Modern HTML 2026** CSS-псевдоклассы следует рассматривать не как инструмент стилизации, а как **декларативный интерфейс к внутренней машине состояний браузера**. Это один из наиболее важных архитектурных сдвигов последних лет, который постепенно меняет подход к проектированию современных веб-приложений: меньше императивного кода, больше встроенных возможностей платформы, лучше производительность, доступность и сопровождаемость.
 
 ---
 
-### The Browser as an Intelligent Mediator
+## 7.6. Современные возможности ввода
 
-The modern input processing scheme is significantly more complex than it appears:
+Если первые поколения HTML-форм отвечали лишь за отображение полей и передачу данных на сервер, то современные браузеры рассматривают ввод как самостоятельную подсистему пользовательского интерфейса. Сегодня HTML управляет не только структурой формы, но и тем, **как именно пользователь взаимодействует с устройством**.
+
+При открытии формы браузер анализирует семантику каждого поля и автоматически принимает десятки решений:
+
+* какую виртуальную клавиатуру показать;
+* какую кнопку разместить вместо **Enter**;
+* нужно ли выполнять автокоррекцию;
+* использовать ли автозаполнение;
+* применять ли автоматическую капитализацию;
+* какие словари проверки орфографии подключить.
+
+Иными словами, HTML постепенно становится **декларативным API пользовательского ввода**. Разработчик описывает намерение, а браузер самостоятельно выбирает оптимальное поведение для конкретной платформы.
+
+---
+
+### Браузер как интеллектуальный посредник
+
+Современная схема обработки ввода выглядит значительно сложнее, чем кажется:
 
 ```text
 HTML
 
 ↓
 
-Field Semantics
+Семантика поля
 
 ↓
 
-Browser
+Браузер
 
 ↓
 
-Operating System
+Операционная система
 
 ↓
 
-Virtual Keyboard
+Виртуальная клавиатура
 
 ↓
 
-User
+Пользователь
 ```
 
-For example,
+Например,
 
 ```html
-<input type="email" />
+<input type="email">
 ```
 
-does not just display a text field.
+не просто отображает текстовое поле.
 
-The browser understands that the user is entering an email address and automatically:
+Браузер понимает, что пользователь вводит электронную почту, и автоматически:
 
-- shows a keyboard with `@` and `.` symbols;
-- disables autocorrect;
-- disables capitalization;
-- suggests saved email addresses;
-- enables built-in format validation.
+* показывает клавиатуру с символами `@` и `.`;
+* отключает автозамену;
+* отключает капитализацию;
+* предлагает сохранённые адреса электронной почты;
+* включает встроенную проверку формата.
 
-Without a single line of JavaScript.
+Без единой строки JavaScript.
 
 ---
 
 ### `autocomplete`
 
-One of the most important capabilities of modern HTML forms is the autofill mechanism.
+Одной из важнейших возможностей современных HTML-форм является механизм автозаполнения.
 
-Many developers perceive it as simply enabling or disabling the browser's saved data.
+Многие разработчики воспринимают его как простое включение или отключение сохранённых данных браузера.
 
-In fact, the HTML specification defines an entire **semantic system for describing user data**.
+На самом деле спецификация HTML определяет целую **семантическую систему описания пользовательских данных**.
 
-For example:
-
-```html
-<input autocomplete="given-name" />
-<input autocomplete="family-name" />
-<input autocomplete="email" />
-<input autocomplete="street-address" />
-<input autocomplete="postal-code" />
-<input autocomplete="country" />
-```
-
-The developer tells the browser not the field name but its meaning.
-
-Thanks to this, the browser can:
-
-- use its own secure data storage;
-- synchronize information across the user's devices;
-- automatically fill forms;
-- integrate with password managers;
-- use operating system data.
-
-Specialized values are particularly important:
+Например:
 
 ```html
-autocomplete="username" autocomplete="current-password"
-autocomplete="new-password" autocomplete="one-time-code"
+<input autocomplete="given-name">
+<input autocomplete="family-name">
+<input autocomplete="email">
+<input autocomplete="street-address">
+<input autocomplete="postal-code">
+<input autocomplete="country">
 ```
 
-The last value allows automatically inserting one-time verification codes (OTP) received via SMS or other supported channels.
+Разработчик сообщает браузеру не название поля, а его смысл.
+
+Благодаря этому браузер может:
+
+* использовать собственное безопасное хранилище данных;
+* синхронизировать информацию между устройствами пользователя;
+* автоматически заполнять формы;
+* интегрироваться с менеджерами паролей;
+* использовать данные операционной системы.
+
+Особенно важны специализированные значения:
+
+```html
+autocomplete="username"
+
+autocomplete="current-password"
+
+autocomplete="new-password"
+
+autocomplete="one-time-code"
+```
+
+Последнее значение позволяет автоматически подставлять одноразовые коды подтверждения (OTP), полученные по SMS или другим поддерживаемым каналам.
 
 ---
 
 ### `inputmode`
 
-The field type (`type`) determines the meaning of the data.
+Тип поля (`type`) определяет смысл данных.
 
-But sometimes the meaning of the data and the input method differ.
+Но иногда смысл данных и способ ввода отличаются.
 
-For example, a bank account consists only of digits, yet it is **not a number**.
+Например, банковский счёт состоит только из цифр, однако это **не число**.
 
-Using
+Использовать
 
 ```html
 type="number"
 ```
 
-is undesirable.
+нежелательно.
 
-It's better to write:
+Правильнее написать:
 
 ```html
-<input type="text" inputmode="numeric" />
+<input
+    type="text"
+    inputmode="numeric">
 ```
 
-Now the browser:
+Теперь браузер:
 
-- shows a numeric keyboard;
-- does not convert the value to a number;
-- does not add value-change arrows;
-- preserves leading zeros.
+* показывает цифровую клавиатуру;
+* не преобразует значение в число;
+* не добавляет стрелки изменения значения;
+* сохраняет ведущие нули.
 
-Various modes are supported:
+Поддерживаются различные режимы:
 
 ```text
 text
@@ -2038,29 +2048,30 @@ url
 search
 ```
 
-Each tells the browser the most appropriate input method.
+Каждый сообщает браузеру наиболее подходящий способ ввода.
 
 ---
 
 ### `enterkeyhint`
 
-On mobile devices, the **Enter** button can have different purposes.
+На мобильных устройствах кнопка **Enter** может иметь различное назначение.
 
-Modern HTML allows telling the browser the expected user action.
+Современный HTML позволяет сообщить браузеру ожидаемое действие пользователя.
 
-For example:
+Например:
 
 ```html
-<input enterkeyhint="search" />
+<input
+    enterkeyhint="search">
 ```
 
-The keyboard will show a button labeled:
+На клавиатуре появится кнопка
 
 ```
 Search
 ```
 
-Other options:
+Другие варианты:
 
 ```text
 enter
@@ -2078,62 +2089,62 @@ search
 go
 ```
 
-This may seem like a small detail, but it significantly improves user experience.
+Это кажется мелочью, однако значительно улучшает пользовательский опыт.
 
-For example,
+Например,
 
-search,
+поиск,
 
-chat,
+чат,
 
-registration form,
+форма регистрации
 
-and checkout
+и оформление заказа
 
-can use different labels for the same key.
+могут использовать разные подписи одной и той же клавиши.
 
 ---
 
 ### `spellcheck`
 
-Spell checking is also controlled declaratively.
+Орфографическая проверка также управляется декларативно.
 
 ```html
 <textarea spellcheck="true"></textarea>
 ```
 
-or
+или
 
 ```html
-<input spellcheck="false" />
+<input spellcheck="false">
 ```
 
-The browser independently loads dictionaries for the corresponding language.
+Браузер самостоятельно подключает словари соответствующего языка.
 
-For fields like:
+Для полей вроде
 
-- passwords;
-- email addresses;
-- URLs;
-- code,
+* паролей;
+* адресов электронной почты;
+* URL;
+* программного кода;
 
-spell checking is usually disabled.
+проверку обычно отключают.
 
 ---
 
 ### `autocapitalize`
 
-On mobile devices, the browser can automatically change the case of entered text.
+На мобильных устройствах браузер способен автоматически менять регистр вводимого текста.
 
-For example:
+Например:
 
 ```html
-<input autocapitalize="words" />
+<input autocapitalize="words">
 ```
 
-Each word will start with a capital letter.
+Каждое слово будет начинаться с заглавной буквы.
 
-Supported modes:
+Поддерживаются режимы:
 
 ```text
 off
@@ -2147,264 +2158,264 @@ words
 characters
 ```
 
-Example use cases:
+Примеры применения:
 
-| Mode         | Typical Scenarios     |
-| ------------ | --------------------- |
-| `sentences`  | comments, messages    |
-| `words`      | first name, last name |
-| `characters` | promo codes           |
-| `off`        | email, logins         |
-| `none`       | technical identifiers |
+| Режим        | Типичные сценарии          |
+| ------------ | -------------------------- |
+| `sentences`  | комментарии, сообщения     |
+| `words`      | имя, фамилия               |
+| `characters` | промокоды                  |
+| `off`        | email, логины              |
+| `none`       | технические идентификаторы |
 
 ---
 
-### Combining Attributes
+### Совместная работа атрибутов
 
-These capabilities are most beneficial when used together.
+Наибольшую пользу эти возможности дают при совместном использовании.
 
-For example:
+Например:
 
 ```html
 <label for="email">Email</label>
 
 <input
-  id="email"
-  type="email"
-  autocomplete="email"
-  enterkeyhint="next"
-  spellcheck="false"
-  autocapitalize="off"
-/>
+    id="email"
+    type="email"
+    autocomplete="email"
+    enterkeyhint="next"
+    spellcheck="false"
+    autocapitalize="off">
 ```
 
-Or a one-time code field:
+Или поле одноразового кода:
 
 ```html
 <input
-  type="text"
-  inputmode="numeric"
-  autocomplete="one-time-code"
-  enterkeyhint="done"
-/>
+    type="text"
+    inputmode="numeric"
+    autocomplete="one-time-code"
+    enterkeyhint="done">
 ```
 
-The developer hardly controls the device directly.
+Разработчик практически не управляет устройством напрямую.
 
-They only describe the field's properties.
+Он лишь описывает свойства поля.
 
-The browser and operating system handle the rest.
+Всю остальную работу выполняют браузер и операционная система.
 
 ---
 
-### HTML as a User Input API
+### HTML как API пользовательского ввода
 
-The modern architecture looks like this:
+Современная архитектура выглядит следующим образом:
 
 ```text
 HTML
 
 ↓
 
-Field Semantics
+Семантика поля
 
 ↓
 
-Browser
+Браузер
 
 ↓
 
-Operating System
+Операционная система
 
 ↓
 
-Keyboard
+Клавиатура
 
 ↓
 
-Autofill
+Автозаполнение
 
 ↓
 
-Spell Check
+Проверка орфографии
 
 ↓
 
-User
+Пользователь
 ```
 
-This is one of the main trends of the web platform in recent years.
+Это один из главных трендов веб-платформы последних лет.
 
-HTML is ceasing to be a markup language and becoming a **high-level declarative interface for managing user input**.
+HTML перестаёт быть языком разметки и становится **высокоуровневым декларативным интерфейсом управления пользовательским вводом**.
 
-Instead of writing JavaScript to select a keyboard, change the Enter button, or integrate with password managers, the developer describes intent with a few attributes, and the browser implements the optimal behavior for the specific platform.
-
----
-
-### Why This Matters in 2026
-
-By 2026, modern browsers have reached a level of maturity where most intelligent input capabilities work stably across all major engines (Blink, WebKit, and Gecko) and are part of the **Baseline** concept.
-
-This means a change in frontend architecture itself:
-
-- keyboard selection logic moves to HTML;
-- autofill becomes part of the platform, not third-party libraries;
-- mobile UX is determined by markup semantics, not JavaScript;
-- forms are designed declaratively, and the browser automatically interacts with the operating system.
-
-Therefore, modern HTML describes not only the document structure but also **user input behavior**. This evolution makes next-generation forms one of the most important topics in web development in 2026.
+Вместо того чтобы писать JavaScript для выбора клавиатуры, изменения кнопки Enter или интеграции с менеджерами паролей, разработчик описывает намерение с помощью нескольких атрибутов, а браузер реализует оптимальное поведение для конкретной платформы.
 
 ---
 
-## 7.7. `showPicker()` and Browser System Components
+### Почему это важно именно в 2026 году
 
-One of the most noticeable trends in the development of the modern Web Platform has been the gradual movement of user interface from JavaScript libraries to the browser itself. If previously developers were forced to create their own calendars, color pickers, and file managers, today the browser provides these components as part of the platform.
+Именно к 2026 году современные браузеры достигли такого уровня зрелости, при котором большинство возможностей интеллектуального ввода стабильно работает во всех основных движках (Blink, WebKit и Gecko) и входит в концепцию **Baseline**.
 
-The key role in this architecture is played by the **`showPicker()`** method, which allows programmatically opening the built-in system interface for selecting a value for supported form elements.
+Это означает изменение самой архитектуры фронтенда:
 
-This is another example of how HTML is gradually becoming a **high-level browser API**, and the developer describes intent rather than implementing the interface independently.
+* логика выбора клавиатуры переносится в HTML;
+* автозаполнение становится частью платформы, а не сторонних библиотек;
+* мобильный UX определяется семантикой разметки, а не JavaScript;
+* формы проектируются декларативно, а браузер автоматически взаимодействует с операционной системой.
+
+Поэтому современный HTML описывает уже не только структуру документа, но и **поведение пользовательского ввода**. Именно эта эволюция делает формы нового поколения одной из наиболее важных тем веб-разработки 2026 года.
+
 
 ---
 
-### What Is `showPicker()`
+## 7.7. `showPicker()` и системные компоненты браузера
 
-The `showPicker()` method opens the built-in value selection interface as if the user had clicked on the corresponding field.
+Одной из самых заметных тенденций развития современной Web-платформы стало постепенное перенесение пользовательского интерфейса с уровня JavaScript-библиотек на уровень самого браузера. Если раньше разработчики были вынуждены создавать собственные календари, палитры выбора цвета и файловые менеджеры, то сегодня браузер предоставляет эти компоненты как часть платформы.
+
+Ключевую роль в этой архитектуре играет метод **`showPicker()`**, который позволяет программно открыть встроенный системный интерфейс выбора значения для поддерживаемых элементов формы.
+
+Это ещё один пример того, как HTML постепенно становится **высокоуровневым API браузера**, а разработчик описывает намерение, а не реализует интерфейс самостоятельно.
+
+---
+
+### Что такое `showPicker()`
+
+Метод `showPicker()` открывает встроенный интерфейс выбора значения так, словно пользователь сам нажал на соответствующее поле.
 
 ```javascript
 const input = document.querySelector('input[type="date"]');
+
 input.showPicker();
 ```
 
-The browser independently decides:
+При этом браузер самостоятельно решает:
 
-- which interface to show;
-- how it should look;
-- which controls to use;
-- how to interact with the operating system.
+* какой интерфейс показать;
+* как он должен выглядеть;
+* какие элементы управления использовать;
+* каким образом взаимодействовать с операционной системой.
 
-This is fundamentally different from JavaScript libraries that completely draw their own interface on top of the page.
+Это принципиально отличается от JavaScript-библиотек, которые полностью рисуют собственный интерфейс поверх страницы.
 
 ---
 
-### Which Elements Support `showPicker()`
+### Какие элементы поддерживают `showPicker()`
 
-Today, the method applies to several types of form elements.
+На сегодняшний день метод применяется к нескольким типам элементов формы.
 
-#### Date Selection
+#### Выбор даты
 
 ```html
-<input type="date" />
+<input type="date">
 ```
 
 ```javascript
 document.querySelector('input[type="date"]').showPicker();
 ```
 
-The browser opens the operating system's native calendar.
+Браузер открывает нативный календарь операционной системы.
 
 ---
 
-#### Time Selection
+#### Выбор времени
 
 ```html
-<input type="time" />
+<input type="time">
 ```
 
-or
+или
 
 ```html
-<input type="datetime-local" />
+<input type="datetime-local">
 ```
 
-The user gets the familiar time selection interface specific to their platform.
+Пользователь получает привычный интерфейс выбора времени, характерный именно для своей платформы.
 
 ---
 
-#### Month Selection
+#### Выбор месяца
 
 ```html
-<input type="month" />
+<input type="month">
 ```
 
-Instead of a calendar, a specialized month and year selection interface is displayed.
+Вместо календаря отображается специализированный интерфейс выбора месяца и года.
 
 ---
 
-#### Week Selection
+#### Выбор недели
 
 ```html
-<input type="week" />
+<input type="week">
 ```
 
-The browser allows selecting a calendar week without needing to implement such a component independently.
+Браузер позволяет выбрать календарную неделю без необходимости реализовывать подобный компонент самостоятельно.
 
 ---
 
-#### Color Selection
+#### Выбор цвета
 
 ```html
-<input type="color" />
+<input type="color">
 ```
 
 ```javascript
 colorInput.showPicker();
 ```
 
-The system color palette opens.
+Открывается системная палитра цветов.
 
-It differs between Windows, macOS, Android, and iOS.
+Причём она различается между Windows, macOS, Android и iOS.
 
-The developer does not need to account for each platform's specifics.
+Разработчику не нужно учитывать особенности каждой платформы.
 
 ---
 
-#### File Selection
+#### Выбор файла
 
 ```html
-<input type="file" />
+<input type="file">
 ```
 
 ```javascript
 fileInput.showPicker();
 ```
 
-Instead of artificially simulating file uploads, the browser opens the system file manager.
+Вместо искусственной имитации загрузки файлов браузер открывает системный файловый менеджер.
 
-This is particularly important from a security perspective, as file system access is always controlled by the browser and operating system.
-
----
-
-### Why the Browser Provides Its Own Interfaces
-
-Many developers ask:
-
-> Why can't we just write a nice calendar in JavaScript?
-
-You can.
-
-But it creates many problems.
-
-A custom calendar must independently implement:
-
-- keyboard navigation;
-- localization;
-- support for different calendars;
-- timezone handling;
-- touch device adaptation;
-- Accessibility;
-- screen reader support;
-- interface scaling;
-- interaction with the user's system settings.
-
-The native component already handles all of this.
-
-That is why the modern Web Platform increasingly encourages using built-in browser capabilities instead of custom implementations.
+Это особенно важно с точки зрения безопасности, поскольку доступ к файловой системе всегда контролируется браузером и операционной системой.
 
 ---
 
-### The Architecture of `showPicker()`
+### Почему браузер предоставляет собственные интерфейсы
 
-From the platform's perspective, the process looks like this:
+Многие разработчики задаются вопросом:
+
+> Почему нельзя просто написать красивый календарь на JavaScript?
+
+Можно.
+
+Но возникает множество проблем.
+
+Самописный календарь должен самостоятельно реализовать:
+
+* навигацию по клавиатуре;
+* локализацию;
+* поддержку разных календарей;
+* обработку часовых поясов;
+* адаптацию под сенсорные устройства;
+* доступность (Accessibility);
+* поддержку программ экранного доступа;
+* масштабирование интерфейса;
+* взаимодействие с системными настройками пользователя.
+
+Нативный компонент уже умеет всё это.
+
+Именно поэтому современная Web-платформа всё чаще предлагает использовать встроенные возможности браузера вместо пользовательских реализаций.
+
+---
+
+### Архитектура работы `showPicker()`
+
+С точки зрения платформы процесс выглядит следующим образом:
 
 ```text
 HTML
@@ -2438,102 +2449,102 @@ Selected Value
 DOM
 ```
 
-Notice that the browser does not create a calendar using HTML.
+Заметим, что браузер не создаёт календарь средствами HTML.
 
-It calls the operating system's system interface and then synchronizes the selected value back to the DOM.
+Он обращается к системному интерфейсу операционной системы и затем синхронизирует выбранное значение обратно с DOM.
 
-This creates a kind of bridge between HTML and the OS capabilities.
-
----
-
-### When a Custom Calendar Is No Longer Needed
-
-Before modern browser APIs, most projects included libraries like:
-
-- Flatpickr;
-- Pikaday;
-- Air Datepicker;
-- Bootstrap Datepicker;
-- jQuery UI Datepicker.
-
-The reasons were obvious:
-
-- no unified browser support;
-- system pickers were unavailable from JavaScript;
-- interfaces looked different across browsers;
-- consistent behavior across all browsers was required.
-
-By 2026, the situation has changed significantly.
-
-If the application needs a simple selection of:
-
-- date;
-- time;
-- month;
-- week;
-- color;
-- file,
-
-native HTML elements are almost always the better choice.
-
-They:
-
-- work faster;
-- weigh less;
-- are automatically accessible;
-- are adapted for mobile devices;
-- are supported by the browser at the platform level.
+Получается своеобразный мост между HTML и возможностями ОС.
 
 ---
 
-### When Custom Components Are Still Needed
+### Когда собственный календарь больше не нужен
 
-Despite the platform's development, there are tasks that cannot be solved with standard pickers.
+До появления современных браузерных API большинство проектов подключало библиотеки вроде:
 
-For example:
+* Flatpickr;
+* Pikaday;
+* Air Datepicker;
+* Bootstrap Datepicker;
+* jQuery UI Datepicker.
 
-- date range selection;
-- multiple calendars simultaneously;
-- corporate booking rules;
-- complex business calendars;
-- availability visualization;
-- drag-and-drop scheduling;
-- time selection with multiple time zones;
-- specialized medical or financial interfaces.
+Причины были очевидны:
 
-In such cases, JavaScript components are still necessary.
+* отсутствовала единая поддержка браузерами;
+* системные пикеры были недоступны из JavaScript;
+* интерфейсы выглядели по-разному;
+* требовалась одинаковая работа во всех браузерах.
 
-Thus, `showPicker()` does not replace all libraries but covers the most common scenarios.
+К 2026 году ситуация существенно изменилась.
+
+Если приложению требуется обычный выбор:
+
+* даты;
+* времени;
+* месяца;
+* недели;
+* цвета;
+* файла,
+
+нативные элементы HTML практически всегда оказываются лучшим выбором.
+
+Они:
+
+* быстрее работают;
+* меньше весят;
+* автоматически доступны (Accessible);
+* адаптированы под мобильные устройства;
+* поддерживаются браузером на уровне платформы.
+
+---
+
+### Когда всё ещё нужны собственные компоненты
+
+Несмотря на развитие платформы, существуют задачи, которые невозможно решить средствами стандартных пикеров.
+
+Например:
+
+* выбор диапазона дат;
+* несколько календарей одновременно;
+* корпоративные правила бронирования;
+* сложные бизнес-календари;
+* визуализация занятости;
+* drag-and-drop планирование;
+* выбор времени с несколькими часовыми поясами;
+* специализированные медицинские или финансовые интерфейсы.
+
+В подобных случаях JavaScript-компоненты по-прежнему остаются необходимыми.
+
+Таким образом, `showPicker()` не заменяет все библиотеки, а закрывает наиболее распространённые сценарии.
 
 ---
 
 ### Progressive Enhancement
 
-One of the main advantages of `showPicker()` is its adherence to the **Progressive Enhancement** philosophy.
+Одним из главных достоинств `showPicker()` является его соответствие философии **Progressive Enhancement**.
 
-If the browser supports the method, the application receives a full-fledged system interface.
+Если браузер поддерживает метод, приложение получает полноценный системный интерфейс.
 
-If not, the user can still interact with the element in the standard way.
+Если поддержки нет, пользователь всё равно может взаимодействовать с элементом стандартным способом.
 
-For example:
+Например:
 
 ```javascript
-if ('showPicker' in HTMLInputElement.prototype) {
-  dateInput.showPicker();
+if ("showPicker" in HTMLInputElement.prototype) {
+    dateInput.showPicker();
 } else {
-  dateInput.focus();
+    dateInput.focus();
 }
 ```
 
-This allows using modern capabilities without losing compatibility.
+Это позволяет использовать современные возможности без потери совместимости.
 
 ---
 
-### HTML as an API for System Components
+### HTML как API системных компонентов
 
-The development of `showPicker()` reflects another fundamental trend of the modern Web Platform.
+Развитие `showPicker()` отражает ещё одну фундаментальную тенденцию современной Web-платформы.
 
-Previously, the architecture looked like this:
+Раньше архитектура выглядела так:
 
 ```text
 HTML
@@ -2551,7 +2562,7 @@ UI Library
 Calendar
 ```
 
-Today, a different model is increasingly used:
+Сегодня всё чаще используется другая модель:
 
 ```text
 HTML
@@ -2569,33 +2580,34 @@ Operating System
 Native Component
 ```
 
-HTML is becoming a declarative interface for accessing the capabilities of the browser and operating system. The developer no longer creates a calendar, color palette, or file dialog — they only describe **what type of data needs to be obtained**, and the browser independently provides the most appropriate system interface.
+HTML становится декларативным интерфейсом доступа к возможностям браузера и операционной системы. Разработчик больше не создаёт календарь, палитру цветов или файловый диалог — он лишь описывает, **какой тип данных необходимо получить**, а браузер самостоятельно предоставляет наиболее подходящий системный интерфейс.
 
 ---
 
-### Why This Matters in 2026
+### Почему это важно именно в 2026 году
 
-By 2026, `showPicker()` has ceased to be an experimental feature and has become part of the mature architecture of the modern Web Platform. This reflects the overall direction of HTML development: instead of creating custom JavaScript components, developers are increasingly using built-in browser mechanisms.
+Именно к 2026 году `showPicker()` перестал быть экспериментальной возможностью и стал частью зрелой архитектуры современной Web-платформы. Это отражает общий курс развития HTML: вместо создания пользовательских компонентов на JavaScript разработчики всё чаще используют встроенные механизмы браузера.
 
-Together with `<dialog>`, Popover API, `<details>`, Constraint Validation API, and CSS Anchor Positioning, the `showPicker()` method demonstrates a new philosophy of web development:
+Вместе с `<dialog>`, Popover API, `<details>`, Constraint Validation API и CSS Anchor Positioning метод `showPicker()` демонстрирует новую философию веб-разработки:
 
-> **modern HTML describes not only the document structure but also provides declarative access to high-level browser and operating system capabilities.**
+> **современный HTML описывает не только структуру документа, но и предоставляет декларативный доступ к высокоуровневым возможностям браузера и операционной системы.**
 
-This trend — moving more and more interface tasks from JavaScript to the platform level — is one of the key ideas of the book **Modern HTML 2026**.
+Именно эта тенденция — перенос всё большего числа интерфейсных задач с JavaScript на уровень платформы — является одной из ключевых идей книги **Modern HTML 2026**.
 
----
-
-## 7.8. FormData as a Data Transfer Architecture
-
-If in the early versions of HTML the form was perceived merely as a mechanism for sending data to the server, the modern web platform views it as a **declarative data model**. Today, the browser not only displays input fields — it automatically builds a data object, serializes it into the required format, and transmits it over the network.
-
-That is why `FormData` should be viewed not as a small JavaScript class but as one of the central elements of the modern Web Platform architecture.
 
 ---
 
-### From Document to Data
+## 7.8. FormData как архитектура передачи данных
 
-The modern form processing path looks like this:
+Если в первых версиях HTML форма воспринималась лишь как механизм отправки данных на сервер, то современная веб-платформа рассматривает её как **декларативную модель данных**. Сегодня браузер не просто отображает поля ввода — он автоматически строит объект данных, сериализует его в нужный формат и передает по сети.
+
+Именно поэтому `FormData` следует рассматривать не как небольшой JavaScript-класс, а как один из центральных элементов архитектуры современной Web-платформы.
+
+---
+
+### От документа к данным
+
+Современный путь обработки формы выглядит следующим образом:
 
 ```text
 HTML
@@ -2621,50 +2633,50 @@ HTTP Request
 Server
 ```
 
-Notice that the developer does not manually iterate over fields.
+Заметим, что разработчик не перебирает поля вручную.
 
-It is enough to write:
+Достаточно написать:
 
 ```javascript
 const formData = new FormData(form);
 ```
 
-The browser independently:
+Браузер самостоятельно:
 
-- finds all controls;
-- determines their names (`name`);
-- extracts current values;
-- excludes disabled elements (`disabled`);
-- correctly handles checkboxes, radio buttons, files, and multiple values;
-- forms a ready-made data model.
+* находит все элементы управления;
+* определяет их имена (`name`);
+* извлекает текущие значения;
+* исключает отключённые элементы (`disabled`);
+* корректно обрабатывает чекбоксы, переключатели, файлы и множественные значения;
+* формирует готовую модель данных.
 
 ---
 
-### FormData as a Data Object
+### FormData как объект данных
 
-In effect, the browser transforms an HTML form into a collection of pairs:
+Фактически браузер преобразует HTML-форму в коллекцию пар
 
 ```text
 name → value
 ```
 
-For example,
+Например,
 
 ```html
 <form id="registration">
-  <input name="firstName" value="John" />
-  <input name="lastName" value="Smith" />
-  <input name="email" value="john@example.com" />
+    <input name="firstName" value="John">
+    <input name="lastName" value="Smith">
+    <input name="email" value="john@example.com">
 </form>
 ```
 
-after executing
+после выполнения
 
 ```javascript
 const data = new FormData(registration);
 ```
 
-becomes the logical structure:
+становится логической структурой
 
 ```text
 firstName → John
@@ -2674,87 +2686,91 @@ lastName → Smith
 email → john@example.com
 ```
 
-The `FormData` object can contain:
+При этом объект `FormData` может содержать:
 
-- strings;
-- multiple values for one field;
-- binary data (`File`);
-- `Blob` objects.
+* строки;
+* несколько значений одного поля;
+* бинарные данные (`File`);
+* объекты `Blob`.
 
-In essence, it is a universal browser data transfer model.
+По сути это универсальная модель передачи данных браузера.
 
 ---
 
-### Why the Browser Performs Serialization
+### Почему сериализацию выполняет браузер
 
-Before modern Web APIs, developers often built requests manually:
+До появления современных Web API разработчики часто самостоятельно собирали запросы:
 
 ```javascript
 const body =
-  'name=' + encodeURIComponent(name) + '&email=' + encodeURIComponent(email);
+    "name=" + encodeURIComponent(name) +
+    "&email=" + encodeURIComponent(email);
 ```
 
-or
+или
 
 ```javascript
 JSON.stringify(...)
 ```
 
-Today, this is almost never required.
+Сегодня это практически никогда не требуется.
 
-The browser already knows:
+Браузер уже знает:
 
-- which elements belong to the form;
-- which values need to be sent;
-- which fields should be absent;
-- which MIME type is used;
-- how to encode special characters;
-- how to form boundaries when transmitting files.
+* какие элементы принадлежат форме;
+* какие значения нужно отправить;
+* какие поля должны отсутствовать;
+* какой MIME-тип используется;
+* как кодировать специальные символы;
+* как сформировать границы (`boundary`) при передаче файлов.
 
-Thus, serialization becomes a built-in platform function.
+Таким образом сериализация становится встроенной функцией платформы.
 
 ---
 
-### Integration with `fetch()`
+### Интеграция с `fetch()`
 
-The most modern scenario looks like this:
+Наиболее современный сценарий выглядит следующим образом:
 
 ```javascript
-const form = document.querySelector('form');
+const form = document.querySelector("form");
+
 const formData = new FormData(form);
 
-await fetch('/api/profile', {
-  method: 'POST',
-  body: formData,
+await fetch("/api/profile", {
+    method: "POST",
+    body: formData
 });
 ```
 
-Notice:
+Обратите внимание:
 
-no
-
-```javascript
-JSON.stringify();
-```
-
-no need to specify
+никаких
 
 ```javascript
-Content - Type;
+JSON.stringify()
 ```
 
-If the request body is `FormData`, the browser independently:
+никаких
 
-- chooses the transfer format;
-- generates the necessary HTTP headers;
-- creates `multipart` boundaries;
-- serializes all values.
+```javascript
+Content-Type
+```
+
+указывать не требуется.
+
+Если телом запроса является `FormData`, браузер самостоятельно:
+
+* выбирает формат передачи;
+* генерирует необходимые HTTP-заголовки;
+* создаёт `multipart`-границы;
+* сериализует все значения.
 
 ---
 
-### Data Transfer Architecture
+### Архитектура передачи данных
 
-The modern scheme looks like this:
+Современная схема выглядит следующим образом:
 
 ```text
 HTML
@@ -2780,62 +2796,64 @@ HTTP
 Server
 ```
 
-JavaScript here merely connects two built-in browser mechanisms.
+JavaScript здесь лишь соединяет два встроенных механизма браузера.
 
-All the complex work is done by the platform.
+Вся сложная работа выполняется платформой.
 
 ---
 
-### Three Standard Serialization Formats
+### Три стандартных способа сериализации
 
-HTML defines several standard formats for transmitting form data.
+HTML определяет несколько стандартных форматов передачи данных формы.
 
-The choice depends on the `enctype` attribute value.
+Выбор зависит от значения атрибута `enctype`.
 
 ---
 
 #### `application/x-www-form-urlencoded`
 
-This is the format used by the browser by default.
+Это формат, используемый браузером по умолчанию.
 
 ```html
-<form method="post"></form>
+<form method="post">
 ```
 
-or
+или
 
 ```html
-<form method="post" enctype="application/x-www-form-urlencoded"></form>
+<form
+    method="post"
+    enctype="application/x-www-form-urlencoded">
 ```
 
-Data is transformed into a string:
+Данные преобразуются в строку
 
 ```text
 name=John&email=john%40example.com
 ```
 
-Features:
+Особенности:
 
-- compact format;
-- suitable for text data;
-- used by most HTML forms;
-- supported by virtually all web servers.
+* компактный формат;
+* подходит для текстовых данных;
+* используется большинством HTML-форм;
+* поддерживается практически всеми веб-серверами.
 
 ---
 
 #### `multipart/form-data`
 
-If the form contains files,
+Если форма содержит файлы,
 
-the browser automatically uses:
+браузер автоматически использует
 
 ```html
 enctype="multipart/form-data"
 ```
 
-Each field becomes a separate part of the HTTP request.
+Каждое поле превращается в отдельную часть HTTP-запроса.
 
-A simplified scheme looks like this:
+Упрощённая схема выглядит так:
 
 ```text
 ------Boundary
@@ -2853,25 +2871,25 @@ photo.jpg
 ------Boundary--
 ```
 
-Main advantages:
+Главные преимущества:
 
-- transferring files of any size;
-- support for mixed data;
-- no need to encode binary files.
+* передача файлов любого размера;
+* поддержка смешанных данных;
+* отсутствие необходимости кодировать бинарные файлы.
 
-This is the format used by the `FormData` object.
+Именно этот формат использует объект `FormData`.
 
 ---
 
 #### `text/plain`
 
-The simplest serialization mode.
+Наиболее простой режим сериализации.
 
 ```html
-<form enctype="text/plain"></form>
+<form enctype="text/plain">
 ```
 
-Data is sent with virtually no additional processing:
+Данные отправляются практически без дополнительной обработки:
 
 ```text
 name=John
@@ -2879,86 +2897,89 @@ name=John
 email=john@example.com
 ```
 
-In practice, it is used extremely rarely.
+На практике используется крайне редко.
 
-Typically used for:
+Обычно применяется:
 
-- debugging;
-- demonstration examples;
-- specialized protocols.
+* при отладке;
+* в демонстрационных примерах;
+* в специализированных протоколах.
 
 ---
 
-### FormData and Files
+### FormData и файлы
 
-One of the reasons for `FormData`'s introduction was support for binary data.
+Одной из причин появления `FormData` стала поддержка бинарных данных.
 
-For example,
+Например,
 
 ```html
-<input type="file" name="avatar" />
+<input
+    type="file"
+    name="avatar">
 ```
 
-After creating
+После создания
 
 ```javascript
 const data = new FormData(form);
 ```
 
-the file automatically becomes part of the object.
+файл автоматически становится частью объекта.
 
-The developer does not need to:
+Разработчику не требуется:
 
-- read the file's contents;
-- encode it manually;
-- calculate the MIME type;
-- build a `multipart` request.
+* читать содержимое файла;
+* самостоятельно кодировать его;
+* вычислять MIME-тип;
+* строить `multipart`-запрос.
 
-The browser does all of this.
+Всё это делает браузер.
 
 ---
 
-### FormData as a Universal Container
+### FormData как универсальный контейнер
 
-The object can be modified programmatically.
+Объект можно изменять программно.
 
-For example,
+Например,
 
 ```javascript
 const data = new FormData(form);
 
-data.append('token', csrfToken);
-data.append('version', '2026');
+data.append("token", csrfToken);
+
+data.append("version", "2026");
 ```
 
-or
+или
 
 ```javascript
-data.set('email', 'new@example.com');
+data.set("email", "new@example.com");
 ```
 
-Thus, `FormData` combines:
+Таким образом `FormData` объединяет:
 
-- user input;
-- automatically serialized form data;
-- additional application data.
+* пользовательский ввод;
+* автоматически сериализованные данные формы;
+* дополнительные данные приложения.
 
 ---
 
-### HTML as a Declarative Data Transfer API
+### HTML как декларативный API передачи данных
 
-The evolution of the Web Platform is gradually leading to the following architecture:
+Эволюция Web-платформы постепенно приводит к следующей архитектуре:
 
 ```text
 HTML
 
 ↓
 
-Declarative Form
+Декларативная форма
 
 ↓
 
-Browser
+Браузер
 
 ↓
 
@@ -2970,227 +2991,221 @@ HTTP
 
 ↓
 
-Server
+Сервер
 ```
 
-The developer no longer handles data packaging.
+Разработчик больше не занимается упаковкой данных.
 
-They describe the form structure, and the browser automatically transforms it into a correct HTTP request.
+Он описывает структуру формы, а браузер автоматически превращает её в корректный HTTP-запрос.
 
-That is why modern HTML can be viewed as a **declarative data exchange API**, and `FormData` as the standard serialization model for user input.
-
----
-
-### Why This Matters in 2026
-
-For many years, JavaScript frameworks built their own form models and data serialization. However, by 2026, most modern applications are again actively using the platform's built-in capabilities: `FormData`, `fetch()`, Constraint Validation API, and native forms work as a unified system.
-
-This represents an important architectural shift. The browser is ceasing to be a passive executor of user code and is increasingly becoming a full participant in data processing. HTML describes the form structure, the browser automatically builds the data model (`FormData`), serializes it into the required format, and transmits it to the server. Such integration of declarative markup, the network stack, and built-in APIs is one of the key features of the modern Web Platform and an important idea of the book **Modern HTML 2026**.
+Именно поэтому современный HTML можно рассматривать как **декларативный API обмена данными**, а `FormData` — как стандартную модель сериализации пользовательского ввода.
 
 ---
 
-## 7.9. Modern Form Events
+### Почему это важно именно в 2026 году
 
-In the era of single-page applications and complex client-side logic, the form has ceased to be just a container for input fields. The modern browser views the form as a full-fledged finite state machine, providing the developer with detailed control at every stage of user interaction with data.
+В течение многих лет JavaScript-фреймворки строили собственные модели форм и сериализации данных. Однако к 2026 году большинство современных приложений снова активно используют встроенные возможности платформы: `FormData`, `fetch()`, Constraint Validation API и нативные формы работают как единая система.
 
-Understanding the form lifecycle is not just a list of events. It is an architectural pattern that allows separating validation, data collection, submission, and state reset, making code predictable and resilient to bugs.
-
-Let's examine six key events that cover 100% of form interaction scenarios in modern browsers.
+Это означает важный архитектурный сдвиг. Браузер перестаёт быть пассивным исполнителем пользовательского кода и всё чаще становится полноценным участником обработки данных. HTML описывает структуру формы, браузер автоматически строит модель данных (`FormData`), сериализует её в нужный формат и передаёт на сервер. Именно такая интеграция декларативной разметки, сетевого стека и встроенных API является одной из ключевых особенностей современной Web-платформы и важной идеей книги **Modern HTML 2026**.
 
 ---
 
-### 1. `input` — Instant Response (Input Event)
+Вот доработанный раздел для вашей книги. Я расширил технические детали, добавил акценты на жизненный цикл (почему это важно) и привёл практические примеры использования каждого события.
 
-This is the "hottest" form event. It fires **synchronously** on every change to the value of an `<input>`, `<textarea>`, or `<select>` element.
+---
 
-**Features:**
+## 7.9. Современные события формы
 
-- Fires on every keystroke, paste from clipboard, voice input, or text drag-and-drop.
-- Unlike `keydown`/`keyup`, `input` is guaranteed to reflect the current field state after DOM updates.
+В эпоху одностраничных приложений и сложной клиентской логики форма перестала быть просто контейнером для полей ввода. Современный браузер рассматривает форму как полноценный конечный автомат (state machine), предоставляющий разработчику детальный контроль на каждом этапе взаимодействия пользователя с данными.
 
-**Why this matters for the lifecycle:**
-This event is at the earliest stage. It allows implementing **"live" validation** (for example, highlighting a password as it's being typed) or **input masking** (phone, date) _before_ the data enters the form store.
+Понимание жизненного цикла формы — это не просто знание списка событий. Это архитектурный паттерн, позволяющий разделить валидацию, сбор данных, отправку и сброс состояния, делая код предсказуемым и устойчивым к багам.
+
+Рассмотрим шесть ключевых событий, которые покрывают 100% сценариев работы с формами в современных браузерах.
+
+---
+
+### 1. `input` — Мгновенный отклик (Событие ввода)
+
+Это самое "горячее" событие формы. Оно срабатывает **синхронно** при каждом изменении значения элемента `<input>`, `<textarea>` или `<select>`.
+
+**Особенности:**
+- Срабатывает на каждое нажатие клавиши, вставку из буфера обмена, голосовой ввод или перетаскивание текста.
+- В отличие от `keydown`/`keyup`, `input` гарантированно отражает актуальное состояние поля после обновления DOM.
+
+**Почему это важно для жизненного цикла:**
+Это событие находится на самом раннем этапе. Оно позволяет реализовать **"живую" валидацию** (например, подсветку пароля по мере его набора) или **маскирование ввода** (телефон, дата) *до того*, как данные попадут в хранилище формы.
 
 ```javascript
 const phoneInput = document.getElementById('phone');
 phoneInput.addEventListener('input', (e) => {
-  // Mask input on the fly, without waiting for focus loss
-  let value = e.target.value.replace(/\D/g, '');
-  if (value.length > 2) value = `(${value.slice(0, 3)}) ${value.slice(3)}`;
-  e.target.value = value;
+    // Маскируем ввод на лету, не дожидаясь потери фокуса
+    let value = e.target.value.replace(/\D/g, '');
+    if (value.length > 2) value = `(${value.slice(0,3)}) ${value.slice(3)}`;
+    e.target.value = value;
 });
 ```
 
 ---
 
-### 2. `change` — Decision Confirmation (Change Event)
+### 2. `change` — Фиксация решения (Событие изменения)
 
-This event signals that the user has **finished** editing the field. It is the "lazy" antagonist of `input`.
+Это событие сигнализирует о том, что пользователь **завершил** редактирование поля. Оно является "ленивым" антагонистом `input`.
 
-**Trigger rules:**
+**Правила срабатывания:**
+- Для текстовых полей: при потере фокуса (`blur`), если значение было изменено.
+- Для `<select>`, радио-кнопок и чекбоксов: срабатывает **немедленно** при выборе опции.
 
-- For text fields: on focus loss (`blur`), if the value was changed.
-- For `<select>`, radio buttons, and checkboxes: fires **immediately** on option selection.
-
-**Role in the lifecycle:**
-This is the decision point. If `input` is a draft, `change` is a commit to local state. At this stage, it's common to perform "heavy" validation (for example, checking username uniqueness via API) that consumes resources and should not run on every keystroke.
+**Роль в жизненном цикле:**
+Это точка принятия решения. Если `input` — это черновик, то `change` — это коммит в локальное состояние. На этом этапе принято выполнять "тяжелую" валидацию (например, проверку уникальности логина через API), которая требует ресурсов и не должна запускаться на каждое нажатие клавиши.
 
 ```javascript
 select.addEventListener('change', (e) => {
-  // Activate dependent fields only after the user has definitively selected a country
-  updateShippingOptions(e.target.value);
+    // Активируем зависимые поля только после того, как пользователь точно выбрал страну
+    updateShippingOptions(e.target.value);
 });
 ```
 
 ---
 
-### 3. `submit` — The Gateway to Data (Submit Event)
+### 3. `submit` — Врата в мир данных (Событие отправки)
 
-The key form event. It marks the transition from "Editing" state to "Submitting" state.
+Ключевое событие формы. Оно знаменует переход от состояния "Редактирование" к состоянию "Отправка".
 
-**Critical nuances:**
+**Критичные нюансы:**
+- Событие генерируется **только** элементом `<form>`, а не его дочерними кнопками.
+- По умолчанию оно перезагружает страницу (или переходит по `action`). Современный подход — обязательно вызывать `preventDefault()` для перехвата управления.
 
-- The event is generated **only** by the `<form>` element, not its child buttons.
-- By default, it reloads the page (or navigates to `action`). The modern approach is to always call `preventDefault()` to take control.
-
-**Lifecycle stage:**
-This is the **last line of defense** before sending data to the server. Here, we perform final comprehensive form validation, collect data, and send it via the Fetch API. If validation fails, we abort the submission (without calling `preventDefault`), thereby allowing the browser to show native error hints (field validity).
+**Этап жизненного цикла:**
+Это **последний рубеж защиты** перед отправкой данных на сервер. Здесь мы выполняем финальную комплексную валидацию всей формы, собираем данные и отправляем их через Fetch API. Если валидация не пройдена, мы прерываем отправку (не вызывая `preventDefault`), тем самым давая браузеру показать нативные подсказки об ошибках (валидность полей).
 
 ```javascript
 form.addEventListener('submit', async (e) => {
-  e.preventDefault(); // Take control
+    e.preventDefault(); // Берем управление на себя
 
-  // Check custom condition (e.g., terms agreement)
-  if (!form.checkValidity() || !termsCheckbox.checked) {
-    // If the form is invalid, the browser will highlight the first invalid fields
-    form.reportValidity();
-    return;
-  }
+    // Проверяем кастомное условие (например, согласие с офертой)
+    if (!form.checkValidity() || !termsCheckbox.checked) {
+        // Если форма невалидна, браузер сам подсветит первые invalid поля
+        form.reportValidity();
+        return;
+    }
 
-  // Transition to loading state
-  submitButton.disabled = true;
-  await sendData(new FormData(form));
-  submitButton.disabled = false;
+    // Переход в состояние загрузки
+    submitButton.disabled = true;
+    await sendData(new FormData(form));
+    submitButton.disabled = false;
 });
 ```
 
 ---
 
-### 4. `invalid` — Error Navigator (Invalid Event)
+### 4. `invalid` — Навигатор по ошибкам (Событие ошибки валидации)
 
-This event fires on a specific form element when browser validation (attributes like `required`, `pattern`, `type="email"`) fails.
+Это событие срабатывает на конкретном элементе формы, когда браузерная валидация (атрибуты `required`, `pattern`, `type="email"`) провалена.
 
-**Important context:**
-In the lifecycle, `invalid` occurs **before** the `submit` event, provided we haven't called `preventDefault()` in `submit`. The browser attempts to show the standard tooltip, but we can intercept `invalid` to build our own error system (for example, placing messages below the field).
+**Важный контекст:**
+В жизненном цикле `invalid` возникает **до** события `submit`, при условии, что мы не вызвали `preventDefault()` в `submit`. Браузер пытается показать стандартный тултип, но мы можем перехватить `invalid`, чтобы построить свою систему ошибок (например, размещать сообщения под полем).
 
-**Modern approach:**
-The `invalid` event does not bubble to `document` by default (in some browsers), so it's better to use delegation on the form:
+**Современный подход:**
+Событие `invalid` не всплывает до `document` по умолчанию (в некоторых браузерах), поэтому лучше использовать делегирование на форме:
 
 ```javascript
-form.addEventListener(
-  'invalid',
-  (e) => {
+form.addEventListener('invalid', (e) => {
     const field = e.target;
     field.classList.add('error-border');
-    // Show custom message, disabling the native tooltip
-    field.setCustomValidity(' '); // Empty string removes the tooltip but keeps invalid state
+    // Показываем кастомное сообщение, отключая нативный тултип
+    field.setCustomValidity(' '); // Пустая строка убирает тултип, но сохраняет состояние invalid
     showCustomError(field, field.validationMessage);
-  },
-  true,
-); // capture phase for reliability
+}, true); // capture-фаза для надежности
 ```
 
 ---
 
-### 5. `formdata` — Interception Before Submission (Data Collection Event)
+### 5. `formdata` — Перехват перед отправкой (Событие сборки данных)
 
-This is the **youngest** and most powerful event on the list. It was introduced for working with `FormData`.
+Это **самое молодое** и самое мощное событие в списке. Введено для работы с `FormData`.
 
-**What happens:**
-The `formdata` event is generated on the `<form>` element at the moment the browser builds the data set for submission (inside the `new FormData(form)` constructor or before native submission).
+**Что происходит:**
+Событие `formdata` генерируется на элементе `<form>` в момент, когда браузер строит набор данных для отправки (внутри конструктора `new FormData(form)` или перед нативной отправкой).
 
-**Role in the lifecycle:**
-This event allows modifying data **on the fly**, adding fields not present in the DOM, or signing the request before it goes to `submit`. This is the ideal place to inject CSRF tokens or session metadata.
+**Роль в жизненном цикле:**
+Это событие позволяет модифицировать данные **на лету**, добавляя поля, которых нет в DOM, или подписывая запрос перед тем, как он уйдет в `submit`. Это идеальное место для внедрения CSRF-токенов или метаданных сессии.
 
 ```javascript
 form.addEventListener('formdata', (e) => {
-  // Add a service field not in the HTML
-  e.formData.append('timestamp', Date.now());
-  e.formData.append('client_id', getClientId());
+    // Добавляем служебное поле, которого нет в HTML
+    e.formData.append('timestamp', Date.now());
+    e.formData.append('client_id', getClientId());
 
-  // Modify an existing value (e.g., encrypt before sending)
-  // Important: set replaces the value if the key exists
-  const email = e.formData.get('email');
-  e.formData.set('email', email.toLowerCase().trim());
+    // Изменяем существующее значение (например, шифруем перед отправкой)
+    // Важно: set заменяет значение, если ключ существует
+    const email = e.formData.get('email');
+    e.formData.set('email', email.toLowerCase().trim());
 });
 ```
-
-After this handler, the `formData` passed to `fetch` will already contain these changes.
+После этого обработчика, `formData`, переданное в `fetch`, уже будет содержать эти изменения.
 
 ---
 
-### 6. `reset` — Return to Initial State
+### 6. `reset` — Возврат к исходному состоянию
 
-An event that fires when `form.reset()` is called or when `<input type="reset">` is clicked.
+Событие, срабатывающее при вызове метода `form.reset()` или нажатии на `<input type="reset">`.
 
-**Caution:**
-Unlike other events, `reset` does not cancel the "dirty" (changed) state of fields in the browser. It simply resets values to their original ones (from the `value` or `checked` attribute) but does not automatically clear validation state.
+**Осторожно:**
+В отличие от других событий, `reset` не отменяет состояние "dirty" (измененности) полей в браузере. Он просто возвращает значения к изначальным (из атрибута `value` или `checked`), но не очищает состояние валидации автоматически.
 
-**Role in the lifecycle:**
-This event is typically used to clear custom UI states (remove error highlights, reset timers, clear cached dropdown data) that the browser does not reset by default.
+**Роль в жизненном цикле:**
+Это событие обычно используется для очистки кастомных состояний UI (убрать подсветку ошибок, сбросить таймеры, очистить кешированные данные выпадающих списков), которые не сбрасываются браузером по умолчанию.
 
 ```javascript
 form.addEventListener('reset', () => {
-  // Manual cleanup of custom errors, because the browser doesn't clear them
-  form
-    .querySelectorAll('.error-border')
-    .forEach((el) => el.classList.remove('error-border'));
-  form.querySelectorAll('.custom-error-message').forEach((el) => el.remove());
-  // Reset button state if it was disabled
-  submitButton.disabled = false;
+    // Ручная очистка кастомных ошибок, потому что браузер их не стирает
+    form.querySelectorAll('.error-border').forEach(el => el.classList.remove('error-border'));
+    form.querySelectorAll('.custom-error-message').forEach(el => el.remove());
+    // Сброс состояния кнопки, если она была заблокирована
+    submitButton.disabled = false;
 });
 ```
 
 ---
 
-### Complete Form Lifecycle (Event Map)
+### Полный жизненный цикл формы (Карта событий)
 
-To visualize what happens, let's trace the user's path:
+Чтобы визуализировать происходящее, представим путь пользователя:
 
-1. **User types** → `input` fires (real-time masking and light validation).
-2. **User leaves the field** → `change` fires (value confirmation, heavy validation).
-3. **User attempts to submit (click on button or `Enter`)** → The browser calls `checkValidity()`.
-   - If the field is invalid → `invalid` fires (error display). The process stops, `submit` is **not** called.
-4. **If all is valid** → The browser initiates the submission process.
-   - The `new FormData(form)` constructor generates the `formdata` event (we sign the request).
-5. **Data is ready** → `submit` fires (final check, Fetch submission).
-6. **User clicks "Reset"** → `reset` fires (clean UI).
+1.  **Пользователь печатает** → Срабатывает `input` (реалтайм-маски и легкая валидация).
+2.  **Пользователь уходит с поля** → Срабатывает `change` (фиксация значения, тяжелая проверка).
+3.  **Пользователь пытается отправить (`click` по кнопке или `Enter`)** → Браузер вызывает `checkValidity()`.
+    - Если поле невалидно → Срабатывает `invalid` (показ ошибок). Процесс останавливается, `submit` **не** вызывается.
+4.  **Если все валидно** → Браузер инициирует процесс отправки.
+    - Конструктор `new FormData(form)` генерирует событие `formdata` (мы подписываем запрос).
+5.  **Данные готовы** → Срабатывает `submit` (финальная проверка, отправка Fetch).
+6.  **Пользователь нажимает "Сброс"** → Срабатывает `reset` (чистим UI).
 
-**Final conclusion:** Browsers provide this full spectrum of events not just for convenience but for **security and UX**. The `invalid` event protects against sending garbage, `formdata` protects against parameter tampering (preventing XSS in parameters), and the distinction between `input` and `change` allows saving user CPU resources. By using all six events together, you get a form that behaves like a native desktop application.
+**Итоговый вывод:** Браузеры предоставляют этот полный спектр событий не для удобства, а для **безопасности и UX**. Событие `invalid` защищает от отправки мусора, `formdata` защищает от подделки параметров (предотвращая XSS в параметрах), а градация `input` vs `change` позволяет экономить ресурсы процессора пользователя. Используя все шесть событий в связке, вы получаете форму, которая ведет себя как нативное настольное приложение.
 
 ---
 
-## 7.10. HTML Forms and Progressive Enhancement
+## 7.10. HTML Forms и Progressive Enhancement
 
-This is one of the most important chapters of the book — not because it introduces anything new in the specification, but because it discusses a principle that is older than most frameworks on the market, yet is experiencing a true revival in 2026.
+Это одна из самых важных глав книги — не потому, что здесь появляется что-то новое в спецификации, а потому что здесь речь идёт о принципе, который старше большинства фреймворков на рынке, но который в 2026 году переживает настоящее возрождение.
 
-### Why a Form Must Work Without JavaScript
+### Почему форма должна работать без JavaScript
 
-The statement sounds almost like a conservative slogan, but behind it lies a very practical argument: **JavaScript is the only part of the web stack that may fail to load.**
+Формулировка звучит почти как консервативный лозунг, но за ней стоит вполне практический аргумент: **JavaScript — это единственная часть веб-стека, которая может не загрузиться.**
 
-HTML almost always reaches the browser — it's the first byte of the server's response. CSS usually arrives too, albeit with some delay. But JavaScript may fail to execute for a dozen reasons, most of which have nothing to do with the quality of the developer's code:
+HTML почти всегда доходит до браузера — это первый байт ответа сервера. CSS обычно тоже доходит, разве что с задержкой. А вот JavaScript может не выполниться по десятку причин, и большинство из них не имеют никакого отношения к качеству кода разработчика:
 
-- slow or unstable network — the script hasn't had time to load and parse, but the user has already clicked the button;
-- an error in a neighboring, completely unrelated script — it can halt all JS execution on the page if the exception isn't isolated;
-- a corporate proxy or browser extension blocking some scripts;
-- an outdated or low-power device where a large bundle takes several seconds to execute;
-- the simple fact that the user has disabled JavaScript — such users are a minority, but they are not zero, and in some domains (government services, banking, accessibility) this is not a hypothetical but a normative scenario.
+- медленная или нестабильная сеть — скрипт ещё не успел загрузиться и распарситься, а пользователь уже нажал кнопку;
+- ошибка в соседнем, вообще не связанном скрипте — она может прервать выполнение всего JS на странице, если исключение не изолировано;
+- корпоративный прокси или расширение браузера, блокирующее часть скриптов;
+- устаревшее или маломощное устройство, на котором большой бандл выполняется с задержкой в несколько секунд;
+- сам факт, что пользователь отключил JavaScript — таких меньшинство, но оно не равно нулю, и в некоторых доменах (госуслуги, банкинг, доступность) это не гипотетический, а нормативный сценарий.
 
-The form is often the most critical interaction point on the page: login, order checkout, payment submission, search. If it stops working when JS fails, the failure is not cosmetic but blocking. Hence the rule: **the form must function on bare HTML**, and JavaScript should add convenience, not be a prerequisite for its operation.
+Форма — это часто самая важная точка взаимодействия на странице: логин, оформление заказа, отправка платежа, поиск. Если именно она перестаёт работать при сбое JS, сбой становится не косметическим багом, а блокирующим. Отсюда правило: **форма обязана функционировать на голом HTML**, а JavaScript должен добавлять к ней удобство, а не быть условием её работоспособности.
 
-This is the essence of Progressive Enhancement — an old idea formulated in the early 2000s, but gaining new relevance in a world where web applications are by default designed as "JS-first."
+Это и есть суть Progressive Enhancement (постепенного улучшения) — старой идеи, сформулированной ещё в начале 2000-х, но обретающей новую актуальность в мире, где веб-приложения по умолчанию проектируются «JS-first».
 
-### Why `<form> → POST → Server` Remains the Best Architecture
+### Почему `<form> → POST → Server` до сих пор остаётся лучшей архитектурой
 
 ```
 <form>
@@ -3200,98 +3215,99 @@ POST
 Server
 ```
 
-This chain has a property that is easy to underestimate because it is so fundamental that it no longer stands out: **it does not require JavaScript at any of its three steps.**
+У этой цепочки есть свойство, которое легко недооценить, потому что оно настолько базовое, что перестаёт бросаться в глаза: **она не требует JavaScript ни на одном из своих трёх шагов.**
 
-- `<form>` — the browser already knows how to collect field values into the request body.
-- `POST` (or `GET`) — the browser already forms the HTTP request and sends it.
-- `Server` — the server receives already serialized data and processes it.
+- `<form>` — браузер сам знает, как собрать значения полей в тело запроса.
+- `POST` (или `GET`) — браузер сам формирует HTTP-запрос и отправляет его.
+- `Server` — сервер получает уже готовые, сериализованные данные и обрабатывает их.
 
-None of these three steps needs `fetch`, `addEventListener('submit')`, `preventDefault()`, manual `FormData` assembly, or client-side validation to work at all. This is built-in platform behavior that has been working consistently since 1995.
+Ни один из этих трёх шагов не нуждается в `fetch`, `addEventListener('submit')`, `preventDefault()`, ручной сборке `FormData` или клиентской валидации, чтобы в принципе сработать. Это встроенное поведение платформы, работающее одинаково стабильно с 1995 года.
 
-Compare this to a typical SPA form architecture:
+Сравните с типичной SPA-архитектурой формы:
 
 ```
 onSubmit handler
     ↓
 preventDefault()
     ↓
-manually collect field values (or via state)
+собрать значения полей вручную (или через state)
     ↓
 fetch() / axios.post()
     ↓
-wait for response
+дождаться ответа
     ↓
-handle success/error in JS
+обработать успех/ошибку в JS
     ↓
-manually update UI
+обновить UI руками
 ```
 
-Each of these steps is code written and maintained by the developer, and each can break independently of the others. Forgot `preventDefault()` — the page reloads at the wrong time. Didn't handle a race condition between two fast submissions — the user submits the form twice. Forgot to disable the button during the request — the same thing. Made a mistake in network error handling — the user sees a frozen form with no feedback.
+Каждая из этих ступеней — код, который пишет и поддерживает разработчик, и каждая из них может сломаться независимо от остальных. Забыли `preventDefault()` — страница перезагружается некстати. Не обработали состояние гонки (race condition) между двумя быстрыми сабмитами — пользователь отправляет форму дважды. Забыли отключить кнопку на время запроса — то же самое. Ошиблись в обработке сетевого сбоя — пользователь видит зависшую форму без обратной связи.
 
-`<form action="/checkout" method="post">` is not susceptible to any of these bugs because all that logic has been implemented once — inside the browser, not once per project per team.
+`<form action="/checkout" method="post">` не подвержен ни одному из этих багов, потому что вся эта логика уже реализована один раз — внутри браузера, а не один раз на каждый проект внутри каждой команды.
 
-This doesn't mean server-side rendering and full page reloads are the only correct path in 2026. It means that **the basic, exception-free scenario should be built on this chain**, and everything that makes the interface more responsive — partial updates without reload, optimistic UI updates, inline validation — should be an enhancement on top of it, not a replacement.
+Это не значит, что серверный рендеринг и полные перезагрузки страницы — единственно верный путь в 2026 году. Это значит, что **базовый, работающий без исключений сценарий должен строиться на этой цепочке**, а всё, что делает интерфейс более отзывчивым — частичное обновление без перезагрузки, оптимистичные обновления UI, инлайн-валидация, — должно быть надстройкой поверх неё, а не заменой ей.
 
-### How Modern SPAs Are Gradually Returning to This Approach
+### Как современные SPA постепенно возвращаются к этому подходу
 
-It's telling that over the past few years, the major frameworks in the ecosystem have moved precisely in this direction — from "forms as pure client-side JS objects" to "forms as native HTML elements enhanced with JS."
+Показательно, что за последние несколько лет главные фреймворки экосистемы двигались именно в эту сторону — от «формы как чисто клиентского JS-объекта» к «форме как нативному HTML-элементу, дополненному JS».
 
-- **React Server Actions** (Next.js, starting with App Router) allow specifying a server function directly in the form's `action` attribute: `<form action={createOrder}>`. With JS enabled, the request goes through client-side optimization without a full reload; with JS disabled, the browser does a regular `POST`, and the form still works because under the hood it's a regular HTML `<form>`.
-- **Remix** was built from the start around the idea that forms should be real HTML forms with `action` and `method`, and all the JS layer (`useFetcher`, optimistic updates) is an enhancement on top of a working baseline scenario, not a replacement.
-- **Hotwire / Turbo** (Rails ecosystem) intercepts regular form submissions at the event level and turns them into partial page updates, but in the absence of JS, the form continues to work as a regular HTML submit with a full reload.
-- **htmx** directly declares this philosophy as its main one: regular HTML attributes (`hx-post`, `hx-target`) extend the behavior of a standard form, but the form itself remains syntactically and semantically a regular HTML form.
+- **React Server Actions** (Next.js, начиная с App Router) позволяют указать серверную функцию прямо в атрибуте `action` формы: `<form action={createOrder}>`. При включённом JS запрос уходит через клиентскую оптимизацию без полной перезагрузки; при отключённом JS браузер делает обычный `POST`, и форма всё равно работает, потому что под капотом это самый обычный HTML `<form>`.
+- **Remix** изначально строился вокруг идеи, что формы должны быть настоящими HTML-формами с `action` и `method`, а весь JS-слой (`useFetcher`, оптимистичные обновления) — это улучшение поверх рабочего базового сценария, а не замена ему.
+- **Hotwire / Turbo** (экосистема Rails) перехватывает обычные сабмиты форм на уровне событий и превращает их в частичные обновления страницы, но при отсутствии JS форма продолжает работать как обычный HTML-сабмит с полной перезагрузкой.
+- **htmx** прямо декларирует эту философию как основную: обычные HTML-атрибуты (`hx-post`, `hx-target`) расширяют поведение стандартной формы, но сама форма при этом остаётся синтаксически и семантически обычной HTML-формой.
 
-The common vector in all these solutions is one: **JavaScript handles the same action that the browser already knows how to perform**, intercepting it to improve UX, not replacing the mechanism that wouldn't exist without it. This is fundamentally different from the classic SPA model of 2015–2020, where `<form>` was often just a visual container with fields, and all submission logic was written from scratch in JS, as if HTML forms had never existed.
+Общий вектор во всех этих решениях один: **JavaScript обрабатывает то же самое действие, которое браузер и так умеет выполнять**, перехватывая его для улучшения UX, а не подменяя собой механизм, которого без него не существовало бы. Это принципиально отличается от классической SPA-модели 2015–2020 годов, где `<form>` часто был просто визуальным контейнером с полями, а вся логика отправки данных писалась с нуля на JS, будто HTML-форм никогда не существовало.
 
-The practical takeaway: when designing any form in 2026, it makes sense to first design it so that it works with JavaScript completely disabled — with a real `action`, a real `method`, and server-side data processing — and only then layer client-side enhancements on top. This order guarantees that even in the worst-case scenario (network down, script didn't load, browser hopelessly outdated), the user can still perform the main action on the page — rather than hitting a button that silently does nothing.
+Итог для практики: при проектировании любой формы в 2026 году имеет смысл сначала спроектировать её так, чтобы она работала при полностью отключённом JavaScript — с настоящим `action`, настоящим `method` и серверной обработкой данных, — и только затем накладывать поверх этого слой клиентских улучшений. Такой порядок гарантирует, что даже в худшем сценарии (сеть легла, скрипт не догрузился, браузер безнадёжно устарел) пользователь всё ещё может выполнить главное действие на странице — а не упрётся в кнопку, которая тихо ничего не делает.
+
 
 ---
 
-## 7.11. HTML Forms and Modern Frameworks
+## 7.11. HTML Forms и современные фреймворки
 
-Section 7.10 showed why `<form> → POST → Server` remains architecturally the correct baseline scenario. The logical next question is: how do specific frameworks view this — and does this change their relationship with third-party form libraries.
+Раздел 7.10 показал, почему `<form> → POST → Server` остаётся архитектурно правильным базовым сценарием. Логичный следующий вопрос: как к этому относятся конкретные фреймворки — и меняется ли из-за этого их отношение к сторонним библиотекам для работы с формами.
 
 ### Angular
 
-Angular has historically offered two parallel approaches: **Template-driven Forms** (declarative, closer to native HTML, with `ngModel`) and **Reactive Forms** (imperative, with `FormGroup`, `FormControl`, fully described in TypeScript component code).
+Angular исторически предлагал два параллельных подхода: **Template-driven Forms** (декларативные, ближе к нативному HTML, с `ngModel`) и **Reactive Forms** (императивные, с `FormGroup`, `FormControl`, полностью описываемые в TypeScript-коде компонента).
 
-Reactive Forms have long been the "grown-up" choice for complex forms — they make it convenient to build custom validation, dependent fields, and dynamically added control groups. But this approach comes at a cost: the form structure is duplicated — once described in the template (`<input formControlName="email">`), and again in the component class (`this.form = new FormGroup({ email: new FormControl('') })`). This double-entry bookkeeping is a constant source of desynchronization between what is visible in the markup and what actually manages state.
+Reactive Forms долгое время были «взрослым» выбором для сложных форм — с них удобно строить кастомную валидацию, зависимые поля, динамически добавляемые группы контролов. Но у этого подхода есть цена: структура формы дублируется — один раз она описана в шаблоне (`<input formControlName="email">`), второй раз — в классе компонента (`this.form = new FormGroup({ email: new FormControl('') })`). Эта двойная бухгалтерия — постоянный источник рассинхронизации между тем, что видно в разметке, и тем, что реально управляет состоянием.
 
-Starting with Angular 14+ and especially in current versions with Signals, the Angular team is explicitly moving toward simplifying this model: typed reactive forms (`Typed Reactive Forms`) narrow the gap between template and code, and signals are fundamentally rethinking how reactive state is modeled, bringing it closer to a lighter and more predictable mechanism than the classic `FormGroup`.
+Начиная с Angular 14+ и особенно в актуальных версиях с сигналами (Signals), команда Angular явно двигается к упрощению этой модели: типизированные реактивные формы (`Typed Reactive Forms`) сокращают разрыв между шаблоном и кодом, а сигналы вообще пересматривают то, как в принципе моделируется реактивное состояние, приближая его к более лёгкому и предсказуемому механизму, чем классический `FormGroup`.
 
 ### React
 
-React has never had an "official" way to work with forms — the ecosystem filled this niche with third-party libraries, and there were reasons for that. React historically doesn't provide a convenient way to read values from a form without **controlled components**: each field stores its value in state, each change triggers `setState`, each re-render compares the current field value with this state. For a form with 20 fields, that's 20 `onChange` handlers and 20 pieces of state that need to be declared, synchronized, and not forgotten to validate.
+У React никогда не было «официального» способа работать с формами — экосистема закрывала эту нишу сторонними библиотеками, и на то были причины. React исторически не даёт удобного способа читать значения из формы без **контролируемых компонентов** (*controlled inputs*): каждое поле хранит своё значение в state, каждое изменение вызывает `setState`, каждый ре-рендер сверяет актуальное значение поля с этим state. Для формы из 20 полей это 20 обработчиков `onChange` и 20 кусочков состояния, которые нужно объявить, синхронизировать и не забыть провалидировать.
 
-Hence the popularity of **Formik** and **React Hook Form**: they solve precisely this artificial complexity by encapsulating value tracking, validation, and error handling in one place. React Hook Form, in this sense, has taken a step closer to the platform: it actively relies on **uncontrolled inputs** and native `FormData`, rather than `state` for each field — that is, it's already partially on the path of "trusting the browser" rather than fighting it.
+Отсюда — популярность **Formik** и **React Hook Form**: они решают именно эту рукотворную сложность, инкапсулируя учёт значений, валидацию и обработку ошибок в одном месте. React Hook Form в этом смысле сделал шаг ближе к платформе: он активно опирается на **неконтролируемые компоненты** (*uncontrolled inputs*) и на нативный `FormData`, а не на `state` для каждого поля, — то есть уже частично идёт по пути «довериться браузеру», а не бороться с ним.
 
 ### Vue
 
-Vue, thanks to `v-model`, initially offers a lighter two-way binding syntax than "raw" React — `<input v-model="email">` replaces the manual `value` + `onChange` pair. This reduces the need for third-party libraries for simple and medium forms: Vue's basic reactivity already covers much of what drives React developers to pull in Formik.
+Vue благодаря `v-model` изначально предлагает более лёгкий синтаксис двусторонней привязки, чем «сырой» React, — `<input v-model="email">` заменяет ручную пару `value` + `onChange`. Это снижает необходимость в сторонних библиотеках для простых и средних форм: базовая реактивность Vue уже покрывает большую часть того, ради чего в React-мире тянут Formik.
 
-For complex scenarios (dynamic fields, deep nested validation), the Vue ecosystem offers solutions like **VeeValidate** or **FormKit**, but the need for them is noticeably lower than in React, precisely because the basic DX (developer experience) of Vue is closer to how native HTML behaves.
+Для сложных сценариев (динамические поля, глубокая вложенная валидация) экосистема Vue предлагает решения вроде **VeeValidate** или **FormKit**, но сама необходимость в них ощутимо ниже, чем в React, именно потому что базовый DX (developer experience) Vue ближе к тому, как ведёт себя нативный HTML.
 
 ### Svelte
 
-Svelte goes even further toward nativity. Thanks to its compiled approach and bindings like `bind:value`, working with forms in Svelte feels syntactically closer to plain HTML than to the "React style" with explicit state management via hooks. Svelte 5 with runes (`$state`) continues this line: minimal ceremony between what is visible in the markup and what actually stores the field's value.
+Svelte идёт ещё дальше в сторону нативности. Благодаря компилируемому подходу и биндингам вроде `bind:value`, работа с формами во Svelte по ощущениям syntactically ближе к простому HTML, чем к «React-стилю» с явным управлением состоянием через хуки. Svelte 5 с рунами (`$state`) продолжает эту линию: минимум церемоний между тем, что видно в разметке, и тем, что реально хранит значение поля.
 
-It's telling that in the Svelte ecosystem, form libraries play a far less central role than in React — the community more often solves validation tasks through lightweight utility libraries (for example, **Superforms** in combination with SvelteKit) on top of native `<form>`, rather than through heavy abstractions that completely replace the HTML form.
+Показательно, что в экосистеме Svelte форменные библиотеки играют куда менее центральную роль, чем в React — сообщество чаще решает задачи валидации через лёгкие утилитарные библиотеки (например, **Superforms** в связке с SvelteKit) поверх нативных `<form>`, а не через тяжёлые абстракции, полностью подменяющие HTML-форму.
 
 ### Qwik
 
-Qwik is a framework designed around the idea of **resumability** (instant state recovery without full hydration), and this philosophy directly affects forms: the less JS required before the first interaction, the better Qwik's model fits. Forms in Qwik by default lean toward server actions (`routeAction$` in Qwik City) — form data is sent to the server almost exactly like in a classic `<form method="post">`, and client-side JS is loaded as needed rather than all at once in advance.
+Qwik — фреймворк, спроектированный вокруг идеи **resumability** (мгновенного возобновления состояния без полной гидратации), и эта философия напрямую влияет на формы: чем меньше JS требуется до первого взаимодействия, тем лучше вписывается модель Qwik. Формы в Qwik по умолчанию тяготеют к серверным action'ам (`routeAction$` в Qwik City) — данные формы отправляются на сервер практически так же, как в классическом `<form method="post">`, а клиентский JS подключается по мере необходимости, а не заранее целиком.
 
-This is architecturally the closest approach to "form as HTML, not as a JS object" among the listed frameworks.
+Это архитектурно самый близкий к «форма как HTML, а не как JS-объект» подход среди перечисленных фреймворков.
 
 ### Astro
 
-Astro occupies a special place in this row because by default it **does not send JS to the client at all** unless explicitly requested (the islands architecture principle). A form in an Astro component, if not "animated" separately, is exactly a native HTML `<form>` working according to the scheme from section 7.10 without any caveats. If interactivity is needed, it is added pointwise, via an island component in React/Vue/Svelte, not by default for the entire page.
+Astro в этом ряду занимает особое место, потому что по умолчанию **не отправляет JS на клиент вообще**, если он не запрошен явно (принцип islands architecture). Форма в Astro-компоненте, если её не «оживлять» отдельно, — это именно нативный HTML `<form>`, работающий по схеме из раздела 7.10 без каких-либо оговорок. Если нужна интерактивность — она добавляется точечно, через island-компонент на React/Vue/Svelte, а не по умолчанию для всей страницы.
 
-Astro, in this sense, is the most radical illustration of Progressive Enhancement at the level of the entire framework architecture, not just a single pattern inside it.
+Astro в этом смысле — наиболее радикальная иллюстрация Progressive Enhancement на уровне архитектуры всего фреймворка, а не отдельного паттерна внутри него.
 
-### The Most Important Question
+### Самый важный вопрос
 
-Are
+Нужны ли
 
 ```
 Formik
@@ -3299,85 +3315,87 @@ React Hook Form
 Angular Reactive Forms
 ```
 
-needed, or are HTML's capabilities sufficient?
+или достаточно возможностей HTML?
 
-The answer is inconveniently clear: **it depends on the complexity of the form, but the boundary at which a library is truly necessary has shifted noticeably in recent years.**
+Ответ неудобно однозначный: **это зависит от сложности формы, но граница, за которой библиотека действительно необходима, за последние годы заметно сдвинулась**.
 
-For a login form, a newsletter subscription form, a simple contact block — native `<form>`, built-in HTML validation (`required`, `type="email"`, `pattern`, `minlength`), and `FormData` on the server are almost certainly sufficient. The library here doesn't solve any real problem — it adds a dependency, bundle size, and an abstraction layer for a task the platform already solves for free.
+Для формы логина, формы подписки на рассылку, простого контактного блока — почти наверняка достаточно нативного `<form>`, встроенной HTML-валидации (`required`, `type="email"`, `pattern`, `minlength`) и `FormData` на сервере. Библиотека здесь не решает никакой реальной проблемы — она добавляет зависимость, размер бандла и слой абстракции ради задачи, которую платформа уже решает бесплатно.
 
-Such libraries are justified where the task goes beyond what the HTML specification describes:
+Библиотеки такого рода оправданы там, где задача выходит за пределы того, что описывает спецификация HTML:
 
-- complex cross-field validation ("field B is required only if field A has value X");
-- dynamically added/removed field groups (lists, repeating sections);
-- complex asynchronous validation behavior (server-side email uniqueness check during typing);
-- rich UX error management (focus management, error aggregation, design system integration).
+- сложная кросс-полевая валидация («поле Б обязательно, только если в поле А выбрано значение X»);
+- динамически добавляемые/удаляемые группы полей (списки, повторяющиеся секции);
+- сложное поведение асинхронной валидации (проверка уникальности email на сервере по мере ввода);
+- богатое управление UX ошибок (fokus-менеджмент, агрегация ошибок, интеграция с дизайн-системой).
 
-In other words, the question has shifted from "is a form library needed at all" to "which specific part of my form does the platform not cover natively" — and it is for that part, not for the entire form, that a third-party solution should be included.
+Иными словами, вопрос сменился с «нужна ли библиотека для форм вообще» на «какую конкретно часть моей формы платформа не покрывает нативно» — и именно ради этой части, а не ради всей формы целиком, стоит подключать стороннее решение.
 
-### What Has Changed After the Introduction of Modern Browser Capabilities
+### Что изменилось после появления современных возможностей браузеров
 
-Several browser features that have become stable and widely supported in recent years have noticeably shortened the list of reasons to pull in a library:
+Несколько браузерных возможностей, ставших стабильными и широко поддерживаемыми в последние годы, заметно сократили список причин тянуть библиотеку:
 
-- **Constraint Validation API** (`checkValidity()`, `setCustomValidity()`, `:invalid`/`:valid` pseudo-classes, `ValidityState`) — allows implementing not only basic but also custom validation without third-party solutions, including programmatic error messages.
-- **`FormData` + `Object.fromEntries()`** — serializing the entire form into an object with one line, without manually enumerating fields.
-- **`popover` and `<dialog>`** — multi-step forms and modal confirmations no longer require JS libraries for focus and overlay management; this is built into the browser.
-- **`:has()` in CSS** — allows implementing part of conditional field display logic (show/hide a block depending on another field's state) purely through CSS, without JS at all.
-- **`<input type="date">`, `type="color">`, `type="range">`, and other specialized types** — eliminated an entire class of third-party UI widgets that were previously a mandatory part of any form.
-- **View Transitions API** — made smooth transitions between form states (for example, in a multi-step wizard) achievable without heavy animation libraries.
+- **Constraint Validation API** (`checkValidity()`, `setCustomValidity()`, `:invalid`/`:valid` псевдоклассы, `ValidityState`) — позволяет реализовать не только базовую, но и кастомную валидацию без сторонних решений, включая программную установку сообщений об ошибках.
+- **`FormData` + `Object.fromEntries()`** — сериализация всей формы в объект одной строкой, без ручного перечисления полей.
+- **`popover` и `<dialog>`** — многошаговые формы и модальные подтверждения теперь не требуют JS-библиотек для управления фокусом и слоями наложения, это встроено в браузер.
+- **`:has()` в CSS** — позволяет реализовать часть условной логики отображения полей (показать/скрыть блок в зависимости от состояния другого поля) чисто через CSS, без JS вообще.
+- **`<input type="date">`, `type="color"`, `type="range"` и другие специализированные типы** — устранили целый класс сторонних UI-виджетов, которые раньше были обязательной частью любой формы.
+- **View Transitions API** — сделал плавные переходы между состояниями формы (например, при многошаговом визарде) достижимыми без тяжёлых анимационных библиотек.
 
-Each of these features closes exactly the type of task for which a third-party library was previously pulled in entirely — simply because there was no alternative.
+Каждая из этих возможностей закрывает ровно тот тип задачи, ради которого раньше тянули стороннюю библиотеку целиком — просто потому что альтернативы не существовало.
 
-### Why Many Frameworks Are Starting to Use Native Forms Much More Actively
+### Почему многие фреймворки начинают использовать нативные формы гораздо активнее
 
-The general trend visible in all the listed frameworks is: **the newer the approach in a particular ecosystem, the closer it is to the native form, not further from it**. React Hook Form instead of Formik, `routeAction$` in Qwik instead of client-side state management, Server Actions in React/Next.js, `v-model` instead of manual bindings, Astro's islands architecture — everywhere we see the same trajectory.
+Общая тенденция, видная во всех перечисленных фреймворках: **чем новее подход в конкретной экосистеме, тем ближе он к нативной форме, а не дальше от неё**. React Hook Form вместо Formik, `routeAction$` в Qwik вместо клиентского стейт-менеджмента, Server Actions в React/Next.js, `v-model` вместо ручных байндингов, islands-архитектура Astro — везде видна одна и та же траектория.
 
-The reason is not fashion but that the base that had to be "filled in" by libraries has itself become more powerful. Previously, a third-party library closed the gap between what HTML could do and what a real product needed. This gap has not disappeared completely, but it has noticeably narrowed — and so has the territory where an abstraction on top of a native form brings more benefit than overhead. The practical takeaway is the same as in section 7.10: start with what the platform already knows, and include a library only for the part of the task that the platform objectively does not cover — not by default, "just in case," for every form in the project.
+Причина не в моде, а в том, что база, которую нужно было «достраивать» библиотеками, сама стала мощнее. Раньше сторонняя библиотека закрывала разрыв между тем, что умеет HTML, и тем, что нужно реальному продукту. Этот разрыв не исчез полностью, но заметно сузился — а значит, сузилась и территория, на которой абстракция поверх нативной формы приносит больше пользы, чем накладных расходов. Итог для практики тот же, что и в разделе 7.10: начинать стоит с того, что уже умеет платформа, и подключать библиотеку только под ту часть задачи, которую платформа объективно не покрывает — а не по умолчанию, «на всякий случай», для любой формы в проекте.
+
 
 ---
 
-## 7.12. Accessibility of Modern Forms
+## 7.12. Accessibility современных форм
 
-The topic of accessibility is often presented as a separate, "additional" discipline — something layered on top of a ready-made form for the sake of WCAG compliance. In fact, for forms this is not the case: a significant portion of accessibility is simply what the browser does for free if the developer doesn't prevent it from doing so. Before writing `aria` attributes, it's worth understanding what already works without them.
+Тема доступности часто подаётся как отдельная, «дополнительная» дисциплина — что-то, что накладывается на готовую форму поверх, ради соответствия чек-листу WCAG. На самом деле для форм это не так: значительная часть доступности — это просто то, что браузер делает бесплатно, если разработчик не мешает ему это делать. Прежде чем писать `aria`-атрибуты, стоит понять, что вообще уже работает без них.
 
-### What the Browser Does Automatically
+### Что браузер делает автоматически
 
 #### Label
 
 ```html
-<label for="email">Email</label> <input id="email" type="email" />
+<label for="email">Email</label>
+<input id="email" type="email">
 ```
 
-If `<label>` is correctly associated with the field — via `for`/`id` or by wrapping (`<label>Email <input></label>`) — the browser and assistive technologies automatically:
+Если `<label>` правильно связан с полем — через `for`/`id` или через обёртывание (`<label>Email <input></label>`) — браузер и вспомогательные технологии автоматически:
 
-- announce the label text when focusing on the field for screen readers;
-- expand the clickable area — clicking on the label text moves focus to the associated field (this is especially important for checkboxes and radio buttons, where the input area itself is small);
-- use the label text as the field's _accessible name_ in the Accessibility Tree, which the browser builds in parallel with the DOM.
+- озвучивают текст label при фокусировке на поле для скринридеров;
+- расширяют кликабельную область — клик по тексту label переводит фокус на связанное поле (это особенно важно для чекбоксов и радиокнопок, где сама область ввода маленькая);
+- используют текст label как *accessible name* поля в дереве доступности (Accessibility Tree), которое браузер строит параллельно с DOM.
 
-All of this happens without a single line of ARIA. `<label>` is not a cosmetic element but part of the contract that the browser automatically fulfills if the contract is respected.
+Всё это происходит без единой строчки ARIA. `<label>` — не косметический элемент, а часть контракта, который браузер выполняет автоматически, если этот контракт соблюдён.
 
 #### Focus
 
-The browser itself manages the focus order based on the sequence of interactive elements in the DOM, itself draws the visible focus indicator (`:focus-visible`), itself handles focus movement between fields via `Tab`/`Shift+Tab`, itself excludes elements with `disabled` or `tabindex="-1"` from the sequence. The developer does not need to write code tracking which element is currently active — this state is maintained natively by the browser and provided via `document.activeElement` if ever needed in JS.
+Браузер сам управляет последовательностью фокуса (*focus order*) по порядку следования интерактивных элементов в DOM, сам рисует видимый индикатор фокуса (`:focus-visible`), сам обрабатывает переход фокуса между полями по `Tab`/`Shift+Tab`, сам исключает из последовательности элементы с `disabled` или `tabindex="-1"`. Разработчику не нужно писать код, отслеживающий, какой элемент сейчас активен, — это состояние браузер поддерживает нативно и предоставляет через `document.activeElement`, если оно вообще понадобится в JS.
 
 #### Keyboard
 
-All standard form elements — `<input>`, `<select>`, `<textarea>`, `<button>` — are by default fully keyboard-controllable without a single line of code: `Tab` moves focus, `Space`/`Enter` activates buttons and checkboxes, arrow keys switch radio buttons within a group and options in `<select>`, `Enter` in a field inside `<form>` initiates submission. This behavior is part of the specification, not a "feature" one must remember when laying out.
+Все стандартные элементы форм — `<input>`, `<select>`, `<textarea>`, `<button>` — по умолчанию полностью управляются с клавиатуры без единой строчки кода: `Tab` переключает фокус, `Space`/`Enter` активирует кнопки и чекбоксы, стрелки переключают радиокнопки внутри группы и опции в `<select>`, `Enter` в поле внутри `<form>` инициирует сабмит. Это поведение — часть спецификации, а не «фича», о которой нужно помнить при вёрстке.
 
 #### Screen Reader
 
-Screen readers (VoiceOver, NVDA, JAWS, TalkBack) rely on the accessibility tree that the browser builds from HTML semantics. A correctly marked-up form — with `<label>`, native `<input>`s of the right types, `<fieldset>`/`<legend>` for grouping fields — is announced correctly on its own: the screen reader declares the field's name, its type (`edit text`, `checkbox`, `combo box`), current value, and state (`required`, `invalid`, `checked`) without any manual configuration by the developer.
+Скринридеры (VoiceOver, NVDA, JAWS, TalkBack) опираются на дерево доступности, которое браузер строит из семантики HTML. Правильно размеченная форма — с `<label>`, нативными `<input>` нужных типов, `<fieldset>`/`<legend>` для группировки полей — озвучивается корректно сама по себе: скринридер объявляет название поля, его тип (`edit text`, `checkbox`, `combo box`), текущее значение и состояние (`required`, `invalid`, `checked`) без какой-либо ручной настройки со стороны разработчика.
 
 #### Error Messages
 
-Starting with the Constraint Validation API, the browser itself can show an error message when attempting to submit a form with an invalid field — a tooltip near the problematic field, with automatic focus transfer to it. This happens without JS: attributes like `required`, `type="email"`, `pattern`, `minlength`/`maxlength` are sufficient.
+Начиная с Constraint Validation API, браузер сам умеет показывать сообщение об ошибке при попытке отправить форму с невалидным полем — всплывающую подсказку возле проблемного поля, с автоматическим переводом фокуса на него. Это происходит без JS: достаточно атрибутов вроде `required`, `type="email"`, `pattern`, `minlength`/`maxlength`.
 
 #### Required
 
 ```html
-<input type="text" required />
+<input type="text" required>
 ```
 
-The `required` attribute is handled by the browser on several levels: visually (in most browsers the field is marked via `:required`/`:invalid` pseudo-classes that can be styled), functionally (the form will not submit while the field is empty), and semantically (the screen reader announces the field as required — "required" — automatically, without manual `aria-required="true"`, which is redundant in this case).
+Атрибут `required` браузер обрабатывает сразу на нескольких уровнях: визуально (в большинстве браузеров поле помечается через `:required`/`:invalid` псевдоклассы, которые можно стилизовать), функционально (форма не отправится, пока поле пустое) и семантически (скринридер объявляет поле как обязательное — «required» — автоматически, без ручного `aria-required="true"`, который в этом случае избыточен).
 
 #### Invalid State
 
@@ -3387,185 +3405,170 @@ input:invalid {
 }
 ```
 
-The `:invalid` pseudo-class (and its counterpart `:valid`) is automatically applied by the browser based on the current validation state of the field — the same `ValidityState` discussed in section 7.11. The developer does not need to manually calculate whether the field is "valid" or not and add/remove a class via JS — it's enough to describe styles for the pseudo-class once in CSS.
+Псевдокласс `:invalid` (и парный ему `:valid`) браузер выставляет автоматически, основываясь на текущем состоянии валидации поля — том самом `ValidityState`, о котором шла речь в разделе 7.11. Разработчику не нужно вручную вычислять, «валидно» поле или нет, и добавлять/убирать класс через JS — достаточно описать стили для псевдокласса один раз в CSS.
 
-### What Remains the Developer's Responsibility
+### Что остаётся обязанностью разработчика
 
-The browser's automation covers a lot, but not everything. Here is what does not appear on its own:
+Автоматика браузера покрывает много, но не всё. Вот то, что не появляется само по себе:
 
-- **Meaningful rather than formal labels.** The browser will technically associate `<label>` with the field correctly, but it won't verify whether the label text is actually understandable to a human. "Enter value" is formally a correct label but useless in content.
-- **Grouping related fields.** `<fieldset>` and `<legend>` for a group of radio buttons or checkboxes logically united by one question ("Delivery method") — the developer must place them themselves; the browser does not infer semantic connections between neighboring fields.
-- **Linking an error message to the field via `aria-describedby`.** The native browser tooltip for `required`/`pattern` is only part of the story. If the developer outputs their own text error message next to the field (which is almost always necessary for consistent form design), the connection between this text and the field must be explicitly written via `aria-describedby`; otherwise the screen reader won't announce it.
-- **`aria-invalid` during custom validation.** If validation is performed asynchronously on the server (for example, "this email is already registered") and does not reduce to built-in HTML constraints, the error state must be manually set via `aria-invalid="true"` — the Constraint Validation API knows nothing about this error.
-- **Navigation order and logic during non-standard layout.** If the form is visually rearranged via CSS (`order`, `grid-template-areas`) so that the visual order diverges from the DOM order, the developer must either bring them into alignment or explicitly manage `tabindex` — otherwise keyboard navigation will stop matching what is visible on the screen.
-- **Accessible names for custom widgets.** As soon as the developer replaces a native `<select>` with their own dropdown on `div`s, all the automation from the section above disappears and must be recreated manually via ARIA (`role="listbox"`, `aria-expanded`, `aria-activedescendant`, and so on) — a task an order of magnitude more complex than it seems at the start.
-- **Contrast and non-color state indicators.** The browser will apply `:invalid`, but it is not obligated to guarantee that the style the developer wrote for it is sufficiently contrasty or readable not only through color (important for people with color vision deficiencies).
-- **Autocomplete (`autocomplete`).** The `autocomplete` attribute with the correct value (`email`, `given-name`, `street-address`, `cc-number`, etc.) is the developer's responsibility; without it, browser and system password/autofill managers work worse, and this is also part of accessibility in the broad sense — reducing cognitive and motor load on the user.
+- **Смысловые, а не формальные подписи.** Браузер свяжет `<label>` с полем технически правильно, но не проверит, действительно ли текст label понятен человеку. «Введите значение» — формально корректный label, но бесполезный по содержанию.
+- **Группировка связанных полей.** `<fieldset>` и `<legend>` для группы радиокнопок или чекбоксов, логически объединённых одним вопросом («Способ доставки»), — разработчик обязан расставить их сам; браузер не домысливает семантическую связь между соседними полями.
+- **Связь сообщения об ошибке с полем через `aria-describedby`.** Нативная браузерная всплывающая подсказка при `required`/`pattern` — это только часть истории. Если разработчик выводит собственное текстовое сообщение об ошибке рядом с полем (что почти всегда необходимо для консистентного дизайна форм), связь между этим текстом и полем должна быть явно прописана через `aria-describedby`, иначе скринридер её не озвучит.
+- **`aria-invalid` при кастомной валидации.** Если валидация выполняется асинхронно на сервере (например, «такой email уже зарегистрирован») и не сводится к встроенным ограничениям HTML, состояние ошибки нужно проставить вручную через `aria-invalid="true"` — Constraint Validation API об этой ошибке ничего не знает.
+- **Порядок и логика навигации при нестандартной вёрстке.** Если форма визуально переставлена через CSS (`order`, `grid-template-areas`) так, что визуальный порядок расходится с порядком в DOM, разработчик обязан либо привести их в соответствие, либо явно управлять `tabindex` — иначе навигация с клавиатуры перестаёт совпадать с тем, что видно на экране.
+- **Доступные имена для кастомных виджетов.** Как только разработчик заменяет нативный `<select>` собственным выпадающим списком на `div`-ах, вся автоматика раздела выше исчезает, и её нужно воссоздавать вручную через ARIA (`role="listbox"`, `aria-expanded`, `aria-activedescendant` и так далее) — задача на порядок сложнее, чем кажется на старте.
+- **Контраст и не-цветовые индикаторы состояния.** Браузер выставит `:invalid`, но не обязан гарантировать, что стиль, который разработчик для него написал, достаточно контрастен или считываем не только через цвет (важно для людей с нарушениями цветовосприятия).
+- **Автозаполнение (`autocomplete`).** Атрибут `autocomplete` с правильным значением (`email`, `given-name`, `street-address`, `cc-number` и т. д.) — обязанность разработчика; без него браузерные и системные менеджеры паролей/автозаполнения работают хуже, а это тоже часть доступности в широком смысле — снижение когнитивной и моторной нагрузки на пользователя.
 
-### Common Mistakes
+### Типичные ошибки
 
-1. **`<div>` instead of `<label>` with CSS imitating a caption.** It looks like a label but is not programmatically associated with the field — the screen reader won't announce it at all.
-2. **`placeholder` instead of `label`.** Placeholder disappears when typing begins, does not have sufficient contrast by default, and is not reliably announced by all assistive technologies as a substitute for a label. Placeholder is a hint about input format, not a replacement for a label.
-3. **`div` with `onclick` instead of `<button>`.** Lost: focusability, `Space`/`Enter` handling, `button` role in the accessibility tree — all of this must then be recreated manually via `tabindex="0"`, `role="button"`, and key handlers, with a high probability of missing something.
-4. **Removing the standard focus indicator without replacement.** `* { outline: none; }` — one of the most common and most harmful CSS lines in real projects: it removes the only visual signal of where the keyboard focus currently is, without offering anything in return.
-5. **Error message not associated with the field.** The text "Invalid email" is displayed next to the field visually, but without `aria-describedby` — a sighted user sees the connection, but a screen reader does not establish it.
-6. **Coloring the error only with color.** A red border without an icon, text, or other non-color marker is indistinguishable for users with certain types of color vision deficiencies.
-7. **`required` without simultaneous visual and textual indication.** Relying only on the `:invalid` pseudo-class (which only appears after a submission attempt) without explicitly marking required fields in advance — the user learns that a field is required only after an error, not before filling out the form.
-8. **Custom select/dropdown without full ARIA implementation.** Replacing `<select>` with a styled `div` widget is almost always a regression in accessibility unless the ARIA Authoring Practices Guide (APG) `listbox`/`combobox` pattern is fully implemented, including keyboard management, which in practice is rarely done and often contains errors.
-9. **Auto-focus on the first form field without need (`autofocus`).** May unexpectedly "jump" the user past important page content (heading, instructions) directly to the input field, disorienting them, especially when navigating with a screen reader.
-10. **Lack of `<fieldset>`/`<legend>` for groups of radio buttons and checkboxes.** Without them, the screen reader announces each field individually, not telling the user the general question they relate to — the form becomes a set of isolated elements instead of a coherent structure.
+1. **`<div>` вместо `<label>` с CSS, имитирующим подпись.** Выглядит как label, но не связан с полем программно — скринридер не объявит его вообще.
+2. **`placeholder` вместо `label`.** Placeholder исчезает при начале ввода, не имеет достаточного контраста по умолчанию и не во всех вспомогательных технологиях озвучивается как надёжная замена подписи. Placeholder — подсказка о формате ввода, а не замена label.
+3. **`div` с `onclick` вместо `<button>`.** Теряются: фокусируемость, обработка `Space`/`Enter`, роль `button` в дереве доступности, — всё это приходится потом воссоздавать вручную через `tabindex="0"`, `role="button"` и обработчики клавиш, причём с высокой вероятностью что-то будет упущено.
+4. **Удаление стандартного индикатора фокуса без замены.** `* { outline: none; }` — одна из самых частых и самых вредных строк CSS в реальных проектах: она убирает единственный визуальный сигнал о том, где сейчас находится фокус клавиатуры, не предлагая ничего взамен.
+5. **Сообщение об ошибке, не связанное с полем.** Текст «Некорректный email» выведен рядом с полем визуально, но без `aria-describedby` — зрячий пользователь видит связь, скринридер её не устанавливает.
+6. **Раскраска ошибки только цветом.** Красная рамка без иконки, текста или иного немаркерного цветом сигнала неразличима для пользователей с определёнными типами нарушений цветовосприятия.
+7. **`required` без визуального и текстового обозначения одновременно.** Опора только на псевдокласс `:invalid` (проявляющийся лишь после попытки отправки) без явной пометки обязательных полей заранее — пользователь узнаёт, что поле обязательно, только после ошибки, а не до заполнения формы.
+8. **Кастомные select/dropdown без полной ARIA-реализации.** Замена `<select>` на стилизованный `div`-виджет — почти всегда регресс в доступности, если только не реализована ARIA Authoring Practices Guide (APG) паттерн `listbox`/`combobox` целиком, включая управление клавиатурой, что на практике делается редко и часто с ошибками.
+9. **Автофокус на первое поле формы без необходимости (`autofocus`).** Может неожиданно «перепрыгнуть» пользователя мимо важного контента страницы (заголовка, инструкции) прямо к полю ввода, что дезориентирует, особенно при навигации со скринридером.
+10. **Отсутствие `<fieldset>`/`<legend>` для групп радиокнопок и чекбоксов.** Без них скринридер озвучивает каждое поле по отдельности, не сообщая пользователю общий вопрос, к которому они относятся, — форма становится набором изолированных элементов вместо связной структуры.
 
-The overall conclusion of this section directly continues the logic of the previous three chapters: form accessibility is primarily not a set of ARIA attributes added post-hoc, but a consequence of how much the developer trusted native HTML semantics instead of recreating them manually on top of non-semantic `div`s. Every replacement of a native element with a custom widget is a conscious trade-off: a little more visual control in exchange for a large amount of accessibility logic that now has to be implemented and maintained independently.
+Общий вывод раздела прямо продолжает логику предыдущих трёх глав: доступность формы — это в первую очередь не набор ARIA-атрибутов, добавленных постфактум, а следствие того, насколько разработчик доверился нативной семантике HTML вместо того, чтобы воссоздавать её вручную поверх безсемантичных `div`-ов. Каждая замена нативного элемента кастомным виджетом — это осознанный размен: чуть больше визуального контроля в обмен на большой объём accessibility-логики, которую теперь придётся реализовывать и поддерживать самостоятельно.
 
 ---
 
-## 7.13. Architectural Recommendations (Best Practices)
+## 7.13. Архитектурные рекомендации (Best Practices)
 
-This chapter is not new theory but a concentration of everything said in sections 7.10–7.12, collected as practical rules. None of what follows works as an isolated piece of advice "just in case" — each point is based on a specific browser mechanism discussed above and has a specific cost for ignoring it.
+Эта глава — не новая теория, а концентрат всего, что было сказано в разделах 7.10–7.12, собранный в виде практических правил. Ничего из перечисленного ниже не работает как изолированный совет «на всякий случай» — каждый пункт опирается на конкретный механизм браузера, разобранный выше, и имеет конкретную цену отказа от него.
 
-### Use Built-in Constraint Validation by Default
+### Используйте встроенную Constraint Validation по умолчанию
 
 ```html
-<input type="email" required />
-<input type="number" min="1" max="100" />
-<input type="text" pattern="[A-Za-z]{3,}" />
+<input type="email" required>
+<input type="number" min="1" max="100">
+<input type="text" pattern="[A-Za-z]{3,}">
 ```
 
-Before writing your own JS validation function, ask: can this constraint be described with a standard attribute? `required`, `type`, `min`/`max`, `minlength`/`maxlength`, `pattern` cover a significant portion of real form checks — field requiredness, number range, email format, string length. This is not a "simplified" validation for simple cases — it's the same `ValidityState` that you can later rely on in custom code via `checkValidity()` and `setCustomValidity()`. Custom validation from scratch is only justified where built-in constraints are objectively insufficient — not because it's more familiar.
+Прежде чем писать собственную функцию валидации на JS, стоит спросить: не описывается ли это ограничение стандартным атрибутом? `required`, `type`, `min`/`max`, `minlength`/`maxlength`, `pattern` покрывают значительную долю реальных проверок форм — обязательность поля, диапазон числа, формат e-mail, длину строки. Это не «упрощённая» валидация для простых случаев — это тот же `ValidityState`, на который потом можно опереться и в кастомном коде через `checkValidity()` и `setCustomValidity()`. Собственная валидация с нуля оправдана только там, где встроенных ограничений объективно не хватает — не потому что так привычнее.
 
-### Use the Validation API Instead of Completely Replacing Native Validation
+### Применяйте Validation API вместо полной замены нативной проверки
 
-When built-in attributes are truly insufficient (cross-field rules, asynchronous server validation), the correct path is to **extend** the native mechanism rather than replace it entirely:
+Когда встроенных атрибутов действительно недостаточно (кросс-полевые правила, асинхронная проверка на сервере), правильный путь — **расширить** нативный механизм, а не заменить его целиком:
 
 ```js
 input.addEventListener('input', () => {
   if (input.value !== confirmInput.value) {
-    confirmInput.setCustomValidity('Passwords do not match');
+    confirmInput.setCustomValidity('Пароли не совпадают');
   } else {
     confirmInput.setCustomValidity('');
   }
 });
 ```
 
-This preserves everything the browser already does for free: showing the error message, moving focus to the problematic field, `:invalid`/`:valid` CSS states, correct screen reader announcement. Completely replacing native validation with a custom UI layer (when `novalidate` is on the form and everything else is implemented manually) means you have to re-implement the entire set of behavior from section 7.12 — and with high probability implement it worse than it's already done in the browser engine.
+Это сохраняет всё, что браузер и так делает бесплатно: показ сообщения об ошибке, перевод фокуса на проблемное поле, `:invalid`/`:valid` состояние в CSS, корректное озвучивание скринридером. Полная замена нативной валидации собственным UI-слоем (когда `novalidate` стоит на форме, а всё остальное реализовано вручную) означает, что придётся заново реализовать весь набор поведения, разобранный в разделе 7.12 — и с высокой вероятностью реализовать его хуже, чем это уже сделано в браузерном движке.
 
-### Use `autocomplete`, `inputmode`, and `enterkeyhint`
-
-```html
-<input
-  type="email"
-  autocomplete="email"
-  inputmode="email"
-  enterkeyhint="next"
-/>
-<input type="tel" autocomplete="tel" inputmode="tel" />
-<input type="text" autocomplete="cc-number" inputmode="numeric" />
-```
-
-These three attributes solve different but equally underestimated tasks:
-
-- `autocomplete` hints to the browser and password/data managers what exactly is being entered — this directly determines whether the browser will offer autofill and how accurately;
-- `inputmode` controls which **virtual keyboard** will appear on the mobile device (numeric, phone, email layout with `@` in a prominent place), without affecting the validation type, which is still handled by `type`;
-- `enterkeyhint` changes the label on the screen keyboard's Enter key ("Next", "Done", "Search"), thereby telling the user what will happen when they press it, without a single line of JS.
-
-Each of these attributes is free in terms of implementation cost and noticeably affects input UX on mobile devices — while their absence never manifests as an explicit "breakage" but quietly accumulates as a slightly less convenient form.
-
-### Trust the Browser for System Picker Selection
+### Используйте `autocomplete`, `inputmode` и `enterkeyhint`
 
 ```html
-<input type="date" />
-<input type="color" />
-<input type="range" min="0" max="10" />
-<input type="file" accept="image/*" />
+<input type="email" autocomplete="email" inputmode="email" enterkeyhint="next">
+<input type="tel" autocomplete="tel" inputmode="tel">
+<input type="text" autocomplete="cc-number" inputmode="numeric">
 ```
 
-Native `input` types hook into system interfaces — calendar, color palette, slider, file selection dialog — that are already adapted to the specific operating system, localization, screen orientation, and input method (finger, mouse, stylus). A custom JS datepicker almost never reaches the same level of native integration and is almost always heavier in weight and more complex to maintain than one `type="date"` attribute. This is the same principle as in sections 7.11–7.12: the platform has already solved the problem — the developer's task for the basic case is to not get in its way.
+Эти три атрибута решают разные, но одинаково недооценённые задачи:
 
-### Use CSS States Instead of JavaScript Where Possible
+- `autocomplete` подсказывает браузеру и менеджерам паролей/данных, что именно вводится в поле, — от этого напрямую зависит, предложит ли браузер автозаполнение, и насколько точно;
+- `inputmode` управляет тем, какая **виртуальная клавиатура** появится на мобильном устройстве (цифровая, телефонная, email-раскладка с `@` на видном месте), не влияя при этом на тип валидации, за который всё ещё отвечает `type`;
+- `enterkeyhint` меняет подпись на клавише Enter экранной клавиатуры («Далее», «Готово», «Найти»), тем самым сообщая пользователю, что произойдёт при её нажатии, без единой строчки JS.
+
+Каждый из этих атрибутов бесплатен по стоимости внедрения и ощутимо влияет на UX ввода на мобильных устройствах — притом что их отсутствие никогда не проявляется как явная «поломка», а тихо накапливается в виде чуть более неудобной формы.
+
+### Доверяйте браузеру выбор системных пикеров
+
+```html
+<input type="date">
+<input type="color">
+<input type="range" min="0" max="10">
+<input type="file" accept="image/*">
+```
+
+Нативные типы `input` подключают системные интерфейсы выбора — календарь, палитру цветов, слайдер, диалог выбора файла, — которые уже адаптированы под конкретную операционную систему, локализацию, ориентацию экрана и способ ввода (палец, мышь, стилус). Кастомный datepicker на JS почти никогда не достигает того же уровня нативной интеграции и почти всегда тяжелее по весу и сложнее в поддержке, чем один атрибут `type="date"`. Это тот же принцип, что и в разделах 7.11–7.12: платформа уже решила задачу — задача разработчика для базового случая свести к тому, чтобы ей не мешать.
+
+### Применяйте CSS-состояния вместо JavaScript там, где это возможно
 
 ```css
-input:invalid {
-  border-color: var(--color-error);
-}
-input:required ~ .required-marker {
-  display: inline;
-}
-input:disabled {
-  opacity: 0.5;
-}
-input:focus-visible {
-  outline: 2px solid var(--color-focus);
-}
-details[open] summary {
-  font-weight: bold;
-}
+input:invalid { border-color: var(--color-error); }
+input:required ~ .required-marker { display: inline; }
+input:disabled { opacity: 0.5; }
+input:focus-visible { outline: 2px solid var(--color-focus); }
+details[open] summary { font-weight: bold; }
 ```
 
-`:invalid`, `:valid`, `:required`, `:disabled`, `:checked`, `:focus-visible`, `:has()`, attribute selectors like `[open]` — all of these are states that the browser already computes and updates automatically (see sections 6.4 and 7.12). Styling directly through these selectors means the visual representation will never desynchronize from the element's actual state — unlike the "toggle a CSS class via JS on every change" approach, where the developer must manually maintain this correspondence at every point where the state might change.
+`:invalid`, `:valid`, `:required`, `:disabled`, `:checked`, `:focus-visible`, `:has()`, атрибутные селекторы вроде `[open]` — всё это состояния, которые браузер и так вычисляет и обновляет автоматически (см. разделы 6.4 и 7.12). Стилизация напрямую через эти селекторы означает, что визуальное представление никогда не рассинхронизируется с реальным состоянием элемента — в отличие от подхода «переключать CSS-класс через JS при каждом изменении», где разработчик обязан вручную поддерживать это соответствие в каждой точке, где состояние может измениться.
 
-### Keep the Form Functional Without JavaScript
+### Сохраняйте работоспособность формы без JavaScript
 
-This rule from section 7.10 is repeated here intentionally, because it is not a detail but the framework into which all other points in this chapter must fit. The practical test is simple: disable JavaScript in DevTools and try to go through the entire form — from filling to submission and receiving error feedback. If at any of these steps the form stops functioning, it's a signal that some part of the logic was tied to JS not for enhancement but for the very ability to work at all.
+Это правило из раздела 7.10, повторённое здесь намеренно, потому что оно — не деталь, а рамка, в которую должны укладываться все остальные пункты этой главы. Практическая проверка простая: отключить JavaScript в DevTools и попытаться пройти форму целиком — от заполнения до отправки и получения обратной связи об ошибке. Если на любом из этих шагов форма перестаёт функционировать, это сигнал, что какая-то часть логики оказалась завязана на JS не для улучшения, а для самой возможности сработать в принципе.
 
-### Design Forms with Accessibility and Progressive Enhancement in Mind
+### Проектируйте формы с учётом Accessibility и Progressive Enhancement
 
-Section 7.12 showed that much of what the browser does automatically — but only if the developer hasn't replaced semantic elements (`<label>`, `<button>`, `<select>`, `<fieldset>`) with their visual imitations on `div`s. The practical rule is simple and almost mechanical: **choosing to use a native element should be the default, not the exception**; moving away from a native element toward a custom widget is a conscious architectural decision that must be accompanied by a complete manual implementation of the accessibility that the native element would provide for free.
+Раздел 7.12 показал, что многое браузер делает автоматически — но только если разработчик не заместил семантические элементы (`<label>`, `<button>`, `<select>`, `<fieldset>`) их визуальными имитациями на `div`-ах. Практическое правило простое и почти механическое: **выбор верстать нативным элементом должен быть умолчанием, а не исключением**; отход от нативного элемента в пользу кастомного виджета — осознанное архитектурное решение, которое обязано сопровождаться полной ручной реализацией той доступности, которую нативный элемент дал бы бесплатно.
 
-### View HTML as the Primary Layer of User Interaction
+### Рассматривайте HTML как основной слой взаимодействия пользователя с приложением
 
-This is the overarching principle of the entire seventh chapter and, to some extent, the entire book. HTML is not "markup that is later animated by JavaScript" but an independent, functional interaction layer: it can collect data (`<form>`), validate it (Constraint Validation API), transmit it to the server (`method`/`action`), manage state (`open`, `checked`, `disabled`), group behavior (`name` on `<details>` and radio buttons), and be accessible (semantics and built-in assistive technology support) — all without a single line of script.
+Это обобщающий принцип всей седьмой главы и, отчасти, всей книги. HTML — не «разметка, которую потом оживляет JavaScript», а самостоятельный, работоспособный слой взаимодействия: он умеет собирать данные (`<form>`), валидировать их (Constraint Validation API), передавать на сервер (`method`/`action`), управлять состоянием (`open`, `checked`, `disabled`), группировать поведение (`name` у `<details>` и радиокнопок), быть доступным (семантика и встроенная поддержка ассистивных технологий) — и всё это без единой строчки скрипта.
 
-JavaScript in this model is not the foundation on which interaction is built, but an enhancement that makes an already working interaction faster, smoother, and more responsive to details the platform doesn't describe on its own. The difference between these two mental models is exactly the difference that determines whether the form (and with it, the application) will survive a disabled script, a slow network, an outdated device, or a simple human error in one line of code somewhere in the dependency chain — or not.
-
----
-
-## 7.14. Why This Chapter Is Relevant in 2026
-
-Forms have existed in HTML since the mid-90s — the `<form>` element is older than most of the technologies this book discusses. It might seem strange to dedicate an entire chapter to such an "old" topic in a book about _modern_ HTML. But it is precisely in 2026 that it has finally become clear: forms have ceased to be a "set of input fields," a mechanical way to collect values and send them to the server. Today, they are one of the most developed subsystems of the Web Platform — with their own state model, their own validation API, their own integration with the operating system, and their own accessibility model built in by default rather than added on top.
-
-Sections 7.10–7.13 broke this down piece by piece — the `<form> → POST → Server` architecture, relationships with frameworks, accessibility, practical rules. This concluding section of the seventh chapter answers the question "why now" and ties the scattered observations into a single picture.
-
-Modern forms demonstrate several global trends in HTML development.
-
-### The Browser Independently Manages Data Validation
-
-The Constraint Validation API, covered in sections 7.11–7.13, is not a cosmetic addition but a full-fledged data validation model living inside the browser: `ValidityState`, `:valid`/`:invalid` pseudo-classes, built-in error messages, programmatic extension via `setCustomValidity()`. What just ten years ago was exclusively a client-side JavaScript task (and often a separate npm library's task) is now by default solved by the platform. The developer only steps in where domain logic goes beyond what a declarative attribute can describe.
-
-### HTML Is Becoming a Declarative User Interaction API
-
-This is a direct continuation of the line this book has been drawing since chapter six: `open` as a reflection of component state (6.4), `name` as a built-in grouping mechanism without a single line of JS (6.5), and now — forms as a declarative layer for collecting, validating, and transmitting data. HTML in this model is not passive markup waiting for JavaScript to "bring it to life" but an active API whose behavior the browser implements itself, based solely on element attributes.
-
-### Modern CSS Can Display Form State Without JavaScript
-
-`:invalid`, `:required`, `:disabled`, `:focus-visible`, `:has()` — CSS in 2026 can react to form state directly, without an intermediary in the form of a class that JS would have to manually add and remove. This eliminates an entire class of bugs related to desynchronization between the visual representation and the actual element state — a topic that was central in section 6.4 for the `open` attribute and proves equally applicable to forms.
-
-### System Pickers Are Replacing Custom Components
-
-`<input type="date">`, `type="color">`, `type="range">`, `type="file">` — native widgets integrated with the operating system, localization, and device input method are displacing custom datepickers, color pickers, and file uploaders that were recently a mandatory line item in any non-trivial project's bundle. The user gets an interface they're already accustomed to at the OS level, and the developer gets an order of magnitude less code to maintain.
-
-### Mobile Browsers Automatically Optimize Data Input
-
-`inputmode`, `enterkeyhint`, `autocomplete`, specialized `input` types — all together make the mobile keyboard adapt to the field's context: a numeric layout for a card number, an email layout with a prominent `@`, a "Search" label on the Enter key in a search field. This is a subtle but cumulative difference in UX that previously required either ignoring it or complex manual device and layout detection in JS.
-
-### The Volume of Client-Side JavaScript Is Decreasing
-
-This is not an isolated fact but a consequence of all the previous points. Every task now handled natively by the browser — validation, state display, system pickers, input optimization — is code that no longer needs to be written, tested, delivered to the user, and kept up to date with dependency updates. Section 7.11 showed this with concrete framework examples: React Hook Form instead of Formik, `routeAction$` in Qwik, Astro's islands architecture — everywhere the same vector toward less client-side code handling what the platform already knows.
-
-### Modern Frameworks Increasingly Use Built-in HTML Capabilities Instead of Fully Replacing Native Forms
-
-The key observation from section 7.11 is worth repeating here in generalized form: the industry in 2026 is not moving from HTML to JavaScript, but in the opposite direction. Server Actions in React, Remix's `<form>`-oriented model, `v-model` in Vue, runes in Svelte, declarative accordions and validation in HTML — all of these are signs of the same shift: frameworks are ceasing to compete with the platform and are starting to be built on top of it.
-
-### Conclusion
-
-Forms have become one of the most vivid examples of how the Web Platform is gradually moving complex logic from user JavaScript directly into the browser. What previously required third-party code — validation, state, accessibility, input optimization — is today either fully built into the HTML specification or requires minimal extension of native behavior rather than its complete replacement.
-
-This is not nostalgia for the "simple web of the nineties" and not a denial of the usefulness of JavaScript and frameworks as such. It is an acknowledgment of a narrower and far more practical fact: the platform, after thirty years, has become significantly more capable than it was when the industry first decided that forms needed to be rebuilt from scratch in JS. Chapter 7 in this book is not about how to get by without frameworks, but that the first question when designing a form in 2026 should not be "which library to include" but "what can the browser already do" — and only after an honest answer to that question should one move on to what truly requires writing custom code.
+JavaScript в этой модели — не фундамент, на котором строится взаимодействие, а надстройка, которая делает уже работающее взаимодействие более быстрым, более плавным, более отзывчивым к деталям, которые платформа сама не описывает. Разница между этими двумя моделями мышления — ровно та разница, которая определяет, переживёт ли форма (а вместе с ней и приложение) отключённый скрипт, медленную сеть, устаревшее устройство или простую человеческую ошибку в одной строке кода где-то в цепочке зависимостей — или нет.
 
 ---
 
-# Chapter Conclusion
+## 7.14. Почему эта глава актуальна именно в 2026 году
 
-Having traced the path from `<form> → POST → Server` (7.10) through relationships with frameworks (7.11), accessibility (7.12), practical rules (7.13), and why all of this became particularly noticeable in 2026 (7.14), it is fitting to condense this chapter into a single line — the evolution that the HTML form has undergone over its thirty years of existence.
+Формы существуют в HTML с середины 90-х — элемент `<form>` старше большинства технологий, о которых говорит эта книга. Может показаться странным посвящать настолько «старой» теме целую главу в книге про *современный* HTML. Но именно в 2026 году стало окончательно ясно: формы перестали быть "набором полей ввода", механическим способом собрать значения и отправить их на сервер. Сегодня это одна из наиболее развитых подсистем Web Platform — со своей моделью состояния, своим API валидации, своей интеграцией с операционной системой и своей моделью доступности, встроенной по умолчанию, а не добавленной поверх.
+
+Главы 7.10–7.13 разобрали это по частям — архитектуру `<form> → POST → Server`, отношения с фреймворками, доступность, практические правила. Эта, заключительная глава седьмого раздела, отвечает на вопрос «а почему именно сейчас» и связывает разрозненные наблюдения в одну картину.
+
+Современные формы демонстрируют сразу несколько глобальных тенденций развития HTML.
+
+### Браузер самостоятельно управляет валидацией данных
+
+Constraint Validation API, разобранный в разделах 7.11–7.13, — не косметическое дополнение, а полноценная модель проверки данных, живущая внутри браузера: `ValidityState`, псевдоклассы `:valid`/`:invalid`, встроенные сообщения об ошибках, программное расширение через `setCustomValidity()`. То, что ещё десять лет назад было исключительно задачей клиентского JavaScript (а нередко — задачей отдельной npm-библиотеки), теперь по умолчанию решается платформой. Разработчик подключается только там, где предметная логика выходит за пределы того, что способен описать декларативный атрибут.
+
+### HTML становится декларативным API взаимодействия с пользователем
+
+Это прямое продолжение линии, которую эта книга проводит с шестой главы: `open` как отражение состояния компонента (6.4), `name` как встроенный механизм группировки без единой строчки JS (6.5), а теперь — формы как декларативный слой сбора, проверки и передачи данных. HTML в этой модели — не пассивная разметка, ожидающая, пока JavaScript её «оживит», а активный API, поведение которого браузер реализует сам, на основе одних только атрибутов элементов.
+
+### Современные CSS позволяют отображать состояние формы без JavaScript
+
+`:invalid`, `:required`, `:disabled`, `:focus-visible`, `:has()` — CSS в 2026 году способен реагировать на состояние формы напрямую, без посредника в виде класса, который JS обязан был бы добавлять и убирать вручную. Это устраняет целый класс багов, связанных с рассинхронизацией визуального представления и реального состояния элемента, — тему, которая была центральной ещё в разделе 6.4 применительно к атрибуту `open`, и оказывается настолько же применимой к формам.
+
+### Системные пикеры заменяют пользовательские компоненты
+
+`<input type="date">`, `type="color">`, `type="range">`, `type="file">` — нативные виджеты, интегрированные с операционной системой, локализацией и способом ввода устройства, вытесняют кастомные datepicker'ы, color picker'ы и file-uploader'ы, которые ещё недавно были обязательной статьёй расходов в бандле любого нетривиального проекта. Пользователь получает интерфейс, к которому уже привык на уровне ОС, а разработчик — на порядок меньше кода для поддержки.
+
+### Мобильные браузеры автоматически оптимизируют ввод данных
+
+`inputmode`, `enterkeyhint`, `autocomplete`, специализированные типы `input` — всё это в связке заставляет мобильную клавиатуру подстраиваться под контекст поля: цифровая раскладка для номера карты, email-раскладка с видной `@`, подпись «Найти» на клавише Enter в поисковой строке. Это тонкая, но накопительная разница в UX, которая раньше требовала либо игнорирования, либо сложной ручной детекции устройства и раскладки на JS.
+
+### Уменьшается объём клиентского JavaScript
+
+Это не изолированный факт, а следствие всех предыдущих пунктов. Каждая задача, которую теперь решает браузер нативно — валидация, отображение состояния, системные пикеры, оптимизация ввода, — это код, который больше не нужно писать, тестировать, доставлять пользователю и поддерживать в актуальном состоянии при обновлении зависимостей. Раздел 7.11 показал это на примере конкретных фреймворков: React Hook Form вместо Formik, `routeAction$` в Qwik, islands-архитектура Astro — везде тот же вектор к меньшему количеству клиентского кода, обслуживающего то, что и так умеет платформа.
+
+### Современные фреймворки всё чаще используют встроенные возможности HTML вместо полной замены нативных форм
+
+Ключевое наблюдение раздела 7.11 стоит того, чтобы повторить его здесь ещё раз в обобщённом виде: индустрия в 2026 году движется не от HTML к JavaScript, а в обратную сторону. Server Actions в React, `<form>`-ориентированная модель Remix, `v-model` во Vue, руны в Svelte, декларативные аккордеоны и валидация в HTML — всё это признаки одного и того же сдвига: фреймворки перестают конкурировать с платформой и начинают строиться поверх неё.
+
+### Итог
+
+Формы стали одним из самых ярких примеров того, как Web Platform постепенно переносит сложную логику из пользовательского JavaScript непосредственно в браузер. То, что раньше требовало стороннего кода — валидацию, состояние, доступность, оптимизацию ввода, — сегодня либо целиком встроено в спецификацию HTML, либо требует минимального расширения нативного поведения, а не полной его замены.
+
+Это не ностальгия по «простому вебу девяностых» и не отрицание пользы JavaScript и фреймворков как таковых. Это признание более узкого и куда более практичного факта: платформа за тридцать лет стала значительно способнее, чем была, когда индустрия впервые решила, что формы нужно строить заново на JS. Глава 7 в этой книге — не про то, как обойтись без фреймворков, а про то, что первый вопрос при проектировании формы в 2026 году должен звучать не «какую библиотеку подключить», а «что из этого уже умеет браузер» — и только после честного ответа на этот вопрос переходить к тому, что действительно требует написания собственного кода.
+
+---
+
+# Заключение главы
+
+Пройдя путь от `<form> → POST → Server` (7.10) через отношения с фреймворками (7.11), доступность (7.12) и практические правила (7.13) к тому, почему всё это оказалось особенно заметно именно в 2026 году (7.14), уместно собрать эту главу в одну линию — эволюцию, которую прошла HTML-форма за тридцать лет своего существования.
 
 ```text
 HTML Form
@@ -3585,26 +3588,26 @@ Progressive Enhancement
 Modern HTML 2026
 ```
 
-**HTML Form** — the starting point, unchanged since the 90s: an element that can collect field values and send them to the server in a single request, without any code on the developer's part.
+**HTML Form** — исходная точка, неизменная с 90-х: элемент, который умеет собрать значения полей и отправить их на сервер одним запросом, без какого-либо кода со стороны разработчика.
 
-**Validation** — the first step toward complexity: forms needed data validation, and for a long time this was exclusively JavaScript's concern — manual checks, manual error messages, manual submission blocking.
+**Validation** — первый шаг усложнения: формам понадобилась проверка данных, и первое время это была исключительно забота JavaScript — ручные проверки, ручные сообщения об ошибках, ручная блокировка отправки.
 
-**Constraint Validation API** — the moment when this validation returned to the browser, but at a new level: `required`, `pattern`, `min`/`max`, `ValidityState`, `setCustomValidity()` — an entire API living inside the platform, not on top of it (section 7.13).
+**Constraint Validation API** — момент, когда эта проверка вернулась обратно в браузер, но уже на новом уровне: `required`, `pattern`, `min`/`max`, `ValidityState`, `setCustomValidity()` — целый API, живущий внутри платформы, а не поверх неё (раздел 7.13).
 
-**State Machine** — rethinking the form not as static markup but as an object with an explicit lifecycle of states: `:valid`/`:invalid`, `:required`, `:disabled`, `open` on `<details>` (chapter 6), `checked` — states that the browser tracks and updates itself, without a JS store.
+**State Machine** — переосмысление формы не как статичной разметки, а как объекта с явным жизненным циклом состояний: `:valid`/`:invalid`, `:required`, `:disabled`, `open` у `<details>` (глава 6), `checked`, — состояний, которые браузер отслеживает и обновляет сам, без участия JS-стора.
 
-**System Pickers** — delegating complex user interfaces (date, color, range, file selection) to the operating system instead of custom widgets written and maintained by the developer (section 7.13).
+**System Pickers** — делегирование сложных пользовательских интерфейсов (выбор даты, цвета, диапазона, файла) операционной системе вместо кастомных виджетов, написанных и поддерживаемых разработчиком (раздел 7.13).
 
-**FormData** — simplifying access to form data itself: serializing all fields into one object, without manually enumerating and processing each field individually.
+**FormData** — упрощение самого доступа к данным формы: сериализация всех полей одним объектом, без ручного перечисления и обработки каждого поля по отдельности.
 
-**Progressive Enhancement** — the principle that ties all of the above into a single architecture: the form must work in the basic, most vulnerable scenario — without JavaScript — and everything JS adds is an enhancement on top of a working foundation, not a condition for its operation (section 7.10).
+**Progressive Enhancement** — принцип, стягивающий всё перечисленное выше в единую архитектуру: форма обязана работать в базовом, самом уязвимом сценарии — без JavaScript, — а всё, что добавляет JS, является улучшением поверх рабочей основы, а не условием её работоспособности (раздел 7.10).
 
-**Modern HTML 2026** — the point where all previous links in the chain converge: the form as a declarative, self-sufficient, accessible-by-default subsystem, not as a constructor that every project is forced to assemble anew.
+**Modern HTML 2026** — точка, в которой все предыдущие звенья цепочки сходятся вместе: форма как декларативная, самодостаточная, доступная по умолчанию подсистема, а не как конструктор, который каждый проект вынужден собирать заново.
 
-The main idea of the chapter:
+Главная идея главы:
 
-> **The modern HTML form is no longer just a container for input fields. It is a full-fledged browser subsystem with its own data model, built-in validation engine, lifecycle, system interfaces, and deep integration with CSS, Accessibility, and the Web Platform. In 2026, the developer's task is not to replace this system with JavaScript code but to make the most effective use of the platform's own capabilities.**
+> **Современная HTML-форма — это уже не просто контейнер для полей ввода. Это полноценная подсистема браузера с собственной моделью данных, встроенным движком валидации, жизненным циклом, системными интерфейсами и глубокой интеграцией с CSS, Accessibility и Web Platform. В 2026 году задача разработчика заключается не в замене этой системы JavaScript-кодом, а в максимально эффективном использовании возможностей самой платформы.**
 
-This perspective aligns with the philosophy of the book **Modern HTML 2026**: viewing HTML not as a markup language but as a high-level declarative API of the modern web platform. The form, in this sense, is not a special case or an exception but perhaps the most complete demonstration of this principle in the entire book: the only element where all the discussed themes converge — state reflected in markup (chapter 6), validation without JS, accessibility by default, integration with the operating system, and architecture resilient to the failure of any single stack layer.
+Именно такой взгляд соответствует философии книги **Modern HTML 2026**: рассматривать HTML не как язык разметки, а как высокоуровневый декларативный API современной веб-платформы. Форма в этом смысле — не частный случай и не исключение, а, пожалуй, самая полная демонстрация этого принципа во всей книге: единственный элемент, в котором сходятся сразу все обсуждавшиеся темы — состояние, отражённое в разметке (глава 6), валидация без JS, доступность по умолчанию, интеграция с операционной системой и архитектура, устойчивая к отказу любого отдельного слоя стека.
 
-The next chapter applies the same view — "platform first, then code" — to another area of modern HTML that was long considered exclusively JavaScript territory.
+Следующая глава переносит этот же взгляд — «сначала платформа, затем код» — на ещё одну область современного HTML, которая долгое время считалась исключительной территорией JavaScript.

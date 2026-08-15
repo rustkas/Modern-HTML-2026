@@ -1,43 +1,43 @@
-# Part V. HTML and Modern Browser APIs
+# Часть V. HTML и современные браузерные API
 
-## Chapter 15. Declarative Shadow DOM (DSD)
+## Глава 15. Declarative Shadow DOM (DSD)
 
-**Declarative Shadow DOM (DSD)** is a powerful extension of the HTML standard that allows defining an encapsulated Shadow DOM tree structure directly in static markup sent from the server, without the need for mandatory JavaScript execution. This innovation has radically changed the paradigm of building web components, transforming Shadow DOM from a purely imperative API into a full-fledged tool for Server-Side Rendering (SSR).
-
----
-
-## 15.1. Prerequisites: Limitations of the Imperative Approach
-
-Historically, creating Shadow DOM was entirely tied to client-side JavaScript. To encapsulate a component's styles and markup, the developer was required to call the `attachShadow()` method in code.
-
-This created a systemic architectural problem:
-
-- **Empty HTML from the Server:** Until the browser downloaded, parsed, and executed all JavaScript bundles, web components on the page remained empty or displayed a poor fallback.
-- **JS Dependency:** The interface became fragile: with a slow connection or disabled scripts, the user saw empty blocks, and search crawlers could not index important content inside the components.
+**Declarative Shadow DOM (DSD)** — это мощное расширение стандарта HTML, которое позволяет определять инкапсулированную структуру теневого дерева (_Shadow DOM_) непосредственно в статичной разметке, поступающей от сервера, без необходимости принудительного выполнения JavaScript. Это нововведение кардинально изменило парадигму создания веб-компонентов, превратив Shadow DOM из чисто императивного API в полноценный инструмент для серверного рендеринга (_SSR_).
 
 ---
 
-## 15.2. Server-Side Rendering (SSR), SEO, and Accessibility
+## 15.1. Предпосылки появления: ограничения императивного подхода
 
-The main goal of Declarative Shadow DOM is to provide full-fledged SSR for web components. Delivering a ready-made structure from the server solves key challenges of the modern web standard:
+Исторически создание Shadow DOM было полностью привязано к клиентскому JavaScript. Чтобы инкапсулировать стили и разметку компонента, разработчик был обязан вызвать метод `attachShadow()` в коде.
 
-- **SEO Indexing:** Since the shadow tree content is present in the primary HTML document stream, search crawlers see and index it instantly, without emulating complex client-side scenarios.
-- **Accessibility (A11y):** Assistive technologies (screen readers) gain access to the component's structure and text from the first milliseconds of page loading, guaranteeing equal opportunities for all users.
+Это порождало системную архитектурную проблему:
+
+- **Пустой HTML от сервера:** До момента, пока браузер не скачает, не распарсит и не выполнит все JavaScript-бандлы, веб-компоненты на странице оставались пустыми либо отображали убогий резервный контент (_fallback_).
+- **Зависимость от JS:** Интерфейс становился хрупким: при медленном соединении или отключенном скрипте пользователь видел пустые блоки, а поисковые роботы не могли проиндексировать важный контент внутри компонентов.
 
 ---
 
-## 15.3. Mechanism and Syntax: `<template shadowrootmode>`
+## 15.2. Серверный рендеринг (SSR), SEO и доступность
 
-To declaratively create a shadow tree in HTML, the standard `<template>` element is used with the addition of the special **`shadowrootmode`** attribute.
+Главная задача Declarative Shadow DOM — обеспечить полноценный SSR для веб-компонентов. Передача готовой структуры с сервера решает ключевые задачи современного веб-стандарта:
 
-- **Display Modes:** The attribute accepts the standard values `open` (access to `shadowRoot` is available from external JS) or `closed` (encapsulation is hidden).
-- **Automatic Assembly:** When the browser's HTML parser encounters such a template inside a host element (Shadow Host), it creates a `ShadowRoot` on the fly, attaches it to the host, and replaces the `<template>` tag itself with its contents in the DOM tree.
-- **Additional Control Attributes:** The specification allows configuring root behavior directly in the markup:
-  - `shadowrootdelegatesfocus`: Enables automatic focus delegation.
-  - `shadowrootclonable`: Allows cloning of the shadow tree when `node.cloneNode()` is called.
-  - `shadowrootserializable`: Ensures support for component serialization.
+- **SEO-индексация:** Поскольку содержимое теневого дерева присутствует в первичном потоке HTML-документа, поисковые роботы видят и индексируют его мгновенно, без эмуляции сложных клиентских сценариев.
+- **Доступность (A11y):** Вспомогательные технологии (скринридеры) получают доступ к структуре и тексту компонента с первых миллисекунд загрузки страницы, гарантируя равные возможности для всех пользователей.
 
-### Example of Declarative Shadow DOM in Markup
+---
+
+## 15.3. Механизм работы и синтаксис `<template shadowrootmode>`
+
+Для декларативного создания тени в HTML используется стандартный элемент `<template>` с добавлением специального атрибута **`shadowrootmode`**.
+
+- **Режимы отображения:** Атрибут принимает стандартные значения `open` (доступ к `shadowRoot` открыт из внешнего JS) или `closed` (инкапсуляция скрыта).
+- **Автоматическая сборка:** Когда HTML-парсер браузера встречает такой шаблон внутри элемента-хозяина (_Shadow Host_), он на лету создает `ShadowRoot`, прикрепляет его к хосту и заменяет сам тег `<template>` его содержимым в дереве DOM.
+- **Дополнительные атрибуты управления:** Спецификация позволяет настраивать поведение корня прямо в разметке:
+- `shadowrootdelegatesfocus`: Включает автоматическое делегирование фокуса.
+- `shadowrootclonable`: Разрешает клонирование теневого дерева при вызове `node.cloneNode()`.
+- `shadowrootserializable`: Обеспечивает поддержку сериализации компонента.
+
+### Пример Declarative Shadow DOM в разметке
 
 ```html
 <user-card>
@@ -54,37 +54,35 @@ To declaratively create a shadow tree in HTML, the standard `<template>` element
       }
     </style>
     <div class="card">
-      <h3>User Profile</h3>
-      <slot>No name provided</slot>
+      <h3>Профиль пользователя</h3>
+      <slot>Имя не указано</slot>
     </div>
   </template>
-  <!-- Fallback content or initial slot data -->
-  Anatoly Kosorukov
+  <!-- Резервный контент или начальные данные для слота -->
+  Анатолий Косоруков
 </user-card>
 ```
 
 ---
 
-## 15.4. Performance and Critical Rendering Path
+## 15.4. Производительность и критический путь рендеринга
 
-Using DSD radically improves web application performance metrics:
+Использование DSD радикально повышает метрики производительности веб-приложения:
 
-- The browser begins rendering isolated styles and markup **in parallel with parsing** the main document, without waiting for external scripts to load.
-- This shortens the critical rendering path and completely eliminates visual content jumps (**CLS** — Cumulative Layout Shift) that previously occurred during client-side component mounting.
-
----
-
-## 15.5. The Hydration Process
-
-Declarative Shadow DOM is designed with seamless transition of control from static HTML to dynamic JavaScript component code:
-
-1. **Server Stage:** The server delivers fully formed HTML with expanded DSD.
-2. **Initial Display:** The browser renders the page instantly.
-3. **Client Hydration:** When the component's JavaScript class loads, it calls the standard `this.attachShadow({ mode: 'open' })` method.
-4. **Integration:** Instead of generating an error or creating a duplicate root, the browser recognizes the existing declarative root (if modes match), clears the old content, transfers control to the script, and resets the internal `declarative` flag to `false`.
+- Браузер начинает отрисовывать изолированные стили и разметку **параллельно с парсингом** основного документа, не дожидаясь загрузки внешних скриптов.
+- Это сокращает критический путь рендеринга и полностью устраняет визуальные подпрыгивания контента (**CLS** — _Cumulative Layout Shift_), которые раньше возникали при клиентском монтировании компонентов.
 
 ---
 
-## Chapter Conclusion
+## 15.5. Процесс гидратации (_Hydration_)
 
-Declarative Shadow DOM has finally freed web components from the "empty screen syndrome" during server-side generation. By combining strict style encapsulation, high-speed SSR rendering, and flawless accessibility, DSD has made modern component architecture truly fast and scalable.
+Declarative Shadow DOM разработан с учетом бесшовного перехода контроля от статического HTML к динамическому JavaScript-коду компонента:
+
+1. **Серверный этап:** Сервер отдает полностью сформированный HTML с развернутым DSD.
+2. **Первичный показ:** Браузер рендерит страницу мгновенно.
+3. **Клиентская гидратация:** Когда загружается JavaScript-класс компонента, он вызывает стандартный метод `this.attachShadow({ mode: 'open' })`.
+4. **Интеграция:** Вместо генерации ошибки или создания дублирующего корня, браузер распознает существующий декларативный корень (если режимы совпадают), очищает старое содержимое, переносит контроль на скрипт и сбрасывает внутренний флаг `declarative` в состояние `false`.
+
+### Заключение главы
+
+Declarative Shadow DOM окончательно избавил веб-компоненты от «синдрома пустого экрана» при серверной генерации. Объединив жесткую инкапсуляцию стилей, высокую скорость SSR-рендеринга и безупречную доступность, DSD сделал современную компонентную архитектуру по-настоящему быстрой и масштабируемой.

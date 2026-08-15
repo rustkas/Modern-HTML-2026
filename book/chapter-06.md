@@ -1,33 +1,30 @@
-# Part II. Modern Interactive Elements
+# Часть II. Современные интерактивные элементы
 
-# Chapter 6. `<details>` and `<summary>`: Declarative Components of Modern HTML
+# Глава 6. `<details>` и `<summary>`: декларативные компоненты современного HTML
 
-Over the past few years, the `<details>` element has ceased to be perceived as a simple way to create an FAQ.
+За последние несколько лет элемент `<details>` перестал восприниматься как простой способ сделать FAQ.
 
-In the modern Web Platform, it is a fully-fledged **native component** with its own state, lifecycle, integration with Accessibility, page search, modern CSS, and browser architecture.
+В современной Web Platform это полноценный **нативный компонент**, обладающий собственным состоянием, жизненным циклом, интеграцией с Accessibility, поиском по странице, современным CSS и архитектурой браузера.
 
-If previously such behavior was almost always implemented via JavaScript, in 2026 the majority of such interfaces can be described exclusively using HTML and CSS.
+Если раньше подобное поведение почти всегда реализовывалось через JavaScript, то в 2026 году большая часть подобных интерфейсов может быть описана исключительно средствами HTML и CSS.
 
 ---
 
-## 6.1. Why `<details>` Became Part of Modern HTML
+## 6.1. Почему `<details>` стал частью Modern HTML
 
-### The History of the Disclosure Widget
+### История появления Disclosure Widget
+Элемент `<details>` — это результат многолетней эволюции веб-интерфейсов. В начале 2000‑х разработчики часто сталкивались с задачей скрывать и раскрывать дополнительную информацию: FAQ‑разделы, технические спецификации, комментарии. Для этого приходилось писать собственные **Accordion-компоненты** на JavaScript, комбинировать CSS‑анимации и вручную управлять состоянием.
 
-The `<details>` element is the result of many years of evolution in web interfaces. In the early 2000s, developers often faced the task of hiding and revealing additional information: FAQ sections, technical specifications, comments. To achieve this, they had to write custom **Accordion components** in JavaScript, combine CSS animations, and manually manage state.
+### Почему раньше писали свои решения
+- **JavaScript-виджеты** были единственным способом реализовать интерактивность.  
+- Каждый проект имел собственную реализацию: от простых скриптов до сложных библиотек.  
+- Это приводило к проблемам совместимости, дублированию кода и трудностям в поддержке.
 
-### Why Developers Wrote Their Own Solutions
+### Появление встроенного решения
+С развитием Web Platform браузеры начали включать готовые **нативные HTML-компоненты**. `<details>` и `<summary>` стали стандартом: теперь разработчик может описать раскрывающийся блок декларативно, без дополнительного JavaScript.  
+Это уменьшает количество ошибок, ускоряет разработку и делает интерфейсы доступнее для скринридеров и клавиатурной навигации.
 
-- **JavaScript widgets** were the only way to implement interactivity.
-- Each project had its own implementation: from simple scripts to complex libraries.
-- This led to compatibility issues, code duplication, and maintenance difficulties.
-
-### The Emergence of a Built-in Solution
-
-With the development of the Web Platform, browsers began to include ready-made **native HTML components**. `<details>` and `<summary>` became a standard: now a developer can describe a disclosure block declaratively, without additional JavaScript.
-This reduces errors, speeds up development, and makes interfaces more accessible for screen readers and keyboard navigation.
-
-The evolution looks like this:
+Эволюция выглядит так:
 
 ```
 JavaScript Widget
@@ -37,69 +34,65 @@ JavaScript Widget
 Native HTML Component
 ```
 
-### Modern Web Platform Philosophy
+### Современная философия Web Platform
+Философия Modern HTML заключается в том, чтобы **снижать зависимость от стороннего кода** и предоставлять разработчикам базовые UI‑паттерны прямо в браузере.  
+Это отражает несколько принципов:
+- **Простота**: меньше кода — меньше ошибок.  
+- **Доступность**: встроенные элементы сразу учитывают стандарты accessibility.  
+- **Унификация**: одинаковое поведение во всех браузерах.  
+- **Продуктивность**: разработчики сосредотачиваются на логике, а не на инфраструктуре.
 
-The philosophy of Modern HTML is to **reduce dependency on third-party code** and provide developers with basic UI patterns directly in the browser.
-This reflects several principles:
-
-- **Simplicity**: less code means fewer errors.
-- **Accessibility**: built-in elements immediately account for accessibility standards.
-- **Unification**: consistent behavior across all browsers.
-- **Productivity**: developers focus on logic, not infrastructure.
-
-Thus, `<details>` has become a symbol of the transition from "everyone writes their own wheel" to a unified, built-in component ecosystem that aligns with the spirit of Modern HTML 2026.
+Таким образом, `<details>` стал символом перехода от «каждый пишет свой велосипед» к единой, встроенной экосистеме компонентов, которая соответствует духу Modern HTML 2026.
 
 ---
 
-## 6.2. Architecture of the Disclosure Widget
-
-### What Is a Disclosure Widget
-
-A **Disclosure Widget** is a built-in HTML mechanism that allows the user to control the visibility of additional content. It combines semantics, accessibility, and interactivity in a single element, freeing developers from having to write their own scripts.
-
-### How the Browser Perceives the Structure
-
-The browser interprets the component according to the hierarchy:
-
-```
-<details>   ← container managing state
-   <summary> ← interactive trigger
-   Content   ← hideable/revealable block
-```
-
-- **<details>** — the root element that stores the state (open/closed).
-- **<summary>** — the interactive part that responds to clicks, keyboard events, and tells the browser to change state.
-- **Content** — any nested markup that is displayed only when the state is active.
-
-### Why `<summary>` Is Not Just a Heading
-
-At first glance, `<summary>` resembles a heading, but its role is much broader:
-
-- It is a **state trigger**, not just a text element.
-- Supports keyboard control and automatically integrates with **ARIA attributes**.
-- Can contain not only text but also icons, buttons, or other elements, forming a full-fledged UI control.
-
-### How the Browser Manages State
-
-- When interacting with `<summary>`, the browser toggles the internal `open` property of `<details>`.
-- This property is synchronized with the DOM: the developer can check or change it via JavaScript.
-- The browser automatically updates the visual representation (arrow, content expansion) and notifies assistive technologies (screen readers).
-- Thus, `<details>` works as a **state controller** built into the platform: it manages logic, accessibility, and visualization without additional code.
+Хочешь, я добавлю примеры использования `<details>` в реальных сценариях — например, FAQ-разделы, техническая документация или интерактивные учебники?
 
 ---
 
-## 6.3. `<details>` as a Finite State Machine
+## 6.2. Архитектура Disclosure Widget
 
-### From Simple State to a Model
+### Что такое Disclosure Widget
+**Disclosure Widget** — это встроенный механизм HTML, позволяющий пользователю управлять видимостью дополнительного контента. Он объединяет семантику, доступность и интерактивность в одном элементе, избавляя разработчиков от необходимости писать собственные скрипты.
 
-Previously, `<details>` was perceived as a binary element:
+### Как браузер воспринимает структуру
+Браузер интерпретирует компонент по иерархии:
 
+```
+<details>   ← контейнер, управляющий состоянием
+   <summary> ← интерактивный триггер
+   Content   ← скрываемый/раскрываемый блок
+```
+
+- **<details>** — корневой элемент, который хранит состояние (открыт/закрыт).  
+- **<summary>** — интерактивная часть, которая реагирует на клики, клавиатурные события и сообщает браузеру, что нужно изменить состояние.  
+- **Content** — любая вложенная разметка, которая отображается только при активном состоянии.
+
+### Почему `<summary>` — это не просто заголовок
+На первый взгляд `<summary>` напоминает заголовок, но его роль гораздо шире:
+- Он является **триггером состояния**, а не просто текстовым элементом.  
+- Поддерживает управление с клавиатуры и автоматически интегрируется с **ARIA-атрибутами**.  
+- Может содержать не только текст, но и иконки, кнопки или другие элементы, формируя полноценный UI‑контрол.
+
+### Как браузер управляет состоянием
+- При взаимодействии с `<summary>` браузер переключает внутренное свойство `open` у `<details>`.  
+- Это свойство синхронизируется с DOM: разработчик может проверить или изменить его через JavaScript.  
+- Браузер автоматически обновляет визуальное представление (стрелка, раскрытие контента) и уведомляет вспомогательные технологии (скринридеры).  
+- Таким образом, `<details>` работает как **контрол состояния**, встроенный в платформу: он управляет логикой, доступностью и визуализацией без дополнительного кода.
+
+
+
+
+---
+## 6.3. `<details>` как конечный автомат
+
+### От простого состояния к модели
+Раньше `<details>` воспринимался как бинарный элемент:  
 ```
 open
 closed
 ```
-
-But in reality, the browser manages it as a full-fledged **finite state machine**, with intermediate states:
+Но в реальности браузер управляет им как полноценным **конечным автоматом**, где есть промежуточные состояния:
 
 ```
 Closed
@@ -121,61 +114,59 @@ Closing
 Closed
 ```
 
-### What Happens Inside the Browser
+### Что происходит внутри браузера
+- **Closed** — контент скрыт, свойство `open` отсутствует.  
+- **Opening** — пользователь инициировал раскрытие (клик, клавиатура, API). Браузер запускает анимацию, обновляет ARIA‑атрибуты и готовит DOM к отображению.  
+- **Open** — контент полностью виден, свойство `open` установлено. Состояние синхронизировано с доступностью и событиями.  
+- **Closing** — обратный процесс: браузер скрывает контент, обновляет состояние и уведомляет вспомогательные технологии.  
+- Возврат в **Closed** завершает цикл.
 
-- **Closed** — content is hidden, the `open` attribute is absent.
-- **Opening** — the user initiated expansion (click, keyboard, API). The browser starts animation, updates ARIA attributes, and prepares the DOM for display.
-- **Open** — content is fully visible, the `open` attribute is set. The state is synchronized with accessibility and events.
-- **Closing** — the reverse process: the browser hides content, updates state, and notifies assistive technologies.
-- Return to **Closed** completes the cycle.
+Таким образом, `<details>` работает как встроенный **State Machine**, где переходы управляются браузером, а разработчику остаётся лишь описать структуру.
 
-Thus, `<details>` works as a built-in **State Machine**, where transitions are managed by the browser, and the developer only needs to describe the structure.
+### Почему HTML становится декларативной State Machine
+Современная философия Web Platform стремится к тому, чтобы **состояния интерфейса описывались декларативно**, а не вручную через JavaScript.  
+- **Декларативность**: разработчик задаёт структуру, браузер управляет поведением.  
+- **Автоматизация**: встроенные переходы между состояниями исключают необходимость писать сложные скрипты.  
+- **Доступность**: браузер сам синхронизирует состояния с ARIA и скринридерами.  
+- **Надёжность**: единая модель состояния гарантирует одинаковое поведение во всех браузерах.
 
-### Why HTML Is Becoming a Declarative State Machine
+В итоге `<details>` — это не просто элемент для скрытия текста, а пример того, как HTML 2026 превращается в декларативную систему управления состояниями, где каждый компонент встроенно работает как конечный автомат.
 
-The modern Web Platform philosophy aims to **describe interface states declaratively**, rather than manually via JavaScript.
-
-- **Declarativeness**: the developer defines the structure, the browser manages behavior.
-- **Automation**: built-in state transitions eliminate the need to write complex scripts.
-- **Accessibility**: the browser itself synchronizes states with ARIA and screen readers.
-- **Reliability**: a unified state model ensures consistent behavior across all browsers.
-
-Ultimately, `<details>` is not just an element for hiding text, but an example of how HTML 2026 is transforming into a declarative state management system, where every component natively works as a finite state machine.
 
 ---
 
-## 6.4. The `open` Attribute
+## 6.4. Атрибут `open`
 
-### Breakdown
+### Разбор
 
 ```html
 <details open>
-  <summary>Section Title</summary>
-  <p>Content that is visible because the open attribute is present.</p>
+  <summary>Заголовок секции</summary>
+  <p>Содержимое, которое видно, потому что атрибут open присутствует.</p>
 </details>
 ```
 
-The `open` attribute appears on the `<details>` element (and is conceptually similar to how `<dialog>`, `<popover>`, and other interactive elements with boolean state attributes behave). Externally, it's just another HTML attribute — but in essence, it is a **declarative record of component state directly in the markup**.
+Атрибут `open` встречается у элемента `<details>` (и концептуально близок к тому, как ведут себя `<dialog>`, `<popover>` и другие интерактивные элементы, у которых есть булевы атрибуты состояния). Внешне это просто ещё один HTML-атрибут — но по сути это **декларативная запись состояния компонента прямо в разметке**.
 
-If the attribute is present — the block is expanded. If the attribute is absent — the block is collapsed. No JavaScript, no `useState`, no `class="is-open"` with a CSS selector `.is-open .content { display: block }`. The state _is text in the HTML_.
+Если атрибут присутствует — блок раскрыт. Если атрибута нет — блок свёрнут. Никакого JavaScript, никакого `useState`, никакого `class="is-open"` с CSS-селектором `.is-open .content { display: block }`. Состояние *есть текст в HTML*.
 
-An important nuance: `open` is a boolean attribute. Its value doesn't matter. `<details open>`, `<details open="open">`, and `<details open="">` are equivalent. But `<details open="false">` is still an **open** state, because the browser checks not the attribute's value, but the mere fact of its presence. This is a common mistake for those who carry habits from JS frameworks (`open={false}`) directly into HTML templates.
+Важный нюанс: `open` — булев атрибут. Его значение не имеет значения (простите за тавтологию). `<details open>`, `<details open="open">` и `<details open="">` эквивалентны. А вот `<details open="false">` — это всё равно **открытое** состояние, потому что браузер проверяет не значение атрибута, а сам факт его наличия. Это частая ошибка тех, кто переносит привычки из JS-фреймворков (`open={false}`) прямо в HTML-шаблоны.
 
-### Why This Reflects Component State
+### Почему это отражение состояния компонента
 
-In the classical frontend model, component state lives separately from markup:
+В классической модели фронтенда состояние компонента живёт отдельно от разметки:
 
-- there is an `isOpen` variable in JS;
-- there is markup that renders depending on this variable;
-- there is synchronization code that ensures when `isOpen` changes, the markup re-renders.
+- есть переменная `isOpen` в JS;
+- есть разметка, которая рендерится в зависимости от этой переменной;
+- есть код синхронизации, который следит, чтобы при изменении `isOpen` разметка перерисовалась.
 
-`<details open>` breaks this three-part scheme. The state **is** the markup. Not "a variable that affects markup", but literally an HTML element attribute.
+`<details open>` разрушает эту трёхзвенную схему. Состояние **и есть** разметка. Не «переменная, которая влияет на разметку», а буквально атрибут HTML-элемента.
 
-This fundamentally shifts where the single source of truth resides. Previously, the source of truth was a JS variable, and the DOM was derived from it, a computed representation. Now the source of truth is the DOM node itself and its attribute. Whether `<details>` is open or closed is not "a variable somewhere in a component closure" — it's a property you can see right in DevTools, in the Elements tab, without a single line of code.
+Это принципиально смещает то, где хранится источник истины (*single source of truth*). Раньше источником истины была JS-переменная, а DOM — производной от неё, вычисляемым представлением. Теперь источник истины — сам DOM-узел и его атрибут. Открыт `<details>` или закрыт — это не «переменная где-то в замыкании компонента», это свойство, которое можно посмотреть прямо в DevTools, в вкладке Elements, без единой строчки кода.
 
-Moreover, the browser itself manages toggling this state. A click on `<summary>` — and the browser itself adds or removes the `open` attribute on the parent `<details>`. The developer doesn't need to attach a click handler to toggle a flag. The handler is already built into the browser as part of the HTML specification.
+Более того, браузер сам управляет переключением этого состояния. Клик по `<summary>` — и браузер сам добавляет или убирает атрибут `open` у родительского `<details>`. Разработчику не нужно вешать обработчик клика, чтобы переключить флаг. Обработчик уже встроен в браузер как часть спецификации HTML.
 
-### Distinction
+### Отличие
 
 ```
 HTML state
@@ -185,96 +176,96 @@ DOM state
 Rendering
 ```
 
-This chain is key to understanding why attributes like `open` change the mental model of state.
+Эта цепочка — ключ к пониманию, почему атрибуты вроде `open` меняют модель мышления о состоянии.
 
-**HTML state** — what is written in the source markup (or generated on the server, in SSG, in a templating engine). If `<details open>` is written in the HTML, the block will be expanded on the first page render — even before a single line of JavaScript executes.
+**HTML state** — то, что написано в исходной разметке (или сгенерировано на сервере, в SSG, в шаблонизаторе). Если в HTML написано `<details open>`, при первой отрисовке страницы блок будет раскрыт — ещё до того, как выполнится хоть одна строчка JavaScript.
 
-**DOM state** — what happens after parsing. The `open` attribute in the markup becomes the `HTMLDetailsElement.open` property in the object model. Then this property lives its own life: the user clicks — the browser changes `element.open` from `true` to `false` and back. You can also change it programmatically: `details.open = true`. DOM state is the runtime representation, the actual state of the object in the browser's memory, which may differ from the original HTML but is derived directly from it.
+**DOM state** — то, что происходит после парсинга. Атрибут `open` в разметке превращается в свойство `HTMLDetailsElement.open` в объектной модели документа. Дальше это свойство живёт своей жизнью: пользователь кликает — браузер меняет `element.open` с `true` на `false` и обратно. Можно менять его и программно: `details.open = true`. DOM state — это runtime-представление, актуальное состояние объекта в памяти браузера, которое может отличаться от исходного HTML, но образуется прямо из него.
 
-**Rendering** — what the user sees. The browser itself decides whether to show the `<details>` content or not, based on the current `open` value in the DOM. This is not a CSS class that the developer must add and coordinate with the team, but a built-in user agent behavior.
+**Rendering** — то, что видит пользователь. Браузер сам решает, показывать содержимое `<details>` или нет, основываясь на текущем значении `open` в DOM. Это не CSS-класс, который разработчик должен добавить и с которым должен договориться с командой, а встроенное поведение user agent'а.
 
-The key idea of this chain: **each subsequent level is a direct derivative of the previous one**, without an intermediate layer that the developer must write and maintain themselves. HTML turns into DOM automatically (the browser's parser does this). DOM turns into rendering automatically (the browser's layout engine does this). The developer is only left with one link in the chain that they are actually responsible for — the original HTML, and even that not always: this HTML may be the result of a simple condition on the server ("if the user previously opened this section — add `open`").
+Ключевая мысль этой цепочки: **каждый следующий уровень — это прямая производная предыдущего**, без промежуточного слоя, который разработчик обязан писать и поддерживать сам. HTML превращается в DOM автоматически (это делает парсер браузера). DOM превращается в рендеринг автоматически (это делает браузерный движок вёрстки). Разработчику остаётся только один узел цепочки, за который он реально отвечает, — исходный HTML, и то не всегда: этот HTML может быть результатом простого условия на сервере («если пользователь раньше открывал эту секцию — добавить `open`»).
 
-Compare this to the typical SPA model, where the chain looks different:
+Сравните это с типичной SPA-моделью, где цепочка выглядит иначе:
 
 ```
 JS state (isOpen: true)
     ↓
-Component re-render (virtual DOM / diff)
+Component re-render (виртуальный DOM / diff)
     ↓
 Real DOM patch
     ↓
 Rendering
 ```
 
-Here there is one extra step, and this step is entirely the developer's responsibility: you need to declare state, declare a function that changes it, connect this function to an event handler, ensure the component actually re-renders when state changes. With `<details open>`, this step simply doesn't exist — it's implemented at the HTML specification level and built into every browser.
+Здесь на один шаг больше, и этот шаг — целиком забота разработчика: нужно объявить состояние, нужно объявить функцию, которая его меняет, нужно связать эту функцию с обработчиком события, нужно убедиться, что компонент действительно перерисуется при изменении состояния. С `<details open>` этого шага просто нет — он выполнен на уровне спецификации HTML и встроен в каждый браузер.
 
-### Why the Developer No Longer Has to Store State Separately in JavaScript
+### Почему разработчик больше не обязан хранить состояние отдельно в JavaScript
 
-From all of the above, a practical conclusion follows: **for a whole class of UI patterns, state can be completely omitted from JavaScript**.
+Из всего сказанного выше следует практический вывод: **для целого класса UI-паттернов состояние можно вообще не заводить в JavaScript**.
 
-Disclosure sections, accordions, dialog windows (`<dialog>`), popover tooltips (`popover`), checkboxes and radio buttons (`checked`), selected options (`selected`), disabled fields (`disabled`) — all of these are states that:
+Раскрывающиеся секции, аккордеоны, диалоговые окна (`<dialog>`), всплывающие подсказки (`popover`), чекбоксы и радиокнопки (`checked`), выбранные опции (`selected`), заблокированные поля (`disabled`) — всё это состояния, которые:
 
-1. **live in markup** — they are visible in HTML/DOM without accessing JS;
-2. **are managed by the browser** — state toggling (click, focus, input) is handled natively;
-3. **are synchronized with rendering by definition** — no desynchronization can occur between "what should be displayed" and "what is actually displayed," because it's literally the same attribute.
+1. **живут в разметке** — их видно в HTML/DOM без обращения к JS;
+2. **управляются браузером** — переключение состояния (клик, фокус, ввод) обрабатывается нативно;
+3. **синхронизированы с рендерингом по определению** — не может возникнуть рассинхронизации между «тем, что должно отображаться» и «тем, что реально отображается», потому что это буквально один и тот же атрибут.
 
-This removes several classes of tasks from the developer:
+Это снимает с разработчика сразу несколько классов задач:
 
-- **No need to write a click handler** to open/close a block — the browser does this itself on click on `<summary>`.
-- **No need to manually synchronize visual and logical state** — there is no situation where "according to data the block is open, but visually it's closed" (a bug typical of manual control via classes and state).
-- **No need to think about state recovery on page reload** in the basic case — if the state is written to HTML on the server (e.g., in SSR or SSG), it will already be correct on first render, without "flashing" between closed and open states (the so-called _flash of wrong state_, familiar from client frameworks that apply state after hydration).
-- **Easier to test and debug** — component state can be checked with a simple `document.querySelector('details').open`, without knowing the internal structure of the component, store, props, etc.
-- **Accessibility comes "in the box"** — screen readers and other assistive technologies natively understand the semantics of `<details>`/`open`, whereas a custom accordion on `div`s requires ARIA attributes (`aria-expanded`, `aria-controls`) that also need to be manually synchronized with the same JS state.
+- **Не нужно писать обработчик клика**, чтобы открыть/закрыть блок — браузер делает это сам при клике по `<summary>`.
+- **Не нужно вручную синхронизировать визуальное состояние с логическим** — не бывает ситуации, когда «по данным блок открыт, но визуально закрыт» (баг, типичный для ручного управления через классы и state).
+- **Не нужно продумывать восстановление состояния при перезагрузке страницы** в базовом случае — если состояние записано в HTML на сервере (например, в SSR или SSG), оно уже будет верным при первой отрисовке, без «мигания» между закрытым и открытым видом (так называемый *flash of wrong state*, знакомый по клиентским фреймворкам, которые применяют состояние уже после гидратации).
+- **Легче тестировать и отлаживать** — состояние компонента можно проверить простым `document.querySelector('details').open`, без знания внутренней структуры компонента, стора, пропсов и т. д.
+- **Доступность идёт «в комплекте»** — скринридеры и другие вспомогательные технологии понимают семантику `<details>`/`open` нативно, тогда как самодельный аккордеон на `div`-ах требует ARIA-атрибутов (`aria-expanded`, `aria-controls`), которые тоже придётся синхронизировать вручную с тем же самым JS-состоянием.
 
-This doesn't mean JavaScript disappears entirely. It remains needed where logic goes beyond what the specification describes: for example, if you need to close all other `<details>` when opening one (an accordion with exclusive expansion — by the way, in 2026 there is already a native `name` attribute that groups multiple `<details>` into a radio-button-like group), or if you need custom open/close animation.
+Это не значит, что JavaScript исчезает совсем. Он остаётся нужен там, где логика выходит за рамки того, что описывает спецификация: например, если требуется закрывать все остальные `<details>` при открытии одного (аккордеон с эксклюзивным раскрытием — кстати, для этого в 2026 году уже есть нативный атрибут `name`, объединяющий несколько `<details>` в группу с поведением radio-button), либо если нужна кастомная анимация раскрытия/сворачивания.
 
-But the very fact of **"open/closed"** — the basic boolean state of a component — no longer requires a separate variable, a separate store, a separate synchronization effect. It simply _exists_ in the markup. And this is the essence of the broader shift discussed throughout this chapter: modern HTML can declaratively describe what previously had to be imperatively assembled and maintained in JavaScript, reducing the number of places where application state can become desynchronized.
+Но сам факт **«открыт/закрыт»** — базовое булево состояние компонента — больше не требует отдельной переменной, отдельного стора, отдельного эффекта синхронизации. Он просто *есть* в разметке. И в этом суть более широкого сдвига, о котором вся эта глава: современный HTML умеет декларативно описывать то, что раньше приходилось императивно собирать и поддерживать в JavaScript, и это уменьшает количество мест, где может рассинхронизироваться состояние приложения.
 
 ---
 
-## 6.5. Exclusive Accordions via `name`
+## 6.5. Эксклюзивные аккордеоны через `name`
 
-This is one of the most important innovations in modern HTML in recent years — quiet, almost unnoticed against the backdrop of discussions about Web Components and Custom Elements, yet addressing one of the most common frontend tasks: an accordion where only one section is open at a time.
+Это одно из наиболее важных нововведений современного HTML последних лет — тихое, почти незаметное на фоне разговоров о Web Components и Custom Elements, но при этом закрывающее одну из самых частых задач фронтенда: аккордеон, в котором открыта только одна секция одновременно.
 
-### Breakdown
+### Разбор
 
 ```html
 <details name="faq">
-  <summary>How do I process a return?</summary>
-  <p>Returns are processed within 14 days...</p>
+  <summary>Как оформить возврат?</summary>
+  <p>Возврат оформляется в течение 14 дней…</p>
 </details>
 
 <details name="faq">
-  <summary>How do I track my order?</summary>
-  <p>The tracking number is sent to your email...</p>
+  <summary>Как отследить заказ?</summary>
+  <p>Трек-номер приходит на почту…</p>
 </details>
 
 <details name="faq">
-  <summary>How do I contact support?</summary>
-  <p>Via the form on the website or by phone...</p>
+  <summary>Как связаться с поддержкой?</summary>
+  <p>Через форму на сайте или по телефону…</p>
 </details>
 ```
 
-Three independent `<details>` elements. The only thing connecting them is the same value of the `name` attribute. This is enough for the browser to start treating them not as three separate elements, but as a **single group with exclusive expansion**: if you open the second section, the first will close automatically. Like radio buttons (`<input type="radio" name="…">`), but for disclosure blocks.
+Три независимых элемента `<details>`. Единственное, что их связывает, — одинаковое значение атрибута `name`. Этого достаточно, чтобы браузер начал относиться к ним не как к трём отдельным элементам, а как к **единой группе с эксклюзивным раскрытием**: если открыть вторую секцию, первая закроется автоматически. Как радиокнопки (`<input type="radio" name="…">`), только для раскрывающихся блоков.
 
-### How the Browser Automatically Builds an Accordion Group
+### Как браузер автоматически строит Accordion Group
 
 ```
 Accordion Group
 ```
 
-Before `name` was available on `<details>`, grouping "only one can be expanded at a time" was a task solved exclusively by JavaScript. The `name` attribute moves this task to the browser engine:
+До появления `name` у `<details>` группировка «раскрыт может быть только один из» была задачей, которую решал исключительно JavaScript. Атрибут `name` перекладывает эту задачу на браузерный движок:
 
-- The parser sees multiple `<details>` with the same `name` within the document.
-- The browser registers them as a single logical group — just as it groups radio buttons by `name`, regardless of where exactly in the DOM tree they are located (they don't have to be siblings or in the same parent).
-- When toggling the `open` attribute on one element in the group, the browser itself removes `open` from all other elements in the same group.
+- Парсер видит несколько `<details>` с одинаковым `name` в пределах документа.
+- Браузер регистрирует их как единую логическую группу — точно так же, как группирует радиокнопки по `name`, независимо от того, где именно в DOM-дереве они расположены (они не обязаны быть соседями или лежать в одном родителе).
+- При переключении атрибута `open` на одном элементе группы браузер сам убирает `open` у всех остальных элементов той же группы.
 
-This happens at the rendering engine level, not at the markup or CSS level. The developer doesn't need to manually create a container structure that "knows" about its child accordions — the group itself exists implicitly, as a set of elements united by a common attribute value. This is the same principle we saw in section 6.4 with `open`: the state (in this case, "which section is currently expanded") is stored not in a JS data structure, but directly in the markup, and synchronization happens automatically because the browser handles it, not the programmer.
+Это происходит на уровне рендеринг-движка, а не на уровне разметки или CSS. Разработчику не нужно вручную создавать структуру-контейнер, которая бы «знала» о своих дочерних аккордеонах — сама группа существует неявно, как множество элементов, объединённых общим значением атрибута. Это тот же принцип, что мы видели в разделе 6.4 с `open`: состояние (в данном случае — «какая секция сейчас раскрыта») хранится не в JS-структуре данных, а прямо в разметке, и синхронизация происходит автоматически, потому что этим занимается браузер, а не программист.
 
-Important detail: grouping works even if the `<details>` elements are in different parts of the DOM — for example, some in one `<section>`, some in another. The main thing is matching `name` within a single document. This provides flexibility when laying out complex designs where the visual structure doesn't have to match the logical grouping.
+Важная деталь: группировка работает даже если элементы `<details>` находятся в разных частях DOM — например, часть в одном `<section>`, часть в другом. Главное — совпадение `name` в пределах одного документа. Это даёт гибкость при вёрстке сложных макетов, где визуальная структура не обязана совпадать с логической группировкой.
 
-### Why More Code Is No Longer Needed
+### Почему больше не нужны
 
 ```
 querySelectorAll()
@@ -282,7 +273,7 @@ forEach()
 removeAttribute("open")
 ```
 
-Before `name`, typical code for an exclusive accordion looked roughly like this:
+До появления `name` типичный код эксклюзивного аккордеона выглядел примерно так:
 
 ```js
 const items = document.querySelectorAll('details.accordion-item');
@@ -300,1517 +291,1530 @@ items.forEach((item) => {
 });
 ```
 
-Here the developer manually:
+Здесь разработчик вручную:
 
-1. **finds** all elements in the group (`querySelectorAll`);
-2. **subscribes** to the `toggle` event on each of them;
-3. **iterates** over the other elements in the group on each open (`forEach`);
-4. **closes** them imperatively (`removeAttribute("open")`).
+1. **находит** все элементы группы (`querySelectorAll`);
+2. **подписывается** на событие `toggle` у каждого из них;
+3. **перебирает** остальные элементы группы при каждом открытии (`forEach`);
+4. **закрывает** их императивно (`removeAttribute("open")`).
 
-Each of these steps is a potential source of bugs. Forgot to unsubscribe from an event when removing an element from the DOM — memory leak. Added a new FAQ item to the markup but didn't update the selector — the new element falls out of the group and doesn't participate in exclusive expansion. Dynamically loaded content appeared — `querySelectorAll` called once at page load simply won't see it, and you'll need `MutationObserver` or a re-initialization call.
+Каждый из этих шагов — потенциальный источник ошибок. Забыли отписаться от события при удалении элемента из DOM — утечка памяти. Добавили новый пункт FAQ в разметку, но не обновили селектор — новый элемент выпал из группы и не участвует в эксклюзивном раскрытии. Появился динамически подгруженный контент — `querySelectorAll`, вызванный один раз при загрузке страницы, его просто не увидит, и потребуется `MutationObserver` или повторный вызов инициализации.
 
-With the `name` attribute, all four steps disappear entirely:
+С атрибутом `name` все четыре шага исчезают целиком:
 
 ```html
-<!-- This is all that's needed -->
+<!-- Это всё, что нужно -->
 <details name="faq">…</details>
 <details name="faq">…</details>
 <details name="faq">…</details>
 ```
 
-- No need to **find** elements — the browser already knows which nodes belong to the group by the attribute value.
-- No need to **subscribe** to events — state toggling is handled at the specification level.
-- No need to **iterate** over other elements — closing behavior is built into the algorithm the browser executes when `<summary>` is activated.
-- No need to **close** manually — the `open` attribute is removed from other elements automatically, by the same mechanism described in section 6.4 (DOM state changes, rendering follows without JS involvement).
+- Не нужно **искать** элементы — браузер сам знает, какие узлы принадлежат группе, по значению атрибута.
+- Не нужно **подписываться** на события — переключение состояния обрабатывается на уровне спецификации.
+- Не нужно **перебирать** остальные элементы — closing-поведение встроено в алгоритм, который выполняет браузер при активации `<summary>`.
+- Не нужно **закрывать** вручную — атрибут `open` убирается у остальных элементов автоматически, тем же механизмом, что описан в разделе 6.4 (DOM state меняется, рендеринг следует за ним без участия JS).
 
-Adding a new item to the accordion becomes a task of "insert another `<details name="faq">`" — without a single edit to a JS file, without the risk of forgetting to bind a handler to the new element.
+Добавление нового пункта в аккордеон превращается в задачу «вставить ещё один `<details name="faq">`» — без единой правки в JS-файле, без риска забыть привязать обработчик к новому элементу.
 
-### Fully Declarative Accordion
+### Полностью декларативный Accordion
 
-The result: an FAQ accordion, a calendar with expandable days, a menu with exclusive sub-items, tabs in the form of disclosure blocks — all of this can now be implemented **without a single line of JavaScript**:
+Итог: FAQ-аккордеон, календарь с раскрывающимися днями, меню с эксклюзивными подпунктами, вкладки в виде раскрывающихся блоков — всё это теперь можно реализовать **без единой строчки JavaScript**:
 
 ```html
-<h2>Frequently Asked Questions</h2>
+<h2>Часто задаваемые вопросы</h2>
 
 <details name="faq" open>
-  <summary>How do I process a return?</summary>
-  <p>Returns are processed within 14 days of receiving the order.</p>
+  <summary>Как оформить возврат?</summary>
+  <p>Возврат оформляется в течение 14 дней с момента получения заказа.</p>
 </details>
 
 <details name="faq">
-  <summary>How do I track my order?</summary>
-  <p>The tracking number is sent to your email immediately after shipment.</p>
+  <summary>Как отследить заказ?</summary>
+  <p>Трек-номер отправляется на почту сразу после отгрузки.</p>
 </details>
 
 <details name="faq">
-  <summary>How do I contact support?</summary>
-  <p>Via the feedback form on the website or by phone hotline.</p>
+  <summary>Как связаться с поддержкой?</summary>
+  <p>Через форму обратной связи на сайте или по телефону горячей линии.</p>
 </details>
 ```
 
-Notice `open` on the first element — as in section 6.4, this is a statically defined initial state: the first section is open immediately on page load, before JS execution (which is simply absent here). The rest is styling via CSS (`::marker`, `::details-content`) and, if desired, lightweight open/close animation via CSS transitions.
+Обратите внимание на `open` у первого элемента — как и в разделе 6.4, это статически заданное начальное состояние: первая секция открыта сразу при загрузке страницы, ещё до исполнения JS (которого здесь попросту нет). Остальное — стилизация через CSS (`::marker`, `::details-content`) и, при желании, лёгкая анимация раскрытия через CSS-переходы.
 
-This changes the very economics of developing such components. Previously, an "accordion" almost inevitably meant: either an npm package with a ready-made widget, or a custom JS module with event handlers, state, and synchronization — i.e., code that needs to be written, tested, maintained, and included in the bundle. Now it's three lines of HTML and one repeated attribute value. Logic that was previously the developer's responsibility has become the browser's responsibility — and, as a result, is no longer a source of bugs that a specific team on a specific project is responsible for.
+Это меняет саму экономику разработки подобных компонентов. Раньше «аккордеон» почти неизбежно означал: либо npm-пакет с готовым виджетом, либо собственный JS-модуль с обработчиками событий, состоянием и синхронизацией — то есть код, который нужно писать, тестировать, поддерживать и завозить в бандл. Теперь это три строки HTML и одно повторяющееся значение атрибута. Логика, которая раньше была обязанностью разработчика, стала обязанностью браузера — и, как следствие, перестала быть источником багов, за которые отвечает конкретная команда на конкретном проекте.
 
 ---
 
-## 6.6. The `toggle` Event — Component State Observer
+Вот доработанный раздел для вашей книги. Я раскрыл философию события, его связь с жизненным циклом компонента и привел практические сценарии использования.
 
-In the web platform ecosystem, there has long been a gap: developers could easily track clicks or input field value changes, but they lacked a universal way to react to the **fact of a change in an element's visible state**. The `toggle` event closes this gap, providing a browser mechanism for observing binary component states.
+---
 
-### What `toggle` Is and When It Occurs
+## 6.6. Событие `toggle` — Наблюдатель за состоянием компонента
 
-The `toggle` event fires on an element at the moment its state **explicitly changes** from "open" to "closed" or vice versa. In modern HTML, this event is tightly bound to two elements:
+В экосистеме веб-платформы долгое время существовал пробел: разработчики могли легко отслеживать клики или изменения значений полей, но не имели универсального способа реагировать на **факт изменения видимого состояния** элемента. Событие `toggle` закрывает этот пробел, предоставляя браузерный механизм наблюдения за бинарными состояниями компонентов.
 
-1. **`<details>`** — when the `open` attribute changes.
-2. **Elements with the `popover` attribute** — when a popover opens or closes (in the HTML Living Standard specification).
+### Что такое `toggle` и когда оно возникает
 
-It's important to understand: `toggle` is **not** a synonym for `click`. If a user clicks on `<summary>` but the `open` state doesn't change (e.g., the element was already open), the `toggle` event **does not fire**. This ensures that the handler only triggers on an actual state transition, eliminating spurious calls.
+Событие `toggle` срабатывает на элементе в тот момент, когда его состояние **явно изменяется** с "открыто" на "закрыто" или наоборот. В современном HTML это событие жестко привязано к двум элементам:
+
+1.  **`<details>`** — при изменении атрибута `open`.
+2.  **Элементы с атрибутом `popover`** — при открытии или закрытии поповера (в спецификации HTML Living Standard).
+
+Важно понимать: `toggle` — это **не** синоним `click`. Если пользователь кликнул по `<summary>`, но состояние `open` не изменилось (например, элемент уже был открыт), событие `toggle` **не генерируется**. Это гарантирует, что обработчик срабатывает только при реальном переходе состояния, исключая холостые вызовы.
 
 ```html
 <details id="faqItem">
-  <summary>Why is this important?</summary>
-  <p>Because we now know the exact moment of change.</p>
+    <summary>Почему это важно?</summary>
+    <p>Потому что мы теперь знаем точный момент изменения.</p>
 </details>
 
 <script>
-  const details = document.getElementById('faqItem');
-  details.addEventListener('toggle', (e) => {
-    // Only fires on transition: closed → open OR open → closed
-    console.log('State changed!');
-  });
+    const details = document.getElementById('faqItem');
+    details.addEventListener('toggle', (e) => {
+        // Сработает только при переходе: закрыто → открыто ИЛИ открыто → закрыто
+        console.log('Состояние изменилось!');
+    });
 </script>
 ```
 
 ---
 
-### Why `toggle` Reflects Component State Change, Not User Action
+### Почему `toggle` отражает изменение состояния компонента, а не действие пользователя
 
-This is where the key architectural difference lies. In the world of DOM events, there are two approaches:
+Здесь кроется ключевое архитектурное отличие. В мире событий DOM существует два подхода:
 
-- **Action events** (`click`, `keydown`, `pointerup`) — report _what the user did_.
-- **State events** (`toggle`, `change`, `input`) — report _what the application has become_.
+- **События действий** (`click`, `keydown`, `pointerup`) — сообщают о том, *что сделал пользователь*.
+- **События состояния** (`toggle`, `change`, `input`) — сообщают о том, *чем стало приложение*.
 
-The `toggle` event belongs to the second category. It abstracts the developer from the source of the change. It doesn't matter whether the user opened `<details>` with a mouse click, by pressing `Enter`, via a programmatic `details.open = true` call, or by voice command. In all cases, the same `toggle` event will be generated.
+Событие `toggle` принадлежит второй категории. Оно абстрагирует разработчика от источника изменения. Неважно, открыл ли пользователь `<details>` кликом мыши, нажатием `Enter`, программным вызовом `details.open = true` или голосовой командой. Во всех случаях сгенерируется одно и то же событие `toggle`.
 
-This allows you to write code oriented toward the **result**, not the **cause**. You simply listen for a state change and react to it, without thinking about how exactly the user reached that state.
+Это позволяет писать код, ориентированный на **результат**, а не на **причину**. Вы просто слушаете изменение состояния и реагируете на него, не думая о том, как именно пользователь до этого состояния добрался.
 
 ```javascript
-// ❌ Bad: Tied to an action
+// ❌ Плохо: Привязка к действию
 summary.addEventListener('click', () => {
-  if (details.open) {
-    // Do something...
-  }
+    if (details.open) {
+        // Что-то делаем...
+    }
 });
 
-// ✅ Good: Tied to state
+// ✅ Хорошо: Привязка к состоянию
 details.addEventListener('toggle', () => {
-  // We know for sure that the state has changed.
-  // The source doesn't matter.
-  updateUI(details.open);
+    // Мы точно знаем, что состояние изменилось.
+    // Источник не важен.
+    updateUI(details.open);
 });
 ```
 
 ---
 
-### How to Use with `details.open`
+### Как использовать с `details.open`
 
-The `details.open` property (and its corresponding HTML attribute) is the **single source of truth** for the component's state. The `toggle` event and the `open` property form an inseparable pair, analogous to `value` and `input` on text fields.
+Свойство `details.open` (и соответствующее ему HTML-атрибуты) является **единственным источником истины** (single source of truth) о состоянии компонента. Событие `toggle` и свойство `open` образуют неразрывную пару, аналогичную `value` и `input` у текстовых полей.
 
-**Practical pattern: synchronizing with external state**
+**Практический паттерн: синхронизация с внешним состоянием**
 
-Often, you need opening one accordion to close another. The `toggle` event is ideal for this task:
+Часто требуется, чтобы открытие одного аккордеона закрывало другой. Событие `toggle` идеально подходит для этой задачи:
 
 ```javascript
 document.querySelectorAll('details').forEach((detailsEl) => {
-  detailsEl.addEventListener('toggle', (e) => {
-    // If this element just opened
-    if (detailsEl.open) {
-      // Close all other details in the same container
-      const container = detailsEl.closest('.accordion-group');
-      container.querySelectorAll('details').forEach((other) => {
-        if (other !== detailsEl && other.open) {
-          other.open = false; // Programmatic change will also fire toggle
+    detailsEl.addEventListener('toggle', (e) => {
+        // Если этот элемент только что открылся
+        if (detailsEl.open) {
+            // Закрываем все остальные details в том же контейнере
+            const container = detailsEl.closest('.accordion-group');
+            container.querySelectorAll('details').forEach((other) => {
+                if (other !== detailsEl && other.open) {
+                    other.open = false; // Программное изменение тоже вызовет toggle
+                }
+            });
         }
-      });
-    }
-  });
+    });
 });
 ```
 
-**Important nuance:** Programmatic change `details.open = false` **also** generates the `toggle` event. This means you can build reaction chains without risk of infinite loops, since the event is synchronous but not recursive (the browser protects against nested calls).
+**Важный нюанс:** Программное изменение `details.open = false` **также** генерирует событие `toggle`. Это означает, что вы можете строить цепочки реакций без риска бесконечного цикла, так как событие синхронно, но не рекурсивно (браузер защищает от вложенных вызовов).
 
 ---
 
-### Component Lifecycle: Why the Browser Provides It to Us
+### Жизненный цикл компонента: почему браузер предоставляет его нам
 
-Browsers are evolving from simple renderers into full-fledged frameworks built into the platform. Providing the `toggle` event is part of the larger philosophy of **"component web"**.
+Браузеры эволюционируют от простых рендереров к полноценным фреймворкам, встроенным в платформу. Предоставление события `toggle` — это часть большой философии **"компонентного веба"**.
 
-A component's lifecycle (in this case, `details`) includes:
+Жизненный цикл компонента (в данном случае — `details`) включает в себя:
 
-1. **Mounting** — the element appears in the DOM.
-2. **State update** — the `open` attribute changes (`toggle` event).
-3. **Unmounting** — the element is removed from the DOM.
+1.  **Монтирование** — элемент появляется в DOM.
+2.  **Обновление состояния** — изменяется атрибут `open` (событие `toggle`).
+3.  **Размонтирование** — элемент удаляется из DOM.
 
-The browser gives us events precisely at the **state update** step, because:
+Браузер дает нам события именно на шаге **обновления состояния**, потому что:
 
-- This is the **only stable moment** when the DOM has already been updated (the `open` attribute is set), but the user hasn't yet seen the repaint (animation may start later).
-- This allows integrating native elements into reactive frameworks (React, Vue, Angular). Thanks to `toggle`, a framework can subscribe to a change and re-render its virtual DOM _in response_ to a browser state change, rather than the other way around.
+- Это **единственный стабильный момент**, когда DOM уже обновлен (атрибут `open` установлен), но пользователь еще не видел перерисовку (анимация может начаться позже).
+- Это позволяет интегрировать нативные элементы в реактивные фреймворки (React, Vue, Angular). Благодаря `toggle`, фреймворк может подписаться на изменение и перерендерить свой виртуальный DOM *в ответ* на изменение браузерного состояния, а не наоборот.
 
-**Example of use with CSS animations:**
+**Пример использования с CSS-анимациями:**
 
 ```javascript
 details.addEventListener('toggle', () => {
-  const content = details.querySelector('.content');
-  if (details.open) {
-    // Start appearance animation
-    content.style.maxHeight = content.scrollHeight + 'px';
-  } else {
-    // Start collapse animation
-    content.style.maxHeight = '0';
-  }
+    const content = details.querySelector('.content');
+    if (details.open) {
+        // Начинаем анимацию появления
+        content.style.maxHeight = content.scrollHeight + 'px';
+    } else {
+        // Начинаем анимацию схлопывания
+        content.style.maxHeight = '0';
+    }
 });
 ```
 
-In this example, `toggle` acts as a lifecycle trigger — we don't know _why_ the element opened, but we know for sure that _the moment has come_ to apply the animation.
+В этом примере `toggle` выступает как триггер жизненного цикла — мы не знаем, *почему* элемент открылся, но мы точно знаем, что *наступил момент* для применения анимации.
 
 ---
 
-### Extended Scenario: Working with `popover`
+### Расширенный сценарий: работа с `popover`
 
-In the HTML 2026 specification, the `toggle` event is also supported on elements with the `popover` attribute. This makes it a universal tool for managing any popup interfaces:
+В спецификации HTML 2026 событие `toggle` также поддерживается элементами с атрибутом `popover`. Это делает его универсальным инструментом для управления любыми всплывающими интерфейсами:
 
 ```html
 <div id="myPopover" popover>
-  <p>This is a custom popover</p>
-  <button popovertarget="myPopover">Close</button>
+    <p>Это кастомный поповер</p>
+    <button popovertarget="myPopover">Закрыть</button>
 </div>
 
 <script>
-  const popover = document.getElementById('myPopover');
-  popover.addEventListener('toggle', (e) => {
-    // e.newState — 'open' or 'closed' (new state)
-    // e.oldState — previous state
-    if (e.newState === 'open') {
-      document.body.style.overflow = 'hidden'; // Block scroll
-    } else {
-      document.body.style.overflow = '';
-    }
-  });
+    const popover = document.getElementById('myPopover');
+    popover.addEventListener('toggle', (e) => {
+        // e.newState — 'open' или 'closed' (новое состояние)
+        // e.oldState — предыдущее состояние
+        if (e.newState === 'open') {
+            document.body.style.overflow = 'hidden'; // Блокируем скролл
+        } else {
+            document.body.style.overflow = '';
+        }
+    });
 </script>
 ```
 
-Note the `e.newState` and `e.oldState` properties — they are available for `popover` (and for `<dialog>` via a separate event), but not for `<details>`. This shows that the specification is evolving, but the concept remains unchanged: the browser provides the developer with **windows into the component's lifecycle**.
+Обратите внимание на свойства `e.newState` и `e.oldState` — они доступны только для `popover` (и для `<dialog>` через отдельное событие), но не для `<details>`. Это показывает, что спецификация развивается, но концепция остается неизменной: браузер предоставляет разработчику **окна в жизненный цикл** компонента.
 
 ---
 
-### Summary: The Philosophy of `toggle`
+### Резюме: философия `toggle`
 
-The `toggle` event is not just a convenience. It's a declaration that the browser is taking over state management of built-in components. The developer no longer needs to attach listeners to all possible sources of actions (mouse, keyboard, touch, voice). It's enough to subscribe to the **fact of a change**, and the browser will take care of notifying you at the right moment.
+Событие `toggle` — это не просто удобство. Это декларация того, что браузер берет на себя управление состоянием встроенных компонентов. Разработчику больше не нужно вешать слушатели на все возможные источники действий (мышь, клавиатура, touch, голос). Достаточно подписаться на **факт изменения**, и браузер сам позаботится о том, чтобы уведомить вас в нужный момент.
 
-**Golden rule:** Use `toggle` wherever you need to react to the opening or closing of a native element. This will make your code resilient to new interaction methods that will appear in future browser versions.
+**Золотое правило:** Используйте `toggle` везде, где вам нужно реагировать на открытие или закрытие нативного элемента. Это сделает ваш код устойчивым к новым способам взаимодействия, которые появятся в следующих версиях браузеров.
+---
+
+Вот доработанный раздел для вашей книги. Я раскрыл механизм работы браузера, объяснил, почему это невозможно эмулировать на JavaScript, и показал, как использовать эту особенность в дизайне интерфейсов.
 
 ---
 
-## 6.7. `<details>` and Find-in-Page — A Hidden Contract with the Browser
+## 6.7. `<details>` и Find-in-Page — Скрытый контракт с браузером
 
-There is functionality that few developers know about, but millions of users use daily. It's the interaction between the built-in page search (`Ctrl+F` / `Cmd+F`) and the `<details>` element. This is not just a convenient feature — it's a demonstration of deep integration between semantic markup and the user agent.
+Существует функциональность, о которой знают единицы разработчиков, но которой ежедневно пользуются миллионы пользователей. Речь идет о взаимодействии встроенного поиска по странице (`Ctrl+F` / `Cmd+F`) и элемента `<details>`. Это не просто удобная мелочь — это демонстрация глубокой интеграции между семантической разметкой и пользовательским агентом.
 
-### What Happens When Search Finds Text Inside a Closed `<details>`
+### Что происходит, когда поиск находит текст внутри закрытого `<details>`
 
-Imagine a scenario: a user opens a page with Frequently Asked Questions (FAQ), where each answer is hidden inside a `<details>`. The user presses `Ctrl+F` and enters a query, for example, "shipping cost". The browser finds this text inside a closed block.
+Представьте сценарий: пользователь открывает страницу с часто задаваемыми вопросами (FAQ), где каждый ответ спрятан внутри `<details>`. Пользователь нажимает `Ctrl+F` и вводит запрос, например, "цена доставки". Браузер находит этот текст внутри закрытого блока.
 
-**What the browser does:**
+**Что делает браузер:**
 
-1. **Automatically expands** the `<details>` (sets the `open` attribute).
-2. **Scrolls the page** so the found text is in the visible area (usually with a small top offset).
-3. **Highlights** the found occurrence in the browser's standard way (orange/yellow background).
+1. **Автоматически раскрывает** `<details>` (устанавливает атрибут `open`).
+2. **Прокручивает страницу** так, чтобы найденный текст оказался в видимой области (обычно с небольшим отступом сверху).
+3. **Подсвечивает** найденное вхождение стандартным для браузера способом (оранжевый/желтый фон).
 
-This behavior works in all modern browsers (Chrome, Firefox, Safari, Edge) and is part of the HTML specification, not a separate feature of a specific vendor.
+Это поведение работает во всех современных браузерах (Chrome, Firefox, Safari, Edge) и является частью спецификации HTML, а не отдельной фичей конкретного вендора.
 
 ```html
-<!-- User searches for "warranty" -->
+<!-- Пользователь ищет "гарантия" -->
 <details>
-  <summary>Return Policy</summary>
-  <p>
-    Items can be returned within 14 days. Warranty on electronics — 2 years.
-  </p>
-  <!--   ^^^^ The word "warranty" is found, details will automatically open -->
+    <summary>Условия возврата</summary>
+    <p>Товар можно вернуть в течение 14 дней. Гарантия на электронику — 2 года.</p>
+    <!--   ^^^^ Слово "гарантия" найдено, details автоматически откроется -->
 </details>
 ```
 
 ---
 
-### Why the Browser Automatically Opens the Relevant Section
+### Почему браузер автоматически открывает нужный раздел
 
-This behavior is rooted in a fundamental principle of web standards: **information accessibility is primary over visual design**.
+Это поведение коренится в фундаментальном принципе веб-стандартов: **доступность информации первична по отношению к визуальному дизайну**.
 
-When a user performs a page search, they are explicitly expressing the intent to find specific information. The browser interprets this as a signal that the **obstacle** (a closed `<details>`) should be removed to achieve the user's goal. If the browser didn't expand the block, the user would see highlighting in an invisible place, which would cause frustration and violate the Principle of Least Surprise.
+Когда пользователь выполняет поиск по странице, он явно выражает намерение найти конкретную информацию. Браузер интерпретирует это как сигнал, что **препятствие** (закрытый `<details>`) должно быть устранено для достижения цели пользователя. Если бы браузер не раскрывал блок, пользователь увидел бы подсветку в невидимом месте, что создало бы фрустрацию и нарушило принцип "не удивляй" (Principle of Least Surprise).
 
-**Technical implementation (simplified):**
+**Техническая реализация (упрощенно):**
 
-1. The browser's **search engine** scans the DOM tree, including hidden elements (since they are still present in the structure, just not displayed).
-2. When a match is found, the browser checks whether the text is inside an element that has "collapsible container" semantics (`<details>` without the `open` attribute).
-3. The browser forcibly adds the `open` attribute to this element **before** scrolling and highlighting are performed.
-4. Important: this change **does not** generate the `toggle` event in the same sense as a user click (in some browsers the event may still fire, but it's handled with priority so as not to interfere with search).
+1. **Поисковый движок браузера** сканирует DOM-дерево, включая скрытые элементы (поскольку они все равно присутствуют в структуре, просто не отображаются).
+2. При нахождении совпадения браузер проверяет, не находится ли текст внутри элемента, который имеет семантику "сворачиваемого контейнера" (`<details>` без атрибута `open`).
+3. Браузер форсированно добавляет атрибут `open` к этому элементу **до того**, как будет выполнена прокрутка и подсветка.
+4. Важно: это изменение **не** генерирует событие `toggle` в том же смысле, что и пользовательский клик (в некоторых браузерах событие все же может сработать, но обрабатывается оно в приоритетном порядке, чтобы не мешать поиску).
 
 ```javascript
-// The browser does something like this (conceptually):
+// Браузер делает что-то подобное (концептуально):
 function findInPage(query) {
-  const match = findTextInDOM(query);
-  if (match && match.isInsideClosedDetails()) {
-    // Ignore the standard event flow
-    match.closest('details').setAttribute('open', '');
-    // Block toggle bubbling to prevent custom animation
-    // that could break scrolling
-  }
-  scrollTo(match);
-  highlight(match);
+    const match = findTextInDOM(query);
+    if (match && match.isInsideClosedDetails()) {
+        // Игнорируем стандартный поток событий
+        match.closest('details').setAttribute('open', '');
+        // Блокируем всплытие toggle, чтобы предотвратить кастомную анимацию,
+        // которая могла бы сломать прокрутку
+    }
+    scrollTo(match);
+    highlight(match);
 }
 ```
 
 ---
 
-### Why It's Practically Impossible to Implement This Correctly in JavaScript
+### Почему корректно реализовать это на JavaScript практически невозможно
 
-Developers often try to emulate this behavior manually: attach a handler to `keydown`, catch `Ctrl+F`, search for text in hidden blocks, and expand them. This approach is doomed to failure for several reasons:
+Разработчики часто пытаются эмулировать это поведение вручную: вешают обработчик на `keydown`, ловят `Ctrl+F`, ищут текст в скрытых блоках и раскрывают их. Такой подход обречен на провал по нескольким причинам:
 
-#### 1. Impossible to Intercept Built-in Search
+#### 1. Невозможность перехватить встроенный поиск
 
-The `Ctrl+F` event **does not generate** any DOM event that can be intercepted on the page. This is a system-level browser command, processed at the engine level (Blink, Gecko, WebKit) before any JavaScript code gets control. Attempts to use `keydown` for `event.ctrlKey && event.key === 'f'` only block part of the scenarios, but don't work when using the browser menu (Edit → Find) or search via the address bar.
+Событие `Ctrl+F` **не генерирует** никакого DOM-события, которое можно было бы перехватить на странице. Это системная команда браузера, которая обрабатывается на уровне движка (Blink, Gecko, WebKit) до того, как любой JavaScript-код получает управление. Попытки использовать `keydown` для `event.ctrlKey && event.key === 'f'` блокируют лишь часть сценариев, но не работают при использовании меню браузера (Edit → Find) или поиска через адресную строку.
 
-#### 2. Conflict with the `toggle` Event Lifecycle
+#### 2. Конфликт с жизненным циклом события `toggle`
 
-If you use the `toggle` event to start a complex expansion animation (e.g., using `max-height` and CSS transitions), then on programmatic opening by the browser, your animation may conflict with the scrolling mechanics.
+Если вы используете событие `toggle` для запуска сложной анимации раскрытия (например, с использованием `max-height` и CSS-переходов), то при программном открытии браузером ваша анимация может конфликтовать с механикой прокрутки.
 
 ```javascript
-// ❌ Error: Animation breaking Find-in-Page
+// ❌ Ошибка: Анимация, ломающая Find-in-Page
 details.addEventListener('toggle', () => {
-  if (details.open) {
-    // Animation takes 500ms
-    content.style.transition = 'max-height 0.5s';
-    content.style.maxHeight = content.scrollHeight + 'px';
-  }
+    if (details.open) {
+        // Анимация занимает 500 мс
+        content.style.transition = 'max-height 0.5s';
+        content.style.maxHeight = content.scrollHeight + 'px';
+    }
 });
-// If the browser opens details via find-in-page, scrolling will occur BEFORE the animation completes,
-// and the user will see the wrong fragment, or the scrolling will be jerky.
+// Если браузер откроет details через find-in-page, прокрутка выполнится ДО завершения анимации,
+// и пользователь увидит не тот фрагмент, либо прокрутка будет дерганой.
 ```
 
-#### 3. No Access to the Internal Search State
+#### 3. Отсутствие доступа к внутреннему состоянию поиска
 
-You cannot know what the user is searching for until they've entered the text and the browser has started highlighting. Even if you use `MutationObserver` to track highlighting changes (e.g., the `data-ms-editor` attribute or `::highlight` pseudo-elements), this won't give you the exact moment _before_ scrolling.
+Вы не можете узнать, что именно ищет пользователь, пока он не ввел текст и браузер не начал подсветку. Даже если использовать `MutationObserver` для отслеживания изменений в подсветке (например, атрибут `data-ms-editor` или псевдо-элементы `::highlight`), это не даст вам точного момента *до* прокрутки.
 
-#### 4. Multiple Matches and Sequential Search
+#### 4. Множественные вхождения и последовательный поиск
 
-If the user presses `Enter` in the search window to move to the next match, the browser repeats the process: scrolls and, if necessary, expands the next closed `<details>`. Tracking this sequence in JavaScript is impossible, since each `Enter` press in the native search field is not passed to the DOM.
+Если пользователь нажимает `Enter` в окне поиска для перехода к следующему совпадению, браузер повторяет процесс: прокручивает и при необходимости раскрывает следующий закрытый `<details>`. Отследить эту последовательность на JavaScript невозможно, так как каждое нажатие `Enter` в нативном поисковом поле не передается в DOM.
 
-#### The Only Correct Approach: Do Nothing
+#### Единственный корректный подход: ничего не делать
 
-The correct strategy is to **trust the browser**. Don't try to manage the `open` attribute in response to search. Instead:
+Правильная стратегия — **довериться браузеру**. Не пытайтесь управлять атрибутом `open` в ответ на поиск. Вместо этого:
 
-- Use semantically correct markup.
-- Ensure your CSS animations don't interfere with scrolling (use `scroll-behavior: auto` instead of `smooth` for elements that may be opened by search, or check whether the browser has intervened).
-- If you need to perform an action after the browser has expanded `<details>` (e.g., send analytics), use `setTimeout` with zero delay or `requestAnimationFrame`:
+- Используйте семантически правильную разметку.
+- Обеспечьте, чтобы ваши CSS-анимации не мешали прокрутке (используйте `scroll-behavior: auto` вместо `smooth` для элементов, которые могут быть раскрыты поиском, либо проверяйте, не было ли вмешательства браузера).
+- Если вам нужно выполнить действие после того, как браузер раскрыл `<details>` (например, отправить аналитику), используйте `setTimeout` с нулевой задержкой или `requestAnimationFrame`:
 
 ```javascript
-// The only safe way: check the state after the browser has completed all its operations
+// Единственный безопасный способ: проверить состояние после того, как браузер завершил все свои операции
 details.addEventListener('toggle', () => {
-  // Use microtask or requestAnimationFrame to let the browser finish scrolling
-  requestAnimationFrame(() => {
-    if (details.open && isElementVisibleInViewport(details)) {
-      // For example, sending analytics: the user saw this block through search
-      sendAnalytics('details_opened_by_find', details.id);
-    }
-  });
+    // Используем микротаск или requestAnimationFrame, чтобы дать браузеру закончить прокрутку
+    requestAnimationFrame(() => {
+        if (details.open && isElementVisibleInViewport(details)) {
+            // Например, отправка аналитики: пользователь увидел этот блок через поиск
+            sendAnalytics('details_opened_by_find', details.id);
+        }
+    });
 });
 ```
 
 ---
 
-### Design Pattern: How to Use This Feature in the UI
+### Дизайн-паттерн: как использовать эту фичу в UI
 
-Knowing about this browser behavior, you can design interfaces that "help" search:
+Зная об этом поведении браузера, вы можете проектировать интерфейсы, которые "помогают" поиску:
 
-1. **Don't duplicate search:** If you have a custom page search field, use the native `find-in-page` as a backend (via `window.find()` in some browsers or the CSS `:target` pseudo-class), to avoid creating two independent search mechanisms.
+1. **Не дублируйте поиск:** Если у вас есть кастомное поле поиска по странице, используйте нативный `find-in-page` как бэкенд (через `window.find()` в некоторых браузерах или CSS-псевдокласс `:target`), чтобы не создавать два независимых механизма поиска.
 
-2. **Anchors for `:target`:** If you use `<details>` with anchor links (`#id`), remember that the browser may also expand `<details>` when navigating to an anchor if the target element is inside. This is another channel through which the browser manages state.
+2. **Якоря для `:target`:** Если вы используете `<details>` в связке с якорными ссылками (`#id`), помните, что браузер при переходе по якорю тоже может раскрыть `<details>`, если целевой элемент находится внутри. Это еще один канал, по которому браузер управляет состоянием.
 
-3. **User indication:** Add a visual indicator (e.g., a found count) that updates when `<details>` opens, so the user understands that content was expanded automatically:
+3. **Индикация для пользователя:** Добавьте визуальный индикатор (например, счетчик найденного), который обновляется при открытии `<details>`, чтобы пользователь понимал, что контент был раскрыт автоматически:
 
 ```html
 <details>
-  <summary>
-    Question about delivery
-    <span class="badge" hidden>Found!</span>
-  </summary>
-  <p>...</p>
+    <summary>
+        Вопрос о доставке
+        <span class="badge" hidden>Найдено!</span>
+    </summary>
+    <p>...</p>
 </details>
 
 <script>
-  // Watch for open via toggle (but don't interfere with scrolling)
-  document.querySelectorAll('details').forEach((d) => {
-    d.addEventListener('toggle', () => {
-      if (d.open) {
-        const badge = d.querySelector('.badge');
-        if (badge) badge.hidden = false;
-        // Automatically hide after 5 seconds
-        setTimeout(() => {
-          badge.hidden = true;
-        }, 5000);
-      }
+    // Следим за открытием через toggle (но не вмешиваемся в прокрутку)
+    document.querySelectorAll('details').forEach(d => {
+        d.addEventListener('toggle', () => {
+            if (d.open) {
+                const badge = d.querySelector('.badge');
+                if (badge) badge.hidden = false;
+                // Автоматически скрываем через 5 секунд
+                setTimeout(() => { badge.hidden = true; }, 5000);
+            }
+        });
     });
-  });
 </script>
 ```
 
 ---
 
-### Summary
+### Резюме
 
-The interaction between `<details>` and `find-in-page` is an example of a **system contract** that the browser enters into with semantic markup. The developer should not interfere with this process, because:
+Взаимодействие `<details>` и `find-in-page` — это пример **системного контракта**, который браузер заключает с семантической разметкой. Разработчик не должен вмешиваться в этот процесс, так как:
 
-- The browser operates at a level below JavaScript, ensuring perfect synchronization of expansion, highlighting, and scrolling.
-- Any attempt at emulation leads to UX degradation (jerky scrolling, animation conflicts, state loss).
-- The only correct strategy is to use semantics correctly and not interfere with the browser's work.
+- Браузер действует на уровень ниже JavaScript, обеспечивая идеальную синхронизацию раскрытия, подсветки и прокрутки.
+- Любая попытка эмуляции приводит к деградации UX (дерганая прокрутка, конфликт анимаций, потеря состояния).
+- Единственная корректная стратегия — использовать семантику правильно и не мешать браузеру выполнять его работу.
 
-Remember: **the best JavaScript for this functionality is its absence**. Trust the browser, and it will reward you with an impeccable user experience.
-
----
-
-## 6.8. `<details>` and Accessibility — Automation and Responsibility
-
-The `<details>` element is one of the few in HTML where accessibility is so deeply built into the specification that the developer gets a working interactive component "out of the box." But this is not magic — it's thoughtful semantics. Understanding what the browser does automatically and what remains on the developer's conscience is the key to creating truly inclusive interfaces.
+Помните: **лучший JavaScript для этой функциональности — это его отсутствие**. Доверьтесь браузеру, и он вознаградит вас безупречным пользовательским опытом.
 
 ---
 
-### What the Browser Does Automatically
+Вот доработанный раздел для вашей книги. Я структурировал его вокруг контракта между браузером и разработчиком, показал, что автоматизировано, а что требует ручного контроля, и разобрал типичные антипаттерны.
 
-When you write `<details><summary>Heading</summary><p>Content</p></details>`, the browser takes on a significant portion of accessibility responsibilities. This is not just a convenience — it's an **integral part of the platform**.
+---
 
-#### 1. Component Role (ARIA Role)
+## 6.8. `<details>` и Accessibility — Автоматика и ответственность
 
-The browser automatically projects the semantics of `<details>` and `<summary>` into the accessibility tree. This tree is used by screen readers to form the page's navigation model.
+Элемент `<details>` — один из немногих в HTML, где доступность (accessibility) встроена в спецификацию настолько глубоко, что разработчик получает работающий интерактивный компонент «из коробки». Но это не магия, а продуманная семантика. Понимание того, что браузер делает автоматически, а что остаётся на совести разработчика, — ключ к созданию действительно инклюзивных интерфейсов.
 
-- The `<details>` element is automatically assigned the role **`group`** (in some implementations — `generic` with explicit disclosure container semantics).
-- The `<summary>` element is assigned the role **`button`**, even if it's not a button by tag. This is critically important because the screen reader announces it as a button, not as regular text.
+---
+
+### Что браузер делает автоматически
+
+Когда вы пишете `<details><summary>Заголовок</summary><p>Содержание</p></details>`, браузер берет на себя значительную часть доступностных обязательств. Это не просто удобство — это **неотъемлемая часть платформы**.
+
+#### 1. Роль компонента (ARIA-роль)
+
+Браузер автоматически проецирует семантику `<details>` и `<summary>` в accessibility-дерево (дерево доступности). Это дерево используется скринридерами для формирования навигационной модели страницы.
+
+- Элементу `<details>` автоматически назначается роль **`group`** (в некоторых реализациях — `generic` с явной семантикой раскрывающегося контейнера).
+- Элементу `<summary>` назначается роль **`button`**, даже если это не кнопка по тегу. Это критически важно, потому что скринридер озвучивает его как кнопку, а не как обычный текст.
 
 ```html
-<!-- The browser automatically adds to the accessibility tree: -->
-<!-- <summary> -> button role -->
-<!-- <details> -> group role, expandable state -->
+<!-- Браузер автоматически добавляет в accessibility-дерево: -->
+<!-- <summary> -> роль button -->
+<!-- <details> -> роль group, состояние expandable -->
 ```
 
-#### 2. Keyboard Navigation
+#### 2. Управление с клавиатуры (Keyboard Navigation)
 
-The browser provides full keyboard navigation without a single line of JavaScript:
+Браузер обеспечивает полную навигацию с клавиатуры без единой строчки JavaScript:
 
-- **`Space`** or **`Enter`** on `<summary>` — toggles the `open` state.
-- **`Tab`** — moves between `<summary>` and interactive elements inside `<details>` (links, buttons, input fields).
-- **Focus** automatically moves to `<summary>` when navigating the page.
+- **`Space`** или **`Enter`** на `<summary>` — переключение состояния `open`.
+- **`Tab`** — переход между `<summary>` и интерактивными элементами внутри `<details>` (ссылками, кнопками, полями ввода).
+- **Фокус** автоматически перемещается на `<summary>` при навигации по странице.
 
-This complies with WAI-ARIA recommendations for "disclosure" widgets. The browser implements the **Disclosure (Show/Hide)** pattern from the ARIA Authoring Practices Guide (APG).
+Это соответствует рекомендациям WAI-ARIA для виджетов типа "disclosure" (раскрывающийся виджет). Браузер реализует паттерн **Disclosure (Show/Hide)** из ARIA Authoring Practices Guide (APG).
 
-#### 3. Screen Reader and State Announcement
+#### 3. Скринридер и озвучивание состояния
 
-Screen readers (NVDA, JAWS, VoiceOver, TalkBack) receive information from the accessibility tree and announce:
+Скринридеры (NVDA, JAWS, VoiceOver, TalkBack) получают информацию из accessibility-дерева и озвучивают:
 
-- **Name** — the text inside `<summary>`.
-- **Role** — "button" (or "disclosure button").
-- **State** — "expanded" or "collapsed".
+- **Имя** — текст внутри `<summary>`.
+- **Роль** — "кнопка" (или "кнопка раскрытия").
+- **Состояние** — "развернуто" (expanded) или "свернуто" (collapsed).
 
-This happens automatically because the browser manages the **`aria-expanded`** attribute in the background. You will never see this attribute in the DOM, but it is present in the accessibility tree.
+Это происходит автоматически благодаря тому, что браузер управляет атрибутом **`aria-expanded`** в фоновом режиме. Вы никогда не увидите этот атрибут в DOM, но в accessibility-дереве он присутствует.
 
 ```javascript
-// The attribute is not in the DOM
+// В DOM атрибута нет
 <details>
-  <summary>Read more</summary>
+    <summary>Подробнее</summary>
 </details>
 
-// But in the accessibility tree, the browser projects:
-// summary has aria-expanded="false" (or "true")
+// Но в accessibility-дереве браузер проецирует:
+// summary имеет aria-expanded="false" (или "true")
 ```
 
-#### 4. Semantics of Nested Content
+#### 4. Семантика вложенного контента
 
-The browser correctly handles nested elements. If there are headings (`<h1>`-`<h6>`), lists, or other semantic elements inside `<details>`, they are correctly included in the screen reader's navigation structure even in the closed state. Hidden content is not ignored — it's simply marked as collapsed.
+Браузер правильно обрабатывает вложенные элементы. Если внутри `<details>` есть заголовки (`<h1>`-`<h6>`), списки или другие семантические элементы, они корректно попадают в навигационную структуру скринридера даже при закрытом состоянии. Скрытый контент не игнорируется — он просто помечается как свернутый.
 
 ---
 
-### What Remains the Developer's Responsibility
+### Что остается обязанностью разработчика
 
-The browser's automation covers the basic scenario, but in real projects, this is not enough. The developer is responsible for the following aspects.
+Автоматика браузера покрывает базовый сценарий, но в реальных проектах этого недостаточно. Разработчик несет ответственность за следующие аспекты.
 
-#### 1. Explicit Naming (Accessible Name)
+#### 1. Явное именование (Accessible Name)
 
-The browser uses the text inside `<summary>` as the button's name. If you replace the text with an icon or hide it visually, the screen reader may announce empty space.
+Браузер использует текст внутри `<summary>` как имя кнопки. Если вы заменяете текст на иконку или скрываете его визуально, скринридер может озвучивать пустоту.
 
 ```html
-<!-- ❌ Error: screen reader will say "button" without a name -->
+<!-- ❌ Ошибка: скринридер скажет "кнопка" без названия -->
 <details>
-  <summary>
-    <span aria-hidden="true">▼</span>
-  </summary>
-  <p>Content</p>
+    <summary>
+        <span aria-hidden="true">▼</span>
+    </summary>
+    <p>Содержание</p>
 </details>
 
-<!-- ✅ Correct: always has a text name -->
+<!-- ✅ Правильно: всегда есть текстовое имя -->
 <details>
-  <summary>
-    <span aria-hidden="true">▼</span>
-    More about the product
-  </summary>
-  <p>Content</p>
+    <summary>
+        <span aria-hidden="true">▼</span>
+        Подробнее о продукте
+    </summary>
+    <p>Содержание</p>
 </details>
 
-<!-- ✅ Alternative: hidden text for screen reader -->
+<!-- ✅ Альтернатива: скрытый текст для скринридера -->
 <details>
-  <summary aria-label="Show additional information">
-    <span aria-hidden="true">▼</span>
-  </summary>
-  <p>Content</p>
+    <summary aria-label="Показать дополнительную информацию">
+        <span aria-hidden="true">▼</span>
+    </summary>
+    <p>Содержание</p>
 </details>
 ```
 
-#### 2. Focus Management in Complex Scenarios
+#### 2. Управление фокусом в сложных сценариях
 
-By default, focus remains on `<summary>` after expansion. This is correct for accordions with short content. However, if inside `<details>` there is a form or long text, the user has to tab from `<summary>` to the content every time.
+По умолчанию фокус остается на `<summary>` после раскрытия. Это правильно для аккордеонов с коротким контентом. Однако, если внутри `<details>` находится форма или длинный текст, пользователь вынужден каждый раз переходить от `<summary>` к содержимому через `Tab`.
 
-**Scenario for improvement:** If inside `<details>` there is a first interactive field (e.g., an input field), you can programmatically move focus after opening.
+**Сценарий для улучшения:** Если внутри `<details>` находится первое интерактивное поле (например, поле ввода), можно программно переместить фокус после открытия.
 
 ```javascript
 details.addEventListener('toggle', () => {
-  if (details.open) {
-    // Find the first interactive element inside and move focus
-    const firstInput = details.querySelector('input, textarea, button, a');
-    if (firstInput) {
-      // Small delay to let the browser finish rendering
-      setTimeout(() => firstInput.focus(), 50);
+    if (details.open) {
+        // Находим первый интерактивный элемент внутри и переводим фокус
+        const firstInput = details.querySelector('input, textarea, button, a');
+        if (firstInput) {
+            // Небольшая задержка, чтобы браузер завершил рендеринг
+            setTimeout(() => firstInput.focus(), 50);
+        }
     }
-  }
 });
 ```
 
-**Important:** Do this consciously. Moving focus can disorient users if they don't expect it. Only use it in scenarios where it genuinely improves workflow.
+**Важно:** Делайте это осознанно. Перемещение фокуса дезориентирует пользователей, если они не ожидают этого. Используйте только в сценариях, где это действительно улучшает поток работы.
 
-#### 3. Explicit ARIA Attributes During Customization
+#### 3. Явные ARIA-атрибуты при кастомизации
 
-If you create a custom accordion on `div` and `button`, you are obligated to manually manage ARIA attributes. For `<details>`, this is not required. But if you change the semantics (e.g., make `<details>` part of tabs), you need to add additional attributes.
+Если вы создаете кастомный аккордеон на `div` и `button`, вы обязаны вручную управлять ARIA-атрибутами. Для `<details>` это не требуется. Но если вы меняете семантику (например, делаете `<details>` частью вкладок), вам нужно добавить дополнительные атрибуты.
 
 ```html
-<!-- Rare case: explicit connection to an external control -->
+<!-- Редкий случай: явная связь с внешним контролом -->
 <details id="section1" aria-labelledby="tab1">
-  <summary id="tab1">Tab 1</summary>
-  <p>Tab content</p>
+    <summary id="tab1">Вкладка 1</summary>
+    <p>Содержимое вкладки</p>
 </details>
 ```
 
-#### 4. Custom State Indicators
+#### 4. Кастомные индикаторы состояния
 
-The browser adds a marker (triangle) to `<summary>`, but it may not be sufficiently noticeable. The developer must provide a visual state that duplicates the semantic state.
+Браузер добавляет маркер (треугольник) к `<summary>`, но он может быть недостаточно заметен. Разработчик обязан обеспечить визуальное состояние, которое дублирует семантическое.
 
 ```css
-/* Explicit state display for sighted users */
+/* Явное отображение состояния для зрячих пользователей */
 details[open] summary .icon {
-  transform: rotate(180deg);
+    transform: rotate(180deg);
 }
 
-/* Mandatory: keep the indicator for color-blind users */
+/* Обязательно: сохраняем индикатор для пользователей с нарушением цветовосприятия */
 details summary .icon {
-  transition: transform 0.2s;
-  display: inline-block;
+    transition: transform 0.2s;
+    display: inline-block;
 }
 
-/* Don't rely solely on color — use icons/text */
+/* Не полагаемся только на цвет — используем иконки/текст */
 ```
 
-#### 5. Animation and Content Hiding
+#### 5. Анимация и скрытие контента
 
-When using CSS animations for smooth expansion, it's important not to break accessibility:
+При использовании CSS-анимаций для плавного раскрытия важно не нарушить доступность:
 
 ```css
-/* ❌ Error: display: none removes the element from the accessibility tree */
+/* ❌ Ошибка: display: none удаляет элемент из accessibility-дерева */
 details:not([open]) .content {
-  display: none;
+    display: none;
 }
 
-/* ✅ Correct: hide visually, but keep in the accessibility tree */
+/* ✅ Правильно: скрываем визуально, но оставляем в accessibility-дереве */
 details:not([open]) .content {
-  max-height: 0;
-  overflow: hidden;
-  opacity: 0;
-  /* The element remains in the DOM and is accessible to screen readers */
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    /* Элемент остается в DOM и доступен скринридеру */
 }
 
-/* But! The browser still doesn't allow screen readers to navigate inside closed details,
-   so technically display: none is acceptable, but semantically worse */
+/* Но! Браузер все равно не дает скринридеру навигировать внутрь закрытого details,
+   поэтому технически display: none допустим, но семантически хуже */
 ```
 
 ---
 
-### Common Mistakes and Their Consequences
+### Типичные ошибки и их последствия
 
-#### Mistake 1: Nesting Interactive Elements Inside `<summary>`
+#### Ошибка 1: Вложение интерактивных элементов в `<summary>`
 
 ```html
-<!-- ❌ Violation: button inside a button -->
+<!-- ❌ Нарушение: кнопка внутри кнопки -->
 <details>
-  <summary>
-    Heading
-    <button onclick="copy()">Copy</button>
-  </summary>
+    <summary>
+        Заголовок
+        <button onclick="copy()">Копировать</button>
+    </summary>
 </details>
 ```
 
-**Why this is bad:** The screen reader sees a button inside a button. The ARIA tree becomes invalid. Keyboard navigation breaks — `Tab` may switch to the nested button, but it's inside the clickable area of `<summary>`.
+**Почему это плохо:** Скринридер видит кнопку внутри кнопки. ARIA-дерево становится невалидным. Клавиатурная навигация ломается — `Tab` может переключаться на вложенную кнопку, но она находится внутри кликабельной области `<summary>`.
 
-**Solution:** Move interactive elements outside `<summary>` or use `<summary>` only for toggling.
+**Решение:** Выносить интерактивные элементы за пределы `<summary>` или использовать `<summary>` только для переключения.
 
-#### Mistake 2: Multiple `<details>` Without Grouping
+#### Ошибка 2: Множественные `<details>` без группировки
 
 ```html
-<!-- ❌ The user doesn't understand whether the blocks relate to each other -->
+<!-- ❌ Пользователь не понимает, относятся ли блоки друг к другу -->
 <details>
-  <summary>Question 1</summary>
+    <summary>Вопрос 1</summary>
 </details>
 <details>
-  <summary>Question 2</summary>
+    <summary>Вопрос 2</summary>
 </details>
 ```
 
-**Why this is bad:** The screen reader doesn't know this is an accordion. It announces them as separate buttons without context.
+**Почему это плохо:** Скринридер не знает, что это аккордеон. Он озвучивает их как отдельные кнопки без контекста.
 
-**Solution:** Group them in `<section>` or `<div role="group">` with an explicit heading.
+**Решение:** Группировать в `<section>` или `<div role="group">` с явным заголовком.
 
 ```html
 <section aria-labelledby="faq-title">
-  <h2 id="faq-title">Frequently Asked Questions</h2>
-  <details>
-    <summary>Question 1</summary>
-  </details>
-  <details>
-    <summary>Question 2</summary>
-  </details>
+    <h2 id="faq-title">Часто задаваемые вопросы</h2>
+    <details>
+        <summary>Вопрос 1</summary>
+    </details>
+    <details>
+        <summary>Вопрос 2</summary>
+    </details>
 </section>
 ```
 
-#### Mistake 3: Changing the Role of `<summary>`
+#### Ошибка 3: Изменение роли `<summary>`
 
 ```html
-<!-- ❌ Don't do this -->
+<!-- ❌ Не делайте так -->
 <details>
-  <div role="button" tabindex="0">Heading</div>
+    <div role="button" tabindex="0">
+        Заголовок
+    </div>
 </details>
 ```
 
-**Why this is bad:** You lose automatic semantics. Now you are forced to manually manage `aria-expanded`, `aria-controls`, `click` and `keydown` handlers. You are essentially reinventing the wheel.
+**Почему это плохо:** Вы теряете автоматическую семантику. Теперь вы обязаны вручную управлять `aria-expanded`, `aria-controls`, обработчиками `click` и `keydown`. Вы фактически пересоздаете велосипед.
 
-**Solution:** Always use `<summary>` as the first child of `<details>`. This is the only correct pattern.
+**Решение:** Всегда используйте `<summary>` как первый дочерний элемент `<details>`. Это единственный правильный паттерн.
 
-#### Mistake 4: Ignoring `:focus-visible`
+#### Ошибка 4: Игнорирование `:focus-visible`
 
 ```css
-/* ❌ Erasing the focus indicator */
+/* ❌ Стираем индикатор фокуса */
 summary:focus {
-  outline: none;
+    outline: none;
 }
 
-/* ✅ Keep it, but make it nice */
+/* ✅ Сохраняем, но делаем красивым */
 summary:focus-visible {
-  outline: 2px solid #0066cc;
-  outline-offset: 2px;
-  border-radius: 4px;
+    outline: 2px solid #0066cc;
+    outline-offset: 2px;
+    border-radius: 4px;
 }
 ```
 
-**Why this matters:** Keyboard users lose their bearings if the focus indicator is absent. This violates WCAG Success Criterion 2.4.7 (Focus Visible).
+**Почему это важно:** Пользователи клавиатуры теряют ориентир, если индикатор фокуса отсутствует. Это нарушает WCAG Success Criterion 2.4.7 (Focus Visible).
 
 ---
 
-### Why `<details>` Is the Gold Standard of Accessibility
+### Почему `<details>` — золотой стандарт доступности
 
-There are few elements in the web platform that provide full accessibility without JavaScript. `<details>` is one of them. It implements the pattern that ARIA specialists call **"progressive disclosure"**, with correct semantics, state, and control.
+В веб-платформе немного элементов, которые обеспечивают полную доступность без JavaScript. `<details>` — один из них. Он реализует паттерн, который ARIA-специалисты называют **"progressive disclosure"** (прогрессивное раскрытие), с правильной семантикой, состоянием и управлением.
 
-**The main principle of working with `<details>`:** don't break what works. Use it for its intended purpose, don't override roles, don't add unnecessary ARIA attributes unless needed, and always test your code with a real screen reader.
+**Главный принцип работы с `<details>`:** не ломайте то, что работает. Используйте его по назначению, не переопределяйте роли, не добавляйте лишние ARIA-атрибуты, если они не нужны, и всегда проверяйте свой код с реальным скринридером.
 
 ```javascript
-// Good practice: testing the accessibility tree in the console
+// Хороший тон: тестирование accessibility-дерева в консоли
 // (Chrome DevTools → Elements → Accessibility)
 ```
 
 ---
 
-### Summary: The Contract Between Browser and Developer
+### Резюме: контракт между браузером и разработчиком
 
-| Aspect              | Browser Does                                                          | Developer Does                                                   |
-| ------------------- | --------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| Accessibility role  | Automatically assigns `button` to `<summary>`, `group` to `<details>` | Don't override roles                                             |
-| Keyboard management | `Space`/`Enter` on `<summary>`, `Tab` navigation                      | Add support for additional hotkeys (optional)                    |
-| State               | Manages `aria-expanded` in the accessibility tree                     | Provide a visual indicator                                       |
-| Name                | Uses text inside `<summary>`                                          | Explicitly set accessible name when using icons                  |
-| Focus               | Stays on `<summary>` after toggle                                     | Move focus only in exceptional scenarios                         |
-| Markup validity     | Requires `<summary>` as the first child                               | Follow structure; don't nest interactive elements in `<summary>` |
-| Style customization | —                                                                     | Add animations without breaking accessibility                    |
+| Аспект | Делает браузер | Делает разработчик |
+|--------|---------------|-------------------|
+| Роль в доступности | Автоматически назначает `button` для `<summary>`, `group` для `<details>` | Не переопределять роли |
+| Управление клавиатурой | `Space`/`Enter` на `<summary>`, навигация `Tab` | Добавлять поддержку дополнительных горячих клавиш (опционально) |
+| Состояние раскрытия | Управляет `aria-expanded` в accessibility-дереве | Обеспечить визуальный индикатор |
+| Имя | Использует текст внутри `<summary>` | Явно задавать доступное имя при использовании иконок |
+| Фокус | Оставляет на `<summary>` после переключения | Перемещать фокус только в исключительных сценариях |
+| Валидность разметки | Требует `<summary>` как первого дочернего элемента | Соблюдать структуру; не вкладывать интерактивные элементы в `<summary>` |
+| Кастомизация стилей | — | Добавлять анимации, не ломающие доступность |
 
-Remember: **the best accessibility is the one you don't have to write**. `<details>` embodies this principle. Your job is not to interfere with the browser doing its job.
+Помните: **лучшая доступность — та, которую не нужно писать**. `<details>` воплощает этот принцип. Ваша задача — не мешать браузеру делать его работу.
 
 ---
 
-## 6.9. Modern CSS Animation — The End of the Hack Era
+Вот доработанный раздел для вашей книги. Я раскрыл эволюцию проблемы, объяснил каждый новый механизм и показал, как они работают в связке для создания безупречной анимации раскрытия.
 
-If you've ever tried to animate the expansion of an element with a variable height (`height: auto`), you know the pain. Years of development were marred by workarounds: `max-height` with huge values, `transform: scaleY()`, JavaScript `scrollHeight` calculations, and dirty hacks with `requestAnimationFrame`. All of this is becoming a thing of the past. Browsers have finally provided a full toolkit for animating dynamic sizes.
+---
 
-### Why `height: auto` Couldn't Be Animated
+## 6.9. Современная CSS-анимация — Конец эпохи хаков
 
-To understand the revolution, you need to recall how CSS transitions and animations work. They are based on **interpolation** — calculating intermediate values between the start and end states.
+Если вы когда-либо пытались анимировать раскрытие элемента с изменяемой высотой (`height: auto`), вы знаете боль. Годы разработки были омрачены костылями: `max-height` с огромными значениями, `transform: scaleY()`, JavaScript-вычисления `scrollHeight` и грязные хаки с `requestAnimationFrame`. Все это уходит в прошлое. Браузеры наконец предоставили полноценный инструментарий для анимации динамических размеров.
+
+### Почему `height: auto` нельзя было анимировать
+
+Чтобы понять революцию, нужно вспомнить, как работают CSS-переходы (transitions) и анимации (animations). Они основаны на **интерполяции** — вычислении промежуточных значений между начальным и конечным состоянием.
 
 ```css
 .element {
-  height: 0;
-  transition: height 0.3s;
+    height: 0;
+    transition: height 0.3s;
 }
 
 .element.open {
-  height: auto; /* ❌ The browser doesn't know how to interpolate between 0 and auto */
+    height: auto; /* ❌ Браузер не знает, как интерполировать между 0 и auto */
 }
 ```
 
-The problem is that `auto` is not a number. It's an instruction to the browser: "calculate the size based on the content." For interpolation, the browser needs a numeric value, and `auto` doesn't provide one. The browser cannot smoothly transition from `0px` to `auto` because the final value is unknown until the styles are applied.
+Проблема в том, что `auto` — это не число. Это инструкция браузеру: "вычисли размер на основе содержимого". Для интерполяции браузеру нужно числовое значение, а `auto` не предоставляет его. Браузер не может плавно перейти от `0px` к `auto`, потому что финальное значение неизвестно до момента применения стилей.
 
-As a result, the animation either didn't happen (instant switching), or `max-height` with a numeric value was used, which was always a compromise:
+В результате анимация либо не происходила (мгновенное переключение), либо использовался `max-height` с числовым значением, которое всегда было компромиссом:
 
 ```css
-/* ❌ Old hack: max-height with a deliberately large value */
+/* ❌ Старый хак: max-height с заведомо большим значением */
 .element {
-  max-height: 0;
-  transition: max-height 0.3s;
+    max-height: 0;
+    transition: max-height 0.3s;
 }
 
 .element.open {
-  max-height: 1000px; /* What if the content is more than 1000px? */
+    max-height: 1000px; /* А если контент больше 1000px? */
 }
 ```
 
-This worked but had problems: memory overuse, jerky animations with large values, and the inability to precisely match the timing to the actual size.
+Это работало, но имело проблемы: перерасход памяти, дерганые анимации при больших значениях и невозможность точно подогнать время под реальный размер.
 
 ---
 
-### Modern CSS Capabilities
+### Современные возможности CSS
 
-In 2024–2026, CSS received three interconnected tools that solve the problem once and for all. Let's examine each.
+В 2024–2026 годах CSS получил три взаимосвязанных инструмента, которые решают проблему раз и навсегда. Рассмотрим каждый.
 
+> **Важная оговорка о зрелости, прежде чем идти дальше.** Из трёх инструментов этого раздела зрелость сильно различается. `transition-behavior: allow-discrete` и `@starting-style` — это давно устоявшийся Baseline, их можно использовать без опасений. А вот `interpolate-size` и `calc-size()` на момент написания книги поддерживаются **только в Chrome и Edge** (с версии 129, сентябрь 2024 года) и официально помечены как *Limited availability* — Firefox и Safari их пока не реализовали, открытые обсуждения в трекерах обоих движков всё ещё не привели к релизу. Это значит, что пример с `height: auto` из этого раздела в Firefox и Safari просто не сработает: свойство `interpolate-size` будет проигнорировано, и анимация останется мгновенной, как в старые времена. Держите это в уме, пока не дойдёте до подраздела «Совместимость и прогрессивное улучшение» ниже — там мы разберём, как с этим жить.
 ---
+> В Firefox и Safari `calc-size()` и `interpolate-size` пока недоступны — там по-прежнему актуален подход с `@starting-style` + `transition-behavior: allow-discrete` для anti-flicker и `opacity`/`transform` вместо `height` там, где нужна гарантированно кросс-браузерная анимация.
 
-#### 1. `interpolate-size` — Permission to Interpolate
 
-This new CSS property tells the browser: "I want you to interpolate sizes, even if they are expressed through `auto` or other non-numeric values."
+#### 1. `interpolate-size` — Разрешение на интерполяцию
+
+Это новое CSS-свойство говорит браузеру: "Я хочу, чтобы ты интерполировал размеры, даже если они выражены через `auto` или другие нечисловые значения".
 
 ```css
 .container {
-  interpolate-size: allow-keywords;
-  /* or inherit | initial | revert */
+    interpolate-size: allow-keywords;
+    /* или inherit | initial | revert */
 }
 ```
 
-**How it works:**
+**Как это работает:**
 
-`interpolate-size: allow-keywords` allows the browser to use **discrete interpolation** for keywords (`auto`, `min-content`, `max-content`, `fit-content`). The browser internally converts `auto` to a numeric equivalent based on the content at the start of the animation and uses that value for smooth transition.
+`interpolate-size: allow-keywords` позволяет браузеру использовать **дискретную интерполяцию** для ключевых слов (`auto`, `min-content`, `max-content`, `fit-content`). Браузер внутренне преобразует `auto` в числовой эквивалент на основе содержимого в момент начала анимации и использует это значение для плавного перехода.
 
 ```css
-/* ✅ Now this works! */
+/* ✅ Теперь это работает! */
 .panel {
-  height: 0;
-  interpolate-size: allow-keywords;
-  transition: height 0.3s ease;
+    height: 0;
+    interpolate-size: allow-keywords;
+    transition: height 0.3s ease;
 }
 
 .panel.open {
-  height: auto;
+    height: auto;
 }
 ```
 
-**Important nuance:** The property must be applied to the element **before** the animation starts. It is not inherited by default, so you need to explicitly set it on the animated element.
+**Важный нюанс:** Свойство должно быть применено к элементу **до** начала анимации. Оно не наследуется по умолчанию, поэтому нужно явно указывать его на анимируемом элементе.
 
 ---
 
-#### 2. `calc-size()` — Calculations in the World of Sizes
+#### 2. `calc-size()` — Вычисления в мире размеров
 
-If `interpolate-size` is permission, then `calc-size()` is a tool for precise calculations. This is a new type of function, similar to `calc()`, but working with sizes, including keywords.
+Если `interpolate-size` — это разрешение, то `calc-size()` — это инструмент для точных вычислений. Это новый тип функции, аналогичный `calc()`, но работающий с размерами, включая ключевые слова.
 
 ```css
 .element {
-  /* Previously this was not allowed */
-  height: calc-size(auto, size + 20px);
-  /* Now it is! */
+    /* Раньше так было нельзя */
+    height: calc-size(auto, size + 20px);
+    /* Теперь можно! */
 }
 ```
 
-**Syntax:**
-
+**Синтаксис:**
 ```css
 calc-size(<size-keyword>, <math-function>)
 ```
 
-Where `size` inside the function is a special keyword meaning "the original value calculated by the browser."
+Где `size` внутри функции — это специальное ключевое слово, обозначающее "исходное значение, вычисленное браузером".
 
-**Practical example: animation with paddings**
+**Практический пример: анимация с отступами**
 
 ```css
 .panel {
-  max-height: 0;
-  padding: 0;
-  interpolate-size: allow-keywords;
-  transition:
-    max-height 0.3s,
-    padding 0.3s;
+    max-height: 0;
+    padding: 0;
+    interpolate-size: allow-keywords;
+    transition: max-height 0.3s, padding 0.3s;
 }
 
 .panel.open {
-  max-height: calc-size(auto, size + 20px); /* auto + extra padding */
-  padding: 10px 20px;
+    max-height: calc-size(auto, size + 20px); /* auto + дополнительный отступ */
+    padding: 10px 20px;
 }
 ```
 
-Here `calc-size(auto, size + 20px)` means: "take the content height (auto) and add 20 pixels on top." This allows animating not only the content itself, but also the padding that appears on expansion.
+Здесь `calc-size(auto, size + 20px)` означает: "возьми высоту содержимого (auto) и добавь 20 пикселей сверху". Это позволяет анимировать не только сам контент, но и отступы, которые появляются при раскрытии.
 
-**Additional capabilities:**
+**Дополнительные возможности:**
 
 ```css
-/* Use with other keywords */
+/* Использование с другими ключевыми словами */
 height: calc-size(min-content, size * 1.5);
 width: calc-size(fit-content, size + 2em);
 
-/* Nested calculations */
+/* Вложенные вычисления */
 height: calc-size(auto, size + calc(10px + 2vw));
 ```
 
 ---
 
-#### 3. `transition-behavior: allow-discrete` — Animating Discrete Properties
+#### 3. `transition-behavior: allow-discrete` — Анимация дискретных свойств
 
-Some CSS properties are **discrete** — they don't support smooth interpolation between values. These are `display`, `visibility`, `content-visibility`, `overlay`, and others. Previously, their change happened instantly in the middle of an animation (or at the end), creating jerks.
-
-```css
-/* ❌ display is not animated */
-.element {
-  display: none;
-  opacity: 0;
-  transition:
-    opacity 0.3s,
-    display 0.3s;
-}
-
-.element.open {
-  display: block; /* Instant switching at the beginning or end */
-  opacity: 1;
-}
-```
-
-The `transition-behavior: allow-discrete` property allows controlling the moment of switching discrete properties.
+Некоторые CSS-свойства являются **дискретными** — они не поддерживают плавную интерполяцию между значениями. Это `display`, `visibility`, `content-visibility`, `overlay` и другие. Раньше их изменение происходило мгновенно в середине анимации (или в конце), что создавало рывки.
 
 ```css
+/* ❌ display не анимируется */
 .element {
-  display: none;
-  opacity: 0;
-  transition:
-    opacity 0.3s,
-    display 0.3s;
-  transition-behavior: allow-discrete; /* Allow discrete animation */
-}
-
-.element.open {
-  display: block;
-  opacity: 1;
-}
-
-/* 🔥 Key point: starting state for the discrete property */
-@starting-style {
-  .element.open {
-    display: block;
+    display: none;
     opacity: 0;
-  }
+    transition: opacity 0.3s, display 0.3s;
+}
+
+.element.open {
+    display: block; /* Мгновенное переключение в начале или конце */
+    opacity: 1;
 }
 ```
 
-**How it works:**
+Свойство `transition-behavior: allow-discrete` позволяет управлять моментом переключения дискретных свойств.
 
-1. When adding the `.open` class, `display` instantly becomes `block` (at the start of the transition), but `opacity` animates from 0 to 1.
-2. When removing the `.open` class, `display` switches to `none` **at the end** of the animation, when `opacity` has already become 0.
-3. `@starting-style` sets the initial state for the first frame of the animation (when the element appears in the DOM or changes `display`).
+```css
+.element {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s, display 0.3s;
+    transition-behavior: allow-discrete; /* Разрешаем дискретную анимацию */
+}
 
-This solves the problem of "flashing" when elements appear/disappear.
+.element.open {
+    display: block;
+    opacity: 1;
+}
+
+/* 🔥 Ключевой момент: стартовое состояние для дискретного свойства */
+@starting-style {
+    .element.open {
+        display: block;
+        opacity: 0;
+    }
+}
+```
+
+**Как это работает:**
+
+1. При добавлении класса `.open`, `display` мгновенно становится `block` (в начале перехода), но `opacity` анимируется от 0 до 1.
+2. При удалении класса `.open`, `display` переключается на `none` **в конце** анимации, когда `opacity` уже стала 0.
+3. `@starting-style` задает начальное состояние для первого кадра анимации (когда элемент появляется в DOM или меняет `display`).
+
+Это решает проблему "моргания" при появлении/исчезновении элементов.
 
 ---
 
-### Complete Example: Perfect Expansion Animation
+### Полный пример: идеальная анимация раскрытия
 
-Now let's put it all together. Create a `<details>`-like component with smooth expansion that works perfectly.
+Теперь соберем все вместе. Создадим `<details>`-подобный компонент с плавным раскрытием, который работает идеально.
 
 ```html
 <div class="accordion">
-  <button class="accordion-trigger">Show details</button>
-  <div class="accordion-panel">
-    <p>Content of any complexity. Text, lists, images...</p>
-    <ul>
-      <li>Item 1</li>
-      <li>Item 2</li>
-      <li>Item 3</li>
-    </ul>
-  </div>
+    <button class="accordion-trigger">Показать детали</button>
+    <div class="accordion-panel">
+        <p>Содержимое любой сложности. Текст, списки, изображения...</p>
+        <ul>
+            <li>Пункт 1</li>
+            <li>Пункт 2</li>
+            <li>Пункт 3</li>
+        </ul>
+    </div>
 </div>
 ```
 
 ```css
 .accordion-panel {
-  /* 1. Allow keyword interpolation */
-  interpolate-size: allow-keywords;
-
-  /* 2. Base state: hidden */
-  height: 0;
-  opacity: 0;
-  overflow: hidden;
-
-  /* 3. Discrete properties */
-  display: none;
-
-  /* 4. Transition setup */
-  transition:
-    height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-    opacity 0.3s ease 0.1s,
-    /* opacity starts with a delay */ display 0.4s;
-  transition-behavior: allow-discrete;
+    /* 1. Разрешаем интерполяцию ключевых слов */
+    interpolate-size: allow-keywords;
+    
+    /* 2. Базовое состояние: скрыто */
+    height: 0;
+    opacity: 0;
+    overflow: hidden;
+    
+    /* 3. Дискретные свойства */
+    display: none;
+    
+    /* 4. Настройка переходов */
+    transition: 
+        height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+        opacity 0.3s ease 0.1s, /* opacity стартует с задержкой */
+        display 0.4s;
+    transition-behavior: allow-discrete;
 }
 
 .accordion-panel.open {
-  /* 5. Final state: expanded */
-  height: auto;
-  opacity: 1;
-  display: block;
-}
-
-/* 6. Starting state for discrete properties */
-@starting-style {
-  .accordion-panel.open {
-    height: 0;
-    opacity: 0;
+    /* 5. Конечное состояние: раскрыто */
+    height: auto;
+    opacity: 1;
     display: block;
-  }
 }
 
-/* 7. Additional: animation of content inside */
+/* 6. Стартовое состояние для дискретных свойств */
+@starting-style {
+    .accordion-panel.open {
+        height: 0;
+        opacity: 0;
+        display: block;
+    }
+}
+
+/* 7. Дополнительно: анимация содержимого внутри */
 .accordion-panel > * {
-  transform: translateY(10px);
-  transition: transform 0.3s ease 0.15s;
+    transform: translateY(10px);
+    transition: transform 0.3s ease 0.15s;
 }
 
 .accordion-panel.open > * {
-  transform: translateY(0);
+    transform: translateY(0);
 }
 ```
 
 ```javascript
-// Management via JavaScript
+// Управление через JavaScript
 const trigger = document.querySelector('.accordion-trigger');
 const panel = document.querySelector('.accordion-panel');
 
 trigger.addEventListener('click', () => {
-  panel.classList.toggle('open');
-  trigger.textContent = panel.classList.contains('open')
-    ? 'Hide details'
-    : 'Show details';
+    panel.classList.toggle('open');
+    trigger.textContent = panel.classList.contains('open') 
+        ? 'Скрыть детали' 
+        : 'Показать детали';
 });
 ```
 
-**What happens in this code:**
+**Что происходит в этом коде:**
 
-1. **`interpolate-size`** allows animating `height: auto`.
-2. **`transition-behavior: allow-discrete`** allows animating `display`.
-3. **`@starting-style`** sets the starting state for `display: block` so the element appears with zero height and opacity, then smoothly expands.
-4. **`transition-delay`** for `opacity` creates the effect of text appearing after the container has expanded.
-5. **Nested transform** creates a micro-animation of the content.
-
----
-
-### Why Modern Browsers Finally Solved This Problem
-
-The question is not about technical complexity, but about **architectural decisions**. Previously, rendering engines (Blink, Gecko, WebKit) didn't support dynamic size calculation during animation for several reasons:
-
-1. **Performance.** Calculating `auto` requires a layout recalculation on each animation frame, which is potentially expensive. Modern engines have optimized this process using **composite layers** and **asynchronous computations**.
-
-2. **Model integrity.** Previously, CSS assumed that property values were either known in advance or calculated once. `auto` violated this model. With the introduction of `interpolate-size`, browsers created a new abstraction layer: **"a computed value cached for the duration of the animation"**.
-
-3. **Developer demand.** Years of community pain (and thousands of issue reports) led vendors to realize: without this feature, CSS cannot compete with JavaScript libraries (GSAP, Framer Motion) in the area of interface animations.
-
-4. **Interoperability.** All three features (`interpolate-size`, `calc-size()`, `transition-behavior`) have been coordinated within the CSS Working Group and implemented in all modern browsers as an **interconnected package**. These are not scattered experiments, but a cohesive solution.
+1. **`interpolate-size`** позволяет анимировать `height: auto`.
+2. **`transition-behavior: allow-discrete`** разрешает анимацию `display`.
+3. **`@starting-style`** задает начальное состояние для `display: block`, чтобы элемент появился с нулевой высотой и прозрачностью, а затем плавно раскрылся.
+4. **Задержка `transition-delay`** для `opacity` создает эффект появления текста после того, как контейнер раскрылся.
+5. **Вложенная трансформация** создает микро-анимацию содержимого.
 
 ---
 
-### Compatibility and Progressive Enhancement
+### Почему современные браузеры наконец решили эту проблему
 
-As of 2026, support is stable in:
+Вопрос не в технической сложности, а в **архитектурных решениях**. Раньше движки рендеринга (Blink, Gecko, WebKit) не поддерживали динамическое вычисление размеров во время анимации по нескольким причинам:
 
-- Chrome 124+
-- Firefox 128+
-- Safari 17.4+
-- Edge 124+
+1. **Производительность.** Вычисление `auto` требует пересчета layout (компоновки) на каждом кадре анимации, что потенциально дорого. Современные движки оптимизировали этот процесс, используя **композитные слои** и **асинхронные вычисления**.
 
-For older browsers, use graceful degradation:
+2. **Целостность модели.** Раньше CSS предполагал, что значения свойств либо известны заранее, либо вычисляются однократно. `auto` нарушало эту модель. С введением `interpolate-size` браузеры создали новый слой абстракции: **"вычисляемое значение, кэшируемое на время анимации"**.
+
+3. **Запросы разработчиков.** Годы боли сообщества (и тысячи issue-репортов) привели к тому, что вендоры осознали: без этой фичи CSS не может конкурировать с JavaScript-библиотеками (GSAP, Framer Motion) в области анимаций интерфейсов.
+
+4. **Интероперабельность.** Все три фичи (`interpolate-size`, `calc-size()`, `transition-behavior`) согласованы в рамках рабочей группы CSS (CSS Working Group) и реализованы во всех современных браузерах как **взаимосвязанный пакет**. Это не разрозненные эксперименты, а целостное решение.
+
+---
+
+### Совместимость и прогрессивное улучшение
+
+### Совместимость и прогрессивное улучшение
+
+Здесь важно быть точным, потому что от этого зависит, будет ли анимация вообще работать у большей части ваших пользователей.
+
+**`transition-behavior: allow-discrete` и `@starting-style`** — полноценный Baseline, поддерживаются во всех современных браузерах уже давно. На них можно полагаться без всяких оговорок.
+
+**`interpolate-size` и `calc-size()`** — на момент написания книги это не так. Актуальный статус:
+
+| Браузер | Поддержка |
+|---|---|
+| Chrome / Edge | Да, с версии 129 (сентябрь 2024) |
+| Firefox | Нет |
+| Safari | Нет |
+
+Оба свойства официально помечены как *Limited availability* и прямо не входят в Baseline. Это значит, что пример из начала раздела (`height: 0` → `height: auto` с плавной анимацией) полноценно заработает только в Chromium-браузерах. В Firefox и Safari `interpolate-size` будет проигнорирован, и переключение `height` останется мгновенным — ровно та проблема, ради решения которой всё затевалось.
+
+**Практический вывод.** Стройте анимацию послойно, а не полагайтесь на `interpolate-size` как на единственный механизм:
 
 ```css
-/* Fallback: without animation, but functional */
 .accordion-panel {
-  height: 0;
-  overflow: hidden;
-  transition: height 0.3s;
+    /* Базовый, работающий везде слой: анимируем opacity и transform,
+       а не height — это не требует interpolate-size вообще */
+    display: none;
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: opacity 0.3s, transform 0.3s, display 0.3s allow-discrete;
 }
 
 .accordion-panel.open {
-  height: auto;
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
 }
 
-/* Support for browsers that don't know interpolate-size,
-   will just be instant switching — acceptable */
+@starting-style {
+    .accordion-panel.open {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+}
+
+/* Прогрессивное улучшение: анимация высоты только там, где она реально работает */
 @supports (interpolate-size: allow-keywords) {
-  .accordion-panel {
-    interpolate-size: allow-keywords;
-    transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  }
+    .accordion-panel {
+        interpolate-size: allow-keywords;
+        height: 0;
+        transition-property: opacity, transform, display, height;
+    }
+
+    .accordion-panel.open {
+        height: auto;
+    }
 }
 ```
 
----
-
-### Summary: A New Era of CSS Animations
-
-Three tools — `interpolate-size`, `calc-size()`, and `transition-behavior: allow-discrete` — transform CSS from a language that "almost can animate" into a full-fledged animation platform.
-
-| What Was Before                        | What It Is Now                           |
-| -------------------------------------- | ---------------------------------------- |
-| Hacks with `max-height: 9999px`        | `height: auto` with smooth interpolation |
-| Breakage with `display: none`          | Smooth appearance with `@starting-style` |
-| JavaScript `scrollHeight` calculations | `calc-size(auto, size + Npx)`            |
-| Dependency on external libraries       | Pure CSS, built into the browser         |
-
-**Key takeaway:** Modern CSS enables animations that previously required thousands of lines of JS code. Use these capabilities to make your interfaces not only beautiful but also performant, accessible, and maintainable.
+Такой подход даёт плавную анимацию появления/исчезновения (opacity + transform) во всех браузерах, а анимацию именно высоты — там, где браузер её уже умеет интерполировать. Пользователи Firefox и Safari не увидят анимацию высоты как таковую, но не увидят и резкого, ничем не смягчённого «прыжка» контента — а это и есть суть прогрессивного улучшения: базовый опыт работает везде, лучший — там, где платформа уже дозрела.
 
 ---
 
-## 6.10. `<details>` as a Declarative Component — A Built-in Atom of the Web Platform
+## 6.10. `<details>` как декларативный компонент — Встроенный атом веб-платформы
 
-In the world of frontend development, we're used to frameworks: React, Vue, Angular, Svelte. We create components, manage their state, describe lifecycles, write event handlers, and struggle with accessibility. But what if the platform already provides a ready-made, full-fledged component that does all of this out of the box?
+В мире фронтенд-разработки мы привыкли к фреймворкам: React, Vue, Angular, Svelte. Мы создаем компоненты, управляем их состоянием, описываем жизненные циклы, пишем обработчики событий и боремся с доступностью. Но что если платформа уже предоставляет готовый, полноценный компонент, который делает всё это из коробки?
 
-`<details>` is not just a tag for an accordion. It is a **declarative UI component** built into the web platform. It has all the attributes we're used to designing in custom components, but without the need to write JavaScript, manage rendering, or include libraries.
-
----
-
-### The Component Approach: What Makes `<details>` a Full-Fledged Component
-
-Any UI component, regardless of framework, is characterized by a set of key properties. `<details>` implements each of them at the browser level.
+`<details>` — это не просто тег для аккордеона. Это **декларативный UI-компонент**, встроенный в веб-платформу. Он обладает всеми атрибутами, которые мы привыкли проектировать в пользовательских компонентах, но без необходимости писать JavaScript, управлять рендерингом или подключать библиотеки.
 
 ---
 
-#### 1. State
+### Компонентный подход: что делает `<details>` полноценным компонентом
 
-The component has a binary state: open or closed. It is stored in the `open` attribute.
+Любой UI-компонент, независимо от фреймворка, характеризуется набором ключевых свойств. `<details>` реализует каждое из них на уровне браузера.
+
+---
+
+#### 1. Состояние (State)
+
+Компонент имеет бинарное состояние: открыт или закрыт. Оно хранится в атрибуте `open`.
 
 ```html
-<!-- Closed -->
+<!-- Закрыт -->
 <details>
-  <summary>Heading</summary>
+    <summary>Заголовок</summary>
 </details>
 
-<!-- Open -->
+<!-- Открыт -->
 <details open>
-  <summary>Heading</summary>
+    <summary>Заголовок</summary>
 </details>
 ```
 
-**Features:**
-
-- The state is **explicit** — it is present in the markup and can be read/changed via the DOM API.
-- The state is **persistent** — on page reload, the browser by default **does not** preserve the state (unlike, for example, checkboxes). But the developer can easily implement persistence via `localStorage` or the `open` attribute in server rendering.
-- The state is **reactive** — changing the `open` attribute automatically re-renders the component.
+**Особенности:**
+- Состояние **явное** — оно присутствует в разметке и может быть прочитано/изменено через DOM API.
+- Состояние **персистентное** — при обновлении страницы браузер по умолчанию **не** сохраняет состояние (в отличие от, например, чекбоксов). Но разработчик может легко реализовать сохранение через `localStorage` или атрибут `open` в серверном рендеринге.
+- Состояние **реактивное** — изменение атрибута `open` автоматически перерисовывает компонент.
 
 ```javascript
-// Reading state
+// Чтение состояния
 const isOpen = details.open; // true/false
 
-// Setting state (triggers re-render and the toggle event)
+// Установка состояния (триггерит перерисовку и событие toggle)
 details.open = true;
 ```
 
 ---
 
-#### 2. API (Public Interface)
+#### 2. API (Публичный интерфейс)
 
-The component provides a clear programmatic interface for interaction.
+Компонент предоставляет четкий программный интерфейс для взаимодействия.
 
-**DOM properties:**
+**DOM-свойства:**
+- `details.open` — геттер/сеттер для состояния.
+- `details.name` — группировка элементов (если несколько `<details>` имеют одинаковый `name`, только один может быть открыт одновременно).
 
-- `details.open` — getter/setter for state.
-- `details.name` — grouping elements (if multiple `<details>` have the same `name`, only one can be open at a time).
+**Методы:**
+- `details.show()` и `details.close()` — программное управление (в некоторых реализациях).
+- `details.toggle()` — переключение состояния (поддерживается не во всех браузерах, но может быть эмулирован).
 
-**Methods:**
-
-- `details.show()` and `details.close()` — programmatic control (in some implementations).
-- `details.toggle()` — toggle state (not supported in all browsers, but can be emulated).
-
-**Attributes:**
-
-- `open` — boolean attribute.
-- `name` — string attribute for grouping.
+**Атрибуты:**
+- `open` — булевый атрибут.
+- `name` — строковый атрибут для группировки.
 
 ```javascript
-// Programmatic control
-details.open = true; // Show
-details.open = false; // Hide
+// Программное управление
+details.open = true; // Показать
+details.open = false; // Скрыть
 
-// Grouping accordions (only one open)
+// Группировка аккордеонов (только один открыт)
 <details name="faq">
-    <summary>Question 1</summary>
+    <summary>Вопрос 1</summary>
 </details>
 <details name="faq">
-    <summary>Question 2</summary>
+    <summary>Вопрос 2</summary>
 </details>
-<!-- When the second one opens, the first will automatically close -->
+<!-- При открытии второго, первый автоматически закроется -->
 ```
 
 ---
 
-#### 3. Events
+#### 3. События (Events)
 
-The component generates events, allowing reactions to changes.
+Компонент генерирует события, позволяя реагировать на изменения.
 
 ```javascript
 details.addEventListener('toggle', (event) => {
-  console.log('State changed:', details.open);
-  // event doesn't contain additional data for <details>
-  // (unlike popover, which has newState/oldState)
+    console.log('Состояние изменилось:', details.open);
+    // event не содержит дополнительных данных для <details>
+    // (в отличие от popover, где есть newState/oldState)
 });
 ```
 
-**Feature:** The `toggle` event fires **after** the state change, when the DOM is already updated. This allows safely reading the new state inside the handler.
+**Особенность:** Событие `toggle` срабатывает **после** изменения состояния, когда DOM уже обновлен. Это позволяет безопасно читать новое состояние внутри обработчика.
 
 ---
 
-#### 4. Lifecycle
+#### 4. Жизненный цикл (Lifecycle)
 
-Like any component, `<details>` goes through stages of existence in the DOM.
+Как и любой компонент, `<details>` проходит через стадии существования в DOM.
 
-| Stage                | Description                         | Event                           |
-| -------------------- | ----------------------------------- | ------------------------------- |
-| **Mounting**         | The element appears in the DOM      | `DOMContentLoaded` (indirectly) |
-| **State update**     | `open` changes                      | `toggle`                        |
-| **Attribute update** | Other attributes change             | `MutationObserver` (optional)   |
-| **Unmounting**       | The element is removed from the DOM | `DOMNodeRemoved` (indirectly)   |
+| Стадия | Описание | Событие |
+|--------|----------|---------|
+| **Монтирование** | Элемент появляется в DOM | `DOMContentLoaded` (косвенно) |
+| **Обновление состояния** | Изменение `open` | `toggle` |
+| **Обновление атрибутов** | Изменение других атрибутов | `MutationObserver` (опционально) |
+| **Размонтирование** | Элемент удаляется из DOM | `DOMNodeRemoved` (косвенно) |
 
 ```javascript
-// Full management cycle
+// Полный цикл управления
 const details = document.createElement('details');
 const summary = document.createElement('summary');
-summary.textContent = 'Heading';
+summary.textContent = 'Заголовок';
 details.appendChild(summary);
 
-// Mounting
+// Монтирование
 document.body.appendChild(details);
 
-// State update
-details.open = true; // → toggle event
+// Обновление состояния
+details.open = true; // → событие toggle
 
-// Unmounting
+// Размонтирование
 details.remove();
 ```
 
 ---
 
-#### 5. Accessibility
+#### 5. Доступность (Accessibility)
 
-As we covered in detail in Chapter 6.8, `<details>` provides accessibility out of the box:
+Как мы подробно разобрали в главе 6.8, `<details>` обеспечивает доступность из коробки:
 
-- Correct ARIA roles (`button`, `group`).
-- Management of `aria-expanded` in the accessibility tree.
-- Full keyboard navigation (`Space`, `Enter`, `Tab`).
-- Correct screen reader announcement.
-- Semantic structure for navigation tools.
+- Правильные ARIA-роли (`button`, `group`).
+- Управление `aria-expanded` в accessibility-дереве.
+- Полная клавиатурная навигация (`Space`, `Enter`, `Tab`).
+- Корректное озвучивание скринридерами.
+- Семантическая структура для навигационных инструментов.
 
-**What this means in the context of a component:** The developer gets an accessible component **without needing** to add `role`, `aria-*`, `tabindex`, or keyboard handlers. This reduces code volume by 80-90% compared to a custom accordion.
+**Что это значит в контексте компонента:** Разработчик получает доступный компонент **без необходимости** добавлять `role`, `aria-*`, `tabindex` или обработчики клавиатуры. Это сокращает объем кода на 80-90% по сравнению с кастомным аккордеоном.
 
 ---
 
-#### 6. CSS Styling
+#### 6. Взаимодействие с CSS (Styling)
 
-The component is fully stylable via CSS, supporting all modern capabilities.
+Компонент полностью стилизуется через CSS, поддерживая все современные возможности.
 
-**Pseudo-classes:**
-
+**Псевдоклассы:**
 ```css
 details[open] {
-  /* Styles for open state */
+    /* Стили для открытого состояния */
 }
 
 details:not([open]) {
-  /* Styles for closed state */
+    /* Стили для закрытого состояния */
 }
 
 summary::-webkit-details-marker {
-  /* Customize marker in WebKit */
-  display: none;
+    /* Кастомизация маркера в WebKit */
+    display: none;
 }
 
 summary::marker {
-  /* Customize marker in modern browsers */
-  color: blue;
-  font-size: 1.2em;
+    /* Кастомизация маркера в современных браузерах */
+    color: blue;
+    font-size: 1.2em;
 }
 ```
 
-**Customization via pseudo-elements:**
-
+**Кастомизация через псевдоэлементы:**
 ```css
-/* Full marker replacement */
+/* Полная замена маркера */
 summary {
-  list-style: none;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
 }
 
 summary::before {
-  content: '▶';
-  transition: transform 0.3s;
+    content: '▶';
+    transition: transform 0.3s;
 }
 
 details[open] summary::before {
-  content: '▼';
-  transform: rotate(90deg);
+    content: '▼';
+    transform: rotate(90deg);
 }
 ```
 
-**Content animation (using modern CSS capabilities from Chapter 6.9):**
-
+**Анимация содержимого (с использованием современных CSS-возможностей из главы 6.9):**
 ```css
 details .content {
-  interpolate-size: allow-keywords;
-  height: 0;
-  overflow: hidden;
-  transition: height 0.3s ease;
+    interpolate-size: allow-keywords;
+    height: 0;
+    overflow: hidden;
+    transition: height 0.3s ease;
 }
 
 details[open] .content {
-  height: auto;
+    height: auto;
 }
 ```
 
 ---
 
-#### 7. DOM Integration
+#### 7. Интеграция с DOM (DOM Integration)
 
-The component is a full-fledged member of the DOM tree and supports all standard methods:
+Компонент является полноправным участником DOM-дерева и поддерживает все стандартные методы:
 
 ```javascript
-// Search and navigation
+// Поиск и навигация
 const details = document.querySelector('details');
 const summary = details.querySelector('summary');
 const content = details.querySelector('p');
 
-// Cloning
+// Клонирование
 const clone = details.cloneNode(true);
 
-// Inserting content
-details.innerHTML = '<summary>New heading</summary><p>New content</p>';
+// Вставка содержимого
+details.innerHTML = '<summary>Новый заголовок</summary><p>Новое содержимое</p>';
 
-// Working with attributes
+// Работа с атрибутами
 details.setAttribute('open', '');
 details.removeAttribute('open');
 
-// Event model
+// Событийная модель
 details.addEventListener('toggle', handler);
 details.removeEventListener('toggle', handler);
 ```
 
-**Integration with forms:**
-
-- `<details>` can contain form fields.
-- When submitting a form, data from fields inside a closed `<details>` **is not sent** (since they are considered hidden). This is important to consider when designing.
+**Интеграция с формами:**
+- `<details>` может содержать поля формы.
+- При отправке формы данные из полей внутри закрытого `<details>` **не отправляются** (поскольку они считаются скрытыми). Это важно учитывать при проектировании.
 
 ---
 
-### Comparison with a Custom Framework Component
+### Сравнение с кастомным компонентом во фреймворках
 
-To appreciate the power of `<details>`, let's compare it to a typical accordion in React.
+Чтобы оценить мощь `<details>`, сравним его с типичным аккордеоном на React.
 
-**React component (simplified):**
-
+**React-компонент (упрощенно):**
 ```jsx
 function Accordion({ title, children }) {
-  const [isOpen, setIsOpen] = useState(false);
-
-  return (
-    <div className="accordion">
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        aria-expanded={isOpen}
-        aria-controls="panel"
-      >
-        {title}
-      </button>
-      <div id="panel" className={`panel ${isOpen ? 'open' : ''}`}>
-        {children}
-      </div>
-    </div>
-  );
+    const [isOpen, setIsOpen] = useState(false);
+    
+    return (
+        <div className="accordion">
+            <button 
+                onClick={() => setIsOpen(!isOpen)}
+                aria-expanded={isOpen}
+                aria-controls="panel"
+            >
+                {title}
+            </button>
+            <div 
+                id="panel"
+                className={`panel ${isOpen ? 'open' : ''}`}
+            >
+                {children}
+            </div>
+        </div>
+    );
 }
 ```
 
-**Native `<details>`:**
-
+**Нативный `<details>`:**
 ```html
 <details>
-  <summary>Heading</summary>
-  <p>Content</p>
+    <summary>Заголовок</summary>
+    <p>Содержимое</p>
 </details>
 ```
 
-| Aspect              | React Component                           | `<details>`                  |
-| ------------------- | ----------------------------------------- | ---------------------------- |
-| Component code      | ~30 lines JSX + CSS                       | 2 lines HTML                 |
-| State management    | `useState`                                | Built-in (`open`)            |
-| Click handling      | Manual (`onClick`)                        | Automatic                    |
-| Keyboard navigation | Manual (`onKeyDown`)                      | Built-in                     |
-| ARIA attributes     | Manual (`aria-expanded`, `aria-controls`) | Automatic                    |
-| Accessibility       | Requires audit                            | Guaranteed by platform       |
-| Bundle size         | Framework weight                          | 0 bytes (built into browser) |
-| Performance         | Depends on virtual DOM                    | Native, maximum              |
+| Аспект | React-компонент | `<details>` |
+|--------|----------------|-------------|
+| Код компонента | ~30 строк JSX + CSS | 2 строки HTML |
+| Управление состоянием | `useState` | Встроенное (`open`) |
+| Обработка кликов | Ручная (`onClick`) | Автоматическая |
+| Клавиатурная навигация | Ручная (`onKeyDown`) | Встроенная |
+| ARIA-атрибуты | Ручные (`aria-expanded`, `aria-controls`) | Автоматические |
+| Доступность | Требует аудита | Гарантирована платформой |
+| Бандл-размер | Вес фреймворка | 0 байт (встроено в браузер) |
+| Производительность | Зависит от виртуального DOM | Нативная, максимальная |
 
 ---
 
-### Why `<details>` Is More Than an Accordion
+### Почему `<details>` — это больше, чем аккордеон
 
-Conceptually, `<details>` is an implementation of the **"progressive disclosure"** pattern. But its significance extends beyond a UI pattern.
+Концептуально `<details>` — это реализация паттерна **"прогрессивное раскрытие"** (progressive disclosure). Но его значимость выходит за рамки UI-паттерна.
 
-#### 1. Declarative vs. Imperative
+#### 1. Декларативность против императивности
 
-`<details>` embodies the principle of declarative programming: **you describe what should be, not how to achieve it**. You tell the browser: "here's a heading, here's content, I want this to be expandable." The browser takes care of all implementation details.
+`<details>` воплощает принцип декларативного программирования: **вы описываете, что должно быть, а не как этого достичь**. Вы говорите браузеру: "вот заголовок, вот содержимое, я хочу, чтобы это могло раскрываться". Браузер берет на себя все детали реализации.
 
-This is the opposite of the imperative approach of frameworks, where you write instructions: "on click, change state, re-render DOM, update ARIA attributes."
+Это противоположность императивному подходу фреймворков, где вы пишете инструкции: "при клике измени состояние, перерисуй DOM, обнови ARIA-атрибуты".
 
-#### 2. Resilience
+#### 2. Устойчивость (Resilience)
 
-`<details>` works even with JavaScript disabled (unlike 99% of custom accordions). This makes it ideal for:
+`<details>` работает даже при отключенном JavaScript (в отличие от 99% кастомных аккордеонов). Это делает его идеальным для:
 
-- **Progressive enhancement.**
-- **Server-side rendering (SSR)** without hydration.
-- **Adaptive interfaces** with JS disabled (e.g., in poor internet conditions).
+- **Прогрессивного улучшения** (progressive enhancement).
+- **Серверного рендеринга** (SSR) без гидратации.
+- **Адаптивных интерфейсов** с отключенным JS (например, в условиях плохого интернета).
 
-#### 3. Single Source of Truth
+#### 3. Единый источник истины (Single Source of Truth)
 
-Component state is stored in one place — the `open` attribute in the DOM. There is no desynchronization between React state, Redux store, and DOM tree. This simplifies debugging and makes behavior predictable.
+Состояние компонента хранится в одном месте — атрибуте `open` в DOM. Нет рассинхронизации между React-состоянием, Redux-стором и DOM-деревом. Это упрощает отладку и делает поведение предсказуемым.
 
-#### 4. Platform Evolution
+#### 4. Платформенная эволюция
 
-`<details>` is not static. The specification is evolving:
+`<details>` не статичен. Спецификация развивается:
 
-- Grouping via `name` appeared (accordions with automatic closing).
-- Integration with `find-in-page` appeared.
-- New CSS capabilities for animation appeared.
-- API expansion is planned (e.g., `show()`/`hide()` methods).
+- Появилась группировка через `name` (аккордеоны с автоматическим закрытием).
+- Появилась интеграция с `find-in-page`.
+- Появились новые CSS-возможности для анимации.
+- Планируется расширение API (например, методы `show()`/`hide()`).
 
-This means your `<details>` code will automatically receive new capabilities without changes on your part.
+Это означает, что ваш код на `<details>` будет автоматически получать новые возможности без изменений с вашей стороны.
 
 ---
 
-### Architectural Conclusion: Platform Components vs. Framework Components
+### Архитектурный вывод: компоненты платформы vs компоненты фреймворков
 
-`<details>` is an example of a **system component**. It is part of the platform, not a library. This changes the approach to web application architecture:
+`<details>` — это пример **системного компонента**. Он является частью платформы, а не библиотеки. Это меняет подход к архитектуре веб-приложений:
 
-1. **Use native components whenever possible.** They are faster, more accessible, and require less code.
-2. **Reserve custom components only for what the platform doesn't have.** Tables with sorting, complex date pickers, custom selects — that's where frameworks are needed.
-3. **Teach your team semantic HTML.** Knowing `<details>` and its capabilities saves weeks of development.
+1. **Используйте нативные компоненты всегда, когда это возможно.** Они быстрее, доступнее и требуют меньше кода.
+2. **Резервируйте кастомные компоненты только для того, чего нет в платформе.** Таблицы с сортировкой, сложные датапикеры, кастомные селекты — вот где нужны фреймворки.
+3. **Обучайте команду семантическому HTML.** Знание `<details>` и его возможностей экономит недели разработки.
 
 ```javascript
-// Bad refactoring: replacing details with a custom component
-// ❌ Why?
-<Accordion title="Heading">
-    <p>Content</p>
+// Плохой рефакторинг: замена details на кастомный компонент
+// ❌ Зачем?
+<Accordion title="Заголовок">
+    <p>Содержимое</p>
 </Accordion>
 
-// ✅ Leave it as is
+// ✅ Оставьте как есть
 <details>
-    <summary>Heading</summary>
-    <p>Content</p>
+    <summary>Заголовок</summary>
+    <p>Содержимое</p>
 </details>
 ```
 
 ---
 
-### Summary: `<details>` as a Platform Manifesto
+### Резюме: `<details>` как манифест платформы
 
-`<details>` is not just a control element. It is a **manifesto of the web platform philosophy**:
+`<details>` — это не просто элемент управления. Это **манифест философии веб-платформы**:
 
-- **Semantics are primary** — correct markup solves most problems.
-- **Accessibility is built-in** — you get it for free.
-- **Performance is guaranteed** — native code is always faster than JavaScript.
-- **Future-proof** — the platform evolves, and your code evolves with it.
+- **Семантика первична** — правильная разметка решает большинство проблем.
+- **Доступность встроена** — вы получаете ее бесплатно.
+- **Производительность гарантирована** — нативный код всегда быстрее JavaScript.
+- **Будущее обеспечено** — платформа развивается, и ваш код развивается вместе с ней.
 
-Use `<details>`. Don't complicate where you can stay simple. The platform has already provided you with a ready-made solution — take advantage of it.
-
----
-
-### Practical Checklist: When to Use `<details>`
-
-| Scenario                                    | Use `<details>`              | Use Custom Component |
-| ------------------------------------------- | ---------------------------- | -------------------- |
-| FAQ / accordion                             | ✅ Yes                       | ❌ No                |
-| Hiding additional information               | ✅ Yes                       | ❌ No                |
-| Settings / options (non-critical)           | ✅ Yes                       | ❌ No                |
-| Multi-level accordions                      | ✅ Yes (nested)              | ❌ No                |
-| Complex animation (with custom curve)       | ✅ Yes (via CSS)             | ❌ No                |
-| Synchronization with external state (Redux) | ✅ Yes (via `details.open`)  | ❌ No                |
-| Custom trigger (not `<summary>`)            | ❌ No                        | ✅ Yes               |
-| Non-standard behavior (e.g., swipe)         | ❌ No                        | ✅ Yes               |
-| Integration with animation libraries        | ❌ No (or on top of details) | ✅ Yes               |
-
-**Golden rule:** If your accordion can be implemented via `<details>`, implement it via `<details>`. It will save time, nerves, and make the internet better.
+Используйте `<details>`. Не усложняйте там, где можно остаться простым. Платформа уже предоставила вам готовое решение — воспользуйтесь им.
 
 ---
 
-## 6.11. `<details>` and Modern Frameworks — Native Accordion in the Ecosystem
+### Практический чек-лист: когда использовать `<details>`
 
-One of the most frequent questions in modern web development is: "Why should I write a custom accordion when `<details>` exists?" In the era of framework dominance (React, Vue, Angular, Svelte, Qwik, Astro), we're used to creating components for everything. But the platform is evolving, and native solutions are becoming increasingly attractive.
+| Сценарий | Использовать `<details>` | Использовать кастомный компонент |
+|----------|--------------------------|----------------------------------|
+| FAQ / аккордеон | ✅ Да | ❌ Нет |
+| Скрытие дополнительной информации | ✅ Да | ❌ Нет |
+| Настройки / опции (некритичные) | ✅ Да | ❌ Нет |
+| Многоуровневые аккордеоны | ✅ Да (вложенные) | ❌ Нет |
+| Сложная анимация (с кастомной кривой) | ✅ Да (через CSS) | ❌ Нет |
+| Синхронизация с внешним состоянием (Redux) | ✅ Да (через `details.open`) | ❌ Нет |
+| Кастомный триггер (не `<summary>`) | ❌ Нет | ✅ Да |
+| Нестандартное поведение (например, свайп) | ❌ Нет | ✅ Да |
+| Интеграция с анимационными библиотеками | ❌ Нет (или поверх details) | ✅ Да |
 
-Let's examine each framework, assess the need for a custom component, and understand why UI libraries are beginning to rethink their approaches.
+**Золотое правило:** Если ваш аккордеон можно реализовать через `<details>`, реализуйте его через `<details>`. Это сэкономит время, нервы и сделает интернет лучше.
 
 ---
 
-### General Principle: When HTML Is Enough
+Вот доработанный раздел для вашей книги. Я проанализировал каждый фреймворк с практической точки зрения, показал, когда нативный `<details>` побеждает, а когда кастомный компонент все же необходим.
 
-Before diving into framework details, let's formulate a universal criterion:
+---
 
-**Use native `<details>` if:**
+## 6.11. `<details>` и современные фреймворки — Нативный аккордеон в экосистеме
 
-- You need a simple accordion or disclosure block.
-- No need for a custom trigger (you can use `<summary>`).
-- No complex synchronization with global state (Redux, Pinia, NgRx).
-- You're not using animation libraries (GSAP, Framer Motion) for expansion management.
-- SEO and out-of-the-box accessibility are important.
-- You want to minimize the bundle and speed up loading.
+Один из самых частых вопросов в современной веб-разработке: "Зачем мне писать кастомный аккордеон, если есть `<details>`?". В эпоху господства фреймворков (React, Vue, Angular, Svelte, Qwik, Astro) мы привыкли создавать компоненты для всего. Но платформа эволюционирует, и нативные решения становятся все более привлекательными.
 
-**Create a custom component if:**
+Разберем каждый фреймворк, оценим необходимость кастомного компонента и поймем, почему UI-библиотеки начинают пересматривать свои подходы.
 
-- A non-standard trigger is needed (e.g., a button outside the accordion).
-- Complex animation that can't be implemented via CSS (or you need to control animation from JavaScript) is required.
-- The accordion must synchronize with external state (e.g., open/closed depending on the URL).
-- Custom behavior is necessary (e.g., confirmation before closing).
-- The accordion integrates with a design system that requires strict control over markup.
+---
+
+### Общий принцип: когда достаточно HTML
+
+Прежде чем углубляться в детали фреймворков, сформулируем универсальный критерий:
+
+**Используйте нативный `<details>` если:**
+- Вам нужен простой аккордеон или раскрывающийся блок.
+- Нет необходимости в кастомном триггере (вы можете использовать `<summary>`).
+- Не требуется сложная синхронизация с глобальным состоянием (Redux, Pinia, NgRx).
+- Вы не используете анимационные библиотеки (GSAP, Framer Motion) для управления раскрытием.
+- Важен SEO и доступность "из коробки".
+- Вы хотите минимизировать бандл и ускорить загрузку.
+
+**Создавайте кастомный компонент если:**
+- Нужен нестандартный триггер (например, кнопка вне аккордеона).
+- Требуется сложная анимация, не реализуемая через CSS (или нужно управлять анимацией из JavaScript).
+- Аккордеон должен синхронизироваться с внешним состоянием (например, открыт/закрыт в зависимости от URL).
+- Необходимо кастомное поведение (например, подтверждение перед закрытием).
+- Аккордеон интегрируется с системой дизайна, требующей строгого контроля над разметкой.
 
 ---
 
 ### React
 
-#### Standard Approach
+#### Стандартный подход
 
-In React, an accordion is a classic example of using `useState` and `useCallback`.
+В React аккордеон — это классический пример использования хуков `useState` и `useCallback`.
 
 ```jsx
-// ❌ Traditional React accordion (30+ lines)
+// ❌ Традиционный React-аккордеон (30+ строк)
 function Accordion({ title, children, defaultOpen = false }) {
-  const [isOpen, setIsOpen] = useState(defaultOpen);
-
-  const toggle = useCallback(() => {
-    setIsOpen((prev) => !prev);
-  }, []);
-
-  return (
-    <div className="accordion">
-      <button
-        className="accordion-trigger"
-        onClick={toggle}
-        aria-expanded={isOpen}
-        aria-controls={`panel-${id}`}
-      >
-        {title}
-      </button>
-      <div
-        id={`panel-${id}`}
-        className={`accordion-panel ${isOpen ? 'open' : ''}`}
-        role="region"
-        aria-labelledby={`trigger-${id}`}
-      >
-        {children}
-      </div>
-    </div>
-  );
+    const [isOpen, setIsOpen] = useState(defaultOpen);
+    
+    const toggle = useCallback(() => {
+        setIsOpen(prev => !prev);
+    }, []);
+    
+    return (
+        <div className="accordion">
+            <button 
+                className="accordion-trigger"
+                onClick={toggle}
+                aria-expanded={isOpen}
+                aria-controls={`panel-${id}`}
+            >
+                {title}
+            </button>
+            <div 
+                id={`panel-${id}`}
+                className={`accordion-panel ${isOpen ? 'open' : ''}`}
+                role="region"
+                aria-labelledby={`trigger-${id}`}
+            >
+                {children}
+            </div>
+        </div>
+    );
 }
 ```
 
-#### Alternative: Native `<details>`
+#### Альтернатива: нативный `<details>`
 
 ```jsx
-// ✅ Native approach (2 lines)
+// ✅ Нативный подход (2 строки)
 function Accordion({ title, children }) {
-  return (
-    <details>
-      <summary>{title}</summary>
-      {children}
-    </details>
-  );
-}
-```
-
-**Comparison:**
-
-| Aspect          | Custom Component             | Native `<details>` |
-| --------------- | ---------------------------- | ------------------ |
-| Component code  | ~30 lines JSX                | 2 lines JSX        |
-| State           | `useState` + synchronization | Built-in (`open`)  |
-| ARIA attributes | Manual                       | Automatic          |
-| Keyboard        | Manual (`onKeyDown`)         | Built-in           |
-| Bundle          | ~2-3 KB (with dependencies)  | 0 bytes            |
-| SSR             | Requires hydration           | Works without JS   |
-| Testing         | Unit tests needed            | Not required       |
-
-#### Special Case: React 19 and Server Components
-
-In React 19 with Server Components, native `<details>` becomes even more attractive. It works without client-side JavaScript, which is ideal for components that don't require client-side interactivity.
-
-```jsx
-// Server Component - no "use client"
-export default function FAQ({ items }) {
-  return (
-    <section>
-      {items.map((item) => (
-        <details key={item.id}>
-          <summary>{item.question}</summary>
-          <div dangerouslySetInnerHTML={{ __html: item.answer }} />
+    return (
+        <details>
+            <summary>{title}</summary>
+            {children}
         </details>
-      ))}
-    </section>
-  );
+    );
 }
 ```
 
-**When a custom component is still needed in React:**
+**Сравнение:**
 
-1. **Integration with Zustand/Redux:** If accordion state must be stored in a global store.
-2. **Animations with Framer Motion:** For complex animations that can't be implemented via CSS.
-3. **Controlled component:** When the parent must manage state.
+| Аспект | Кастомный компонент | Нативный `<details>` |
+|--------|-------------------|---------------------|
+| Код компонента | ~30 строк JSX | 2 строки JSX |
+| Состояние | `useState` + синхронизация | Встроенное (`open`) |
+| ARIA-атрибуты | Ручные | Автоматические |
+| Клавиатура | Ручная (`onKeyDown`) | Встроенная |
+| Бандл | ~2-3 KB (с зависимостями) | 0 байт |
+| SSR | Требует гидратации | Работает без JS |
+| Тестирование | Нужны unit-тесты | Не требует |
+
+#### Особый случай: React 19 и Server Components
+
+В React 19 с Server Components нативный `<details>` становится еще более привлекательным. Он работает без клиентского JavaScript, что идеально для компонентов, которые не требуют интерактивности на клиенте.
 
 ```jsx
-// Controlled component (justified case)
+// Server Component - нет "use client"
+export default function FAQ({ items }) {
+    return (
+        <section>
+            {items.map(item => (
+                <details key={item.id}>
+                    <summary>{item.question}</summary>
+                    <div dangerouslySetInnerHTML={{ __html: item.answer }} />
+                </details>
+            ))}
+        </section>
+    );
+}
+```
+
+**Когда все же нужен кастомный компонент в React:**
+
+1. **Интеграция с Zustand/Redux:** Если состояние аккордеона должно храниться в глобальном сторе.
+2. **Анимации с Framer Motion:** Для сложных анимаций, которые нельзя реализовать через CSS.
+3. **Контролируемый компонент:** Когда родитель должен управлять состоянием.
+
+```jsx
+// Контролируемый компонент (оправданный случай)
 function ControlledAccordion({ isOpen, onToggle, title, children }) {
-  return (
-    <details open={isOpen}>
-      <summary
-        onClick={(e) => {
-          e.preventDefault();
-          onToggle(!isOpen);
-        }}
-      >
-        {title}
-      </summary>
-      {children}
-    </details>
-  );
+    return (
+        <details open={isOpen}>
+            <summary onClick={(e) => {
+                e.preventDefault();
+                onToggle(!isOpen);
+            }}>
+                {title}
+            </summary>
+            {children}
+        </details>
+    );
 }
 ```
 
@@ -1818,225 +1822,234 @@ function ControlledAccordion({ isOpen, onToggle, title, children }) {
 
 ### Vue
 
-#### Standard Approach
+#### Стандартный подход
 
-Vue offers reactivity via `ref` and directives.
+Vue предлагает реактивность через `ref` и директивы.
 
 ```vue
-<!-- ❌ Traditional Vue accordion -->
+<!-- ❌ Традиционный Vue-аккордеон -->
 <template>
-  <div class="accordion">
-    <button
-      class="accordion-trigger"
-      @click="isOpen = !isOpen"
-      :aria-expanded="isOpen"
-      :aria-controls="`panel-${id}`"
-    >
-      {{ title }}
-    </button>
-    <div :id="`panel-${id}`" class="accordion-panel" :class="{ open: isOpen }">
-      <slot />
+    <div class="accordion">
+        <button 
+            class="accordion-trigger"
+            @click="isOpen = !isOpen"
+            :aria-expanded="isOpen"
+            :aria-controls="`panel-${id}`"
+        >
+            {{ title }}
+        </button>
+        <div 
+            :id="`panel-${id}`"
+            class="accordion-panel"
+            :class="{ open: isOpen }"
+        >
+            <slot />
+        </div>
     </div>
-  </div>
 </template>
 
 <script setup>
 import { ref } from 'vue';
 
 const props = defineProps({
-  title: String,
-  defaultOpen: Boolean,
+    title: String,
+    defaultOpen: Boolean
 });
 
 const isOpen = ref(props.defaultOpen);
 </script>
 ```
 
-#### Alternative: Native `<details>`
+#### Альтернатива: нативный `<details>`
 
 ```vue
-<!-- ✅ Native approach -->
+<!-- ✅ Нативный подход -->
 <template>
-  <details :open="isOpen" @toggle="onToggle">
-    <summary>{{ title }}</summary>
-    <slot />
-  </details>
+    <details :open="isOpen" @toggle="onToggle">
+        <summary>{{ title }}</summary>
+        <slot />
+    </details>
 </template>
 
 <script setup>
 import { ref } from 'vue';
 
 const props = defineProps({
-  title: String,
-  defaultOpen: Boolean,
+    title: String,
+    defaultOpen: Boolean
 });
 
 const isOpen = ref(props.defaultOpen);
 
 const onToggle = () => {
-  // React to change if needed
-  emit('update:open', isOpen.value);
+    // Реагируем на изменение, если нужно
+    emit('update:open', isOpen.value);
 };
 </script>
 ```
 
-**Advantages in Vue:**
+**Преимущества во Vue:**
 
-- `v-model` can be bound to `open`.
-- Less reactivity — less virtual DOM work.
-- Easier to test (less logic).
+- `v-model` можно привязать к `open`.
+- Меньше реактивности — меньше работы виртуального DOM.
+- Легче тестировать (меньше логики).
 
 ```vue
-<!-- Two-way binding -->
+<!-- Двусторонняя привязка -->
 <details v-model:open="isOpen">
-    <summary>Heading</summary>
-    <p>Content</p>
+    <summary>Заголовок</summary>
+    <p>Содержимое</p>
 </details>
 ```
 
-#### Vue Feature: Transition Component
+#### Особенность Vue: Transition компонент
 
-Vue has a built-in `<Transition>` component for animations. It works great with native `<details>`:
+Vue имеет встроенный компонент `<Transition>` для анимаций. С нативным `<details>` он работает отлично:
 
 ```vue
 <template>
-  <details>
-    <summary>{{ title }}</summary>
-    <Transition name="slide">
-      <div v-if="isOpen" class="content">
-        <slot />
-      </div>
-    </Transition>
-  </details>
+    <details>
+        <summary>{{ title }}</summary>
+        <Transition name="slide">
+            <div v-if="isOpen" class="content">
+                <slot />
+            </div>
+        </Transition>
+    </details>
 </template>
 
 <style>
-.slide-enter-active,
-.slide-leave-active {
-  transition: all 0.3s ease;
+.slide-enter-active, .slide-leave-active {
+    transition: all 0.3s ease;
 }
-.slide-enter-from,
-.slide-leave-to {
-  opacity: 0;
-  transform: translateY(-20px);
+.slide-enter-from, .slide-leave-to {
+    opacity: 0;
+    transform: translateY(-20px);
 }
 </style>
 ```
 
-**When a custom component is needed in Vue:**
+**Когда нужен кастомный компонент во Vue:**
 
-1. **Integration with Pinia/Vuex:** Global state.
-2. **Complex animations via `@keyframes`:** When standard transitions aren't enough.
-3. **Custom trigger:** When you need something other than `<summary>`.
+1. **Интеграция с Pinia/Vuex:** Глобальное состояние.
+2. **Сложные анимации через `@keyframes`:** Когда не хватает стандартных переходов.
+3. **Кастомизация триггера:** Когда нужно не `<summary>`, а другой элемент.
 
 ---
 
 ### Angular
 
-#### Standard Approach
+#### Стандартный подход
 
-Angular uses decorators and template syntax.
+Angular использует декораторы и шаблонную синтаксис.
 
 ```typescript
-// ❌ Traditional Angular accordion
+// ❌ Традиционный Angular-аккордеон
 @Component({
-  selector: 'app-accordion',
-  template: `
-    <div class="accordion">
-      <button
-        (click)="toggle()"
-        [attr.aria-expanded]="isOpen"
-        [attr.aria-controls]="panelId"
-      >
-        {{ title }}
-      </button>
-      <div [id]="panelId" class="accordion-panel" [class.open]="isOpen">
-        <ng-content></ng-content>
-      </div>
-    </div>
-  `,
+    selector: 'app-accordion',
+    template: `
+        <div class="accordion">
+            <button 
+                (click)="toggle()"
+                [attr.aria-expanded]="isOpen"
+                [attr.aria-controls]="panelId"
+            >
+                {{ title }}
+            </button>
+            <div 
+                [id]="panelId"
+                class="accordion-panel"
+                [class.open]="isOpen"
+            >
+                <ng-content></ng-content>
+            </div>
+        </div>
+    `
 })
 export class AccordionComponent {
-  @Input() title: string = '';
-  @Input() defaultOpen: boolean = false;
-  @Output() openChange = new EventEmitter<boolean>();
-
-  isOpen = this.defaultOpen;
-
-  toggle() {
-    this.isOpen = !this.isOpen;
-    this.openChange.emit(this.isOpen);
-  }
+    @Input() title: string = '';
+    @Input() defaultOpen: boolean = false;
+    @Output() openChange = new EventEmitter<boolean>();
+    
+    isOpen = this.defaultOpen;
+    
+    toggle() {
+        this.isOpen = !this.isOpen;
+        this.openChange.emit(this.isOpen);
+    }
 }
 ```
 
-#### Alternative: Native `<details>`
+#### Альтернатива: нативный `<details>`
 
 ```typescript
-// ✅ Native approach
+// ✅ Нативный подход
 @Component({
-  selector: 'app-accordion',
-  template: `
-    <details [open]="isOpen" (toggle)="onToggle()">
-      <summary>{{ title }}</summary>
-      <ng-content></ng-content>
-    </details>
-  `,
+    selector: 'app-accordion',
+    template: `
+        <details 
+            [open]="isOpen" 
+            (toggle)="onToggle()"
+        >
+            <summary>{{ title }}</summary>
+            <ng-content></ng-content>
+        </details>
+    `
 })
 export class AccordionComponent {
-  @Input() title: string = '';
-  @Input() isOpen: boolean = false;
-  @Output() isOpenChange = new EventEmitter<boolean>();
-
-  onToggle() {
-    // The toggle event will fire on change
-    // isOpen is already updated by the browser
-    this.isOpenChange.emit(this.isOpen);
-  }
+    @Input() title: string = '';
+    @Input() isOpen: boolean = false;
+    @Output() isOpenChange = new EventEmitter<boolean>();
+    
+    onToggle() {
+        // Событие toggle сработает при изменении
+        // isOpen уже обновлен браузером
+        this.isOpenChange.emit(this.isOpen);
+    }
 }
 ```
 
-**Angular features:**
+**Особенности Angular:**
 
-- Change Detection works correctly, as the `open` attribute change triggers an update.
-- `[(isOpen)]` can be used for two-way binding.
+- Change Detection работает корректно, так как изменение атрибута `open` триггерит обновление.
+- Можно использовать `[(isOpen)]` для двусторонней привязки.
 
 ```typescript
-// Two-way binding (banana-in-a-box)
-<app-accordion [(isOpen)]="accordionOpen" title="Heading">
-    <p>Content</p>
+// Двусторонняя привязка (banana-in-a-box)
+<app-accordion [(isOpen)]="accordionOpen" title="Заголовок">
+    <p>Содержимое</p>
 </app-accordion>
 ```
 
-**When a custom component is needed in Angular:**
+**Когда нужен кастомный компонент в Angular:**
 
-1. **Integration with NgRx:** Global state.
-2. **Reactive Forms:** If the accordion is part of a form and needs to react to validation.
-3. **Custom animations via Angular Animations:** When more complex control than CSS transitions is needed.
+1. **Интеграция с NgRx:** Глобальное состояние.
+2. **Reactive Forms:** Если аккордеон является частью формы и должен реагировать на валидацию.
+3. **Кастомные анимации через Angular Animations:** Когда нужно более сложное управление, чем CSS-переходы.
 
 ---
 
 ### Svelte
 
-Svelte is one of the frameworks where native `<details>` feels particularly organic.
+Svelte — один из фреймворков, где нативный `<details>` чувствует себя особенно органично.
 
-#### Standard Approach
+#### Стандартный подход
 
 ```svelte
-<!-- ❌ Traditional Svelte accordion -->
+<!-- ❌ Традиционный Svelte-аккордеон -->
 <script>
     export let title;
     export let defaultOpen = false;
-
+    
     let isOpen = defaultOpen;
-
+    
     function toggle() {
         isOpen = !isOpen;
     }
 </script>
 
 <div class="accordion">
-    <button
+    <button 
         on:click={toggle}
         aria-expanded={isOpen}
     >
@@ -2050,16 +2063,16 @@ Svelte is one of the frameworks where native `<details>` feels particularly orga
 </div>
 ```
 
-#### Alternative: Native `<details>`
+#### Альтернатива: нативный `<details>`
 
 ```svelte
-<!-- ✅ Native approach (almost no JS) -->
+<!-- ✅ Нативный подход (почти без JS) -->
 <script>
     export let title;
     export let open = false;
-
-    // Reactive binding
-    $: console.log('State changed:', open);
+    
+    // Реактивная привязка
+    $: console.log('Состояние изменилось:', open);
 </script>
 
 <details bind:open>
@@ -2067,101 +2080,101 @@ Svelte is one of the frameworks where native `<details>` feels particularly orga
     <slot />
 </details>
 
-<!-- Variant: fully declarative -->
+<!-- Вариант: полная декларативность -->
 <details>
-    <summary>Heading</summary>
+    <summary>Заголовок</summary>
     <slot />
 </details>
 ```
 
-**Advantages in Svelte:**
+**Преимущества Svelte:**
 
-- `bind:open` — two-way binding works "out of the box."
-- Less code (Svelte is already minimalistic).
-- Assignment-based reactivity (`$:`) works great with attributes.
+- `bind:open` — двусторонняя привязка работает "из коробки".
+- Меньше кода (Svelte и так минималистичен).
+- Реактивность на основе присваивания (`$:`) отлично работает с атрибутами.
 
 ```svelte
-<!-- Extended example: synchronization with localStorage -->
+<!-- Расширенный пример: синхронизация с localStorage -->
 <script>
     import { onMount } from 'svelte';
-
+    
     export let id;
     let open = false;
-
+    
     onMount(() => {
         const saved = localStorage.getItem(`accordion-${id}`);
         if (saved) open = saved === 'true';
     });
-
+    
     $: localStorage.setItem(`accordion-${id}`, open);
 </script>
 
 <details bind:open>
-    <summary>Synchronized accordion</summary>
+    <summary>Синхронизированный аккордеон</summary>
     <slot />
 </details>
 ```
 
-**When a custom component is needed in Svelte:**
+**Когда нужен кастомный компонент в Svelte:**
 
-1. **Complex animation:** Although Svelte has built-in transitions, native `<details>` is limited to CSS.
-2. **Synchronization with multiple sources:** When state depends on URL, store, and props.
-3. **SvelteKit with adaptive rendering:** Sometimes you need to control state on the server.
+1. **Сложная анимация:** Хотя Svelte имеет встроенные переходы, нативный `<details>` ограничен CSS.
+2. **Синхронизация с несколькими источниками:** Когда состояние зависит от URL, стора и пропсов.
+3. **SvelteKit с адаптивным рендерингом:** Иногда нужно контролировать состояние на сервере.
 
 ---
 
 ### Qwik
 
-Qwik is a framework focused on lazy loading (resumability). Native `<details>` is an ideal solution here.
+Qwik — фреймворк, ориентированный на ленивую загрузку (resumability). Нативный `<details>` здесь — идеальное решение.
 
-#### Qwik Feature
+#### Особенность Qwik
 
-Qwik doesn't hydrate components on the client, but resumes them. This means interactivity is only added where it's needed.
+Qwik не гидратирует компоненты на клиенте, а возобновляет их (resume). Это означает, что интерактивность добавляется только там, где она нужна.
 
 ```tsx
-// ✅ Qwik: native details without client code
+// ✅ Qwik: нативный details без клиентского кода
 import { component$ } from '@builder.io/qwik';
 
 export const FAQ = component$(({ items }) => {
-  return (
-    <section>
-      {items.map((item) => (
-        <details>
-          <summary>{item.question}</summary>
-          <div dangerouslySetInnerHTML={item.answer} />
-        </details>
-      ))}
-    </section>
-  );
+    return (
+        <section>
+            {items.map(item => (
+                <details>
+                    <summary>{item.question}</summary>
+                    <div dangerouslySetInnerHTML={item.answer} />
+                </details>
+            ))}
+        </section>
+    );
 });
 ```
 
-**Advantages for Qwik:**
+**Преимущества для Qwik:**
 
-- `<details>` works without JavaScript — ideal for resumability.
-- No need to load accordion code (saving ~5-10 KB).
-- The browser takes over state management.
+- `<details>` работает без JavaScript — идеально для resumability.
+- Не нужно загружать код аккордеона (экономия ~5-10 KB).
+- Браузер берет на себя управление состоянием.
 
-#### When a Custom Component Is Needed in Qwik
+#### Когда нужен кастомный компонент в Qwik
 
-Only when complex logic is required that isn't covered by native behavior.
+Только когда требуется сложная логика, которая не покрывается нативным поведением.
 
 ```tsx
-// Justified case: custom trigger
+// Оправданный случай: кастомный триггер
 export const CustomAccordion = component$(({ title, children }) => {
-  const isOpen = useSignal(false);
-
-  return (
-    <div>
-      <button
-        onClick$={() => (isOpen.value = !isOpen.value)}
-        aria-expanded={isOpen.value}
-      >
-        {title}
-      </button>
-      {isOpen.value && <div>{children}</div>}
-    </div>
-  );
+    const isOpen = useSignal(false);
+    
+    return (
+        <div>
+            <button 
+                onClick$={() => isOpen.value = !isOpen.value}
+                aria-expanded={isOpen.value}
+            >
+                {title}
+            </button>
+            {isOpen.value && <div>{children}</div>}
+        </div>
+    );
 });
 ```
 
@@ -2169,22 +2182,22 @@ export const CustomAccordion = component$(({ title, children }) => {
 
 ### Astro
 
-Astro is a framework that renders static content by default and only adds JavaScript when needed. For `<details>`, this is an ideal scenario.
+Astro — это фреймворк, который по умолчанию рендерит статику и добавляет JavaScript только по необходимости. Для `<details>` это идеальный сценарий.
 
-#### Island Architecture
+#### Островная архитектура
 
 ```astro
 ---
-// Astro component (rendered on server)
+// Astro компонент (рендерится на сервере)
 const faqItems = [
-    { question: 'What is Astro?', answer: '...' },
+    { question: 'Что такое Astro?', answer: '...' },
     // ...
 ];
 ---
 
 <section>
     {faqItems.map(item => (
-        <!-- ✅ Native details - 0 bytes JS on the client -->
+        <!-- ✅ Нативный details - 0 байт JS на клиенте -->
         <details>
             <summary>{item.question}</summary>
             <p>{item.answer}</p>
@@ -2193,129 +2206,131 @@ const faqItems = [
 </section>
 ```
 
-**Advantages for Astro:**
+**Преимущества для Astro:**
 
-- Fully static — no need to hydrate the accordion.
-- Works without JavaScript (even if the user has disabled JS).
-- SEO-friendly — all content is visible to crawlers.
+- Полная статика — не нужно гидратировать аккордеон.
+- Работает без JavaScript (даже если пользователь отключил JS).
+- SEO-дружественность — весь контент виден краулерам.
 
-#### When a Custom Component Is Needed in Astro
+#### Когда нужен кастомный компонент в Astro
 
-Only when interactivity is required that goes beyond native behavior.
+Только когда требуется интерактивность, которая выходит за рамки нативного поведения.
 
 ```astro
 ---
-// Justified case: accordion with analytics
+// Оправданный случай: аккордеон с аналитикой
 import { clientOnly } from 'astro:client';
 const AnalyticsAccordion = clientOnly('@/components/AnalyticsAccordion');
 ---
 
 <AnalyticsAccordion client:load>
-    <!-- Client component for tracking opens -->
+    <!-- Клиентский компонент для отслеживания открытий -->
 </AnalyticsAccordion>
 ```
 
 ---
 
-### Why UI Libraries Are Starting to Use Native `<details>`
+### Почему UI-библиотеки начинают использовать нативный `<details>`
 
-In 2024–2026, we are seeing a trend: major UI libraries are rethinking their accordions.
+В 2024–2026 годах мы наблюдаем тренд: крупные UI-библиотеки пересматривают свои аккордеоны.
 
-#### Examples:
+#### Примеры:
 
-1. **Radix UI** — one of the most popular React libraries — added the ability to use `<details>` as a base element.
-2. **Material-UI (MUI)** — in its experimental components, it uses `details` to reduce the bundle.
-3. **shadcn/ui** — offers both approaches, but recommends native for simple scenarios.
-4. **Headless UI** (Tailwind) — added support for `<details>` as an alternative to its `Disclosure`.
+1. **Radix UI** — одна из самых популярных библиотек для React — добавила возможность использования `<details>` как базового элемента.
+2. **Material-UI (MUI)** — в своих экспериментальных компонентах использует `details` для уменьшения бандла.
+3. **shadcn/ui** — предлагает оба подхода, но рекомендует нативный для простых сценариев.
+4. **Headless UI** (Tailwind) — добавила поддержку `<details>` как альтернативы своему `Disclosure`.
 
-#### Reasons for This Trend:
+#### Причины этого тренда:
 
-1. **Bundle size reduction:** Native `<details>` weighs 0 bytes in the bundle vs. 2-3 KB for a custom component.
-2. **Performance:** The browser implements the accordion at the engine level — faster than any JavaScript.
-3. **Accessibility:** ARIA attributes and keyboard management are already implemented at the platform level.
-4. **Semantic markup:** Crawlers and screen readers better understand native elements.
-5. **Ease of maintenance:** Less code — fewer bugs.
-6. **Future:** The specification is evolving, and the native component will automatically receive new capabilities.
+1. **Уменьшение бандла:** Нативный `<details>` весит 0 байт в бандле против 2-3 KB для кастомного компонента.
+2. **Производительность:** Браузер реализует аккордеон на уровне движка — быстрее, чем любой JavaScript.
+3. **Доступность:** ARIA-атрибуты и управление клавиатурой уже реализованы на уровне платформы.
+4. **Семантическая верстка:** Краулеры и скринридеры лучше понимают нативные элементы.
+5. **Простота поддержки:** Меньше кода — меньше багов.
+6. **Будущее:** Спецификация развивается, и нативный компонент будет получать новые возможности автоматически.
 
 ---
 
-### Practical Recommendations
+### Практические рекомендации
 
-#### For All Frameworks
+#### Для всех фреймворков
 
 ```javascript
-// Selection strategy
+// Стратегия выбора
 function shouldUseNativeDetails(scenario) {
-  const simple =
-    !scenario.customTrigger &&
-    !scenario.complexAnimation &&
-    !scenario.globalState &&
-    !scenario.customBehavior;
-
-  return simple; // 90% of cases
+    const simple = !scenario.customTrigger 
+        && !scenario.complexAnimation 
+        && !scenario.globalState 
+        && !scenario.customBehavior;
+    
+    return simple; // 90% случаев
 }
 ```
 
-#### Decision Criteria
+#### Критерии для принятия решения
 
-| Criterion         | Native `<details>` | Custom Component        |
-| ----------------- | ------------------ | ----------------------- |
-| Simple accordion  | ✅ Always          | ❌ Overkill             |
-| Grouping (name)   | ✅ Built-in        | ❌ Need to write        |
-| Custom trigger    | ❌ Not possible    | ✅ Needed               |
-| Complex animation | ❌ Limited         | ✅ Full control         |
-| Global state      | ❌ No              | ✅ Yes (Redux/Pinia)    |
-| Form integration  | ⚠️ Partial         | ✅ Full                 |
-| SEO               | ✅ Excellent       | ⚠️ Depends on SSR       |
-| Accessibility     | ✅ Perfect         | ⚠️ Requires audit       |
-| Performance       | ✅ Maximum         | ⚠️ Depends on framework |
+| Критерий | Нативный `<details>` | Кастомный компонент |
+|----------|---------------------|---------------------|
+| Простой аккордеон | ✅ Всегда | ❌ Избыточно |
+| Группировка (name) | ✅ Встроена | ❌ Нужно писать |
+| Кастомный триггер | ❌ Нельзя | ✅ Нужен |
+| Сложная анимация | ❌ Ограничен | ✅ Полный контроль |
+| Глобальное состояние | ❌ Нет | ✅ Да (Redux/Pinia) |
+| Интеграция с формами | ⚠️ Частично | ✅ Полная |
+| SEO | ✅ Отлично | ⚠️ Зависит от SSR |
+| Доступность | ✅ Идеально | ⚠️ Требует аудита |
+| Производительность | ✅ Максимальная | ⚠️ Зависит от фреймворка |
 
-#### Example: Hybrid Approach
+#### Пример: гибридный подход
 
-The most pragmatic way is to use native `<details>` as the base layer, and a custom component as an overlay:
+Самый прагматичный способ — использовать нативный `<details>` как базовый слой, а кастомный компонент — как надстройку:
 
 ```tsx
-// Hybrid component in React
-function HybridAccordion({ title, children, useNative = true, onToggle }) {
-  if (useNative) {
-    return (
-      <details onToggle={onToggle}>
-        <summary>{title}</summary>
+// Гибридный компонент в React
+function HybridAccordion({ 
+    title, 
+    children, 
+    useNative = true, 
+    onToggle 
+}) {
+    if (useNative) {
+        return (
+            <details onToggle={onToggle}>
+                <summary>{title}</summary>
+                {children}
+            </details>
+        );
+    }
+    
+    // Fallback на кастомный компонент
+    return <CustomAccordion title={title} onToggle={onToggle}>
         {children}
-      </details>
-    );
-  }
-
-  // Fallback to custom component
-  return (
-    <CustomAccordion title={title} onToggle={onToggle}>
-      {children}
-    </CustomAccordion>
-  );
+    </CustomAccordion>;
 }
 ```
 
 ---
 
-### Summary: The Era of Minimalism
+### Резюме: эпоха минимализма
 
-`<details>` is an example of how the platform is catching up and surpassing frameworks in some aspects. Modern developers are increasingly asking: "Do I need a framework for this component?"
+`<details>` — это пример того, как платформа догоняет и перегоняет фреймворки в некоторых аспектах. Современные разработчики все чаще задаются вопросом: "Нужен ли мне фреймворк для этого компонента?".
 
-**Golden rule:**
+**Золотое правило:**
 
-> If your accordion can be implemented via `<details>`, implement it via `<details>`. Write a custom component only when native behavior is insufficient. This rule saves time, resources, and makes your code more resilient.
+> Если ваш аккордеон можно реализовать через `<details>`, реализуйте его через `<details>`. Кастомный компонент пишите только тогда, когда нативного поведения недостаточно. Это правило экономит время, ресурсы и делает ваш код более устойчивым.
 
-In a world where performance and accessibility are becoming critical factors, native solutions are not a compromise, but a conscious choice in favor of the platform.
+В мире, где производительность и доступность становятся критическими факторами, нативные решения — это не компромисс, а осознанный выбор в пользу платформы.
 
 ---
 
-## 6.12. When Not to Use `<details>`
+## 6.12. Когда `<details>` использовать нельзя
 
-A very important practical chapter.
+Очень важная практическая глава.
 
-Why `<details>` is not a universal component.
+Почему `<details>` — это не универсальный компонент.
 
-Not suitable for:
+Не подходит для
 
 - Tabs;
 - Menu;
@@ -2324,7 +2339,7 @@ Not suitable for:
 - Navigation Drawer;
 - Tree View.
 
-When to use:
+Когда использовать
 
 ```
 Popover API
@@ -2338,834 +2353,840 @@ Popover API
 details
 ```
 
-How to choose the right platform component.
+Как правильно выбирать компонент платформы.
 
 ---
 
-## 6.13. Architectural Recommendations — Practical Rules for Using `<details>`
-
-Throughout our work with `<details>`, we've journeyed from basic semantics to complex animations, framework integration, and accessibility. Now it's time to consolidate this knowledge into a system of practical rules.
-
-This section is not just a list of tips. It is an **architectural manifesto** that will help you make the right decisions when designing interfaces on the platform.
+#Вот доработанный заключительный раздел главы. Я структурировал практические рекомендации, добавил антипаттерны, примеры кода и объяснил философию каждого правила.
 
 ---
 
-### 1. Use `<details>` for Information Disclosure, Not for Arbitrary Interactivity
+## 6.13. Архитектурные рекомендации — Практические правила использования `<details>`
 
-#### Rule
+За время работы с `<details>` мы прошли путь от базовой семантики до сложных анимаций, интеграции с фреймворками и доступности. Настало время собрать эти знания в систему практических правил.
 
-`<details>` is intended for **progressive disclosure** — showing/hiding additional content. It should not be used to implement other interactive patterns: tabs, modal windows, dropdown menus, or carousels.
-
-#### Why
-
-- **Semantic precision:** The browser, screen readers, and search engines interpret `<details>` as a container with toggleable content. Using it for other purposes violates user expectations.
-- **Accessibility:** Other patterns (tabs, modals) have their own ARIA roles and behaviors that `<details>` does not provide.
-- **Future:** The specification is evolving for a specific pattern. Misusing the element may lead to problems with browser updates.
-
-#### ✅ Correct
-
-```html
-<!-- Disclosure of additional information -->
-<details>
-  <summary>Technical specifications</summary>
-  <dl>
-    <dt>Processor</dt>
-    <dd>Intel Core i7</dd>
-    <dt>Memory</dt>
-    <dd>16 GB</dd>
-  </dl>
-</details>
-```
-
-#### ❌ Incorrect
-
-```html
-<!-- Using details as tabs -->
-<details>
-  <summary>Tab 1</summary>
-  <div>Tab 1 content</div>
-</details>
-<details>
-  <summary>Tab 2</summary>
-  <div>Tab 2 content</div>
-</details>
-<!-- details doesn't support tab behavior (switching without closing) -->
-```
-
-```html
-<!-- Using details as a modal window -->
-<details>
-  <summary>Open modal</summary>
-  <dialog>Modal window</dialog>
-</details>
-<!-- For modals, use <dialog> -->
-```
-
-#### Exceptions
-
-- If your accordion visually looks like tabs but behaves like an accordion (one open at a time), it's acceptable.
-- If you use `<details>` as a base structure but add JavaScript on top to extend behavior (e.g., for tabs with state persistence), it may be justified but requires caution.
+Этот раздел — не просто список советов. Это **архитектурный манифест**, который поможет вам принимать правильные решения при проектировании интерфейсов на платформе.
 
 ---
 
-### 2. Use the `name` Attribute for Building Exclusive Accordions
+### 1. Используйте `<details>` для раскрытия информации, а не для произвольной интерактивности
 
-#### Rule
+#### Правило
 
-Use the `name` attribute to group multiple `<details>` into an exclusive accordion where only one element can be open at a time.
+`<details>` предназначен для **прогрессивного раскрытия** (progressive disclosure) — показа/скрытия дополнительного контента. Он не должен использоваться для реализации других интерактивных паттернов: вкладок, модальных окон, выпадающих меню или каруселей.
+
+#### Почему
+
+- **Семантическая точность:** Браузер, скринридеры и поисковые системы интерпретируют `<details>` как контейнер с переключаемым содержимым. Использование его для других целей нарушает ожидания пользователя.
+- **Доступность:** Другие паттерны (вкладки, модалки) имеют свои ARIA-роли и поведение, которые не обеспечиваются `<details>`.
+- **Будущее:** Спецификация развивается под конкретный паттерн. Использование элемента не по назначению может привести к проблемам при обновлении браузеров.
+
+#### ✅ Правильно
+
+```html
+<!-- Раскрытие дополнительной информации -->
+<details>
+    <summary>Технические характеристики</summary>
+    <dl>
+        <dt>Процессор</dt>
+        <dd>Intel Core i7</dd>
+        <dt>Память</dt>
+        <dd>16 GB</dd>
+    </dl>
+</details>
+```
+
+#### ❌ Неправильно
+
+```html
+<!-- Использование details как табов -->
+<details>
+    <summary>Вкладка 1</summary>
+    <div>Контент вкладки 1</div>
+</details>
+<details>
+    <summary>Вкладка 2</summary>
+    <div>Контент вкладки 2</div>
+</details>
+<!-- details не поддерживает поведение табов (переключение без закрытия) -->
+```
+
+```html
+<!-- Использование details как модального окна -->
+<details>
+    <summary>Открыть модалку</summary>
+    <dialog>Модальное окно</dialog>
+</details>
+<!-- Для модалок есть <dialog> -->
+```
+
+#### Исключения
+
+- Если ваш аккордеон визуально выглядит как табы, но по поведению остается аккордеоном (один открыт за раз), это допустимо.
+- Если вы используете `<details>` как базовую структуру, но поверх добавляете JavaScript для расширения поведения (например, для вкладок с сохранением состояния), это может быть оправдано, но требует осторожности.
+
+---
+
+### 2. Применяйте атрибут `name` для построения эксклюзивных аккордеонов
+
+#### Правило
+
+Используйте атрибут `name` для группировки нескольких `<details>` в эксклюзивный аккордеон, где одновременно может быть открыт только один элемент.
 
 ```html
 <div class="faq">
-  <details name="faq-group">
-    <summary>Question 1</summary>
-    <p>Answer to question 1</p>
-  </details>
-  <details name="faq-group">
-    <summary>Question 2</summary>
-    <p>Answer to question 2</p>
-  </details>
-  <details name="faq-group">
-    <summary>Question 3</summary>
-    <p>Answer to question 3</p>
-  </details>
+    <details name="faq-group">
+        <summary>Вопрос 1</summary>
+        <p>Ответ на вопрос 1</p>
+    </details>
+    <details name="faq-group">
+        <summary>Вопрос 2</summary>
+        <p>Ответ на вопрос 2</p>
+    </details>
+    <details name="faq-group">
+        <summary>Вопрос 3</summary>
+        <p>Ответ на вопрос 3</p>
+    </details>
 </div>
 ```
 
-#### Why
+#### Почему
 
-- **Native behavior:** The browser automatically closes other `<details>` with the same `name` when opening a new one. No need to write JavaScript.
-- **Accessibility:** Screen readers correctly handle grouping.
-- **Simplicity:** One attribute replaces dozens of lines of JS code.
+- **Нативное поведение:** Браузер автоматически закрывает другие `<details>` с тем же `name` при открытии нового. Не нужно писать JavaScript.
+- **Доступность:** Скринридеры корректно обрабатывают группировку.
+- **Простота:** Один атрибут заменяет десятки строк JS-кода.
 
-#### How It Works
+#### Как работает
 
 ```javascript
-// The browser does this automatically:
-// On click on summary of an element with name="group"
-// 1. Checks if there are other details with the same name
-// 2. If there are — closes them (removes the open attribute)
-// 3. Opens the current one (adds the open attribute)
-// 4. Generates toggle events for all changed elements
+// Браузер делает это автоматически:
+// При клике на summary элемента с name="group"
+// 1. Проверяет, есть ли другие details с таким же name
+// 2. Если есть — закрывает их (удаляет атрибут open)
+// 3. Открывает текущий (добавляет атрибут open)
+// 4. Генерирует события toggle для всех измененных элементов
 ```
 
-#### Important Nuances
+#### Важные нюансы
 
-1. **`name` is not inherited:** Each `<details>` must have an explicit `name` attribute.
-2. **Works only within the document:** Elements with the same `name` in different documents (iframes) don't interact.
-3. **`toggle` events:** When another element is automatically closed, it also fires `toggle`.
+1. **`name` не наследуется:** Каждый `<details>` должен иметь явный атрибут `name`.
+2. **Работает только в пределах документа:** Элементы с одинаковым `name` в разных документах (iframe) не взаимодействуют.
+3. **События `toggle`:** При автоматическом закрытии другого элемента, на нем тоже сработает `toggle`.
 
 ```javascript
-// Correct grouping handling
-document.querySelectorAll('details[name="faq-group"]').forEach((details) => {
-  details.addEventListener('toggle', () => {
-    if (details.open) {
-      // Send analytics: which question was opened
-      const question = details.querySelector('summary').textContent;
-      analytics.track('faq_opened', { question });
-    }
-  });
+// Правильная обработка группировки
+document.querySelectorAll('details[name="faq-group"]').forEach(details => {
+    details.addEventListener('toggle', () => {
+        if (details.open) {
+            // Отправляем аналитику: какой вопрос открыт
+            const question = details.querySelector('summary').textContent;
+            analytics.track('faq_opened', { question });
+        }
+    });
 });
 ```
 
 ---
 
-### 3. Don't Duplicate Component State in JavaScript Unnecessarily
+### 3. Не дублируйте состояние компонента в JavaScript без необходимости
 
-#### Rule
+#### Правило
 
-The `<details>` state (open/closed) is stored in the `open` attribute. Do not create a separate variable in JavaScript to duplicate this state.
+Состояние `<details>` (открыт/закрыт) хранится в атрибуте `open`. Не создавайте отдельную переменную в JavaScript для дублирования этого состояния.
 
-#### Why
+#### Почему
 
-- **Single source of truth:** If state is stored in two places (DOM and JS variable), they can become desynchronized.
-- **Performance:** Additional listeners and state updates slow down the application.
-- **Complexity:** Duplicating state complicates code and increases bug risk.
+- **Единый источник истины:** Если состояние хранится в двух местах (DOM и JS-переменная), они могут рассинхронизироваться.
+- **Производительность:** Дополнительные слушатели и обновления состояния замедляют приложение.
+- **Сложность:** Дублирование состояния усложняет код и увеличивает риск багов.
 
-#### ✅ Correct
+#### ✅ Правильно
 
 ```javascript
-// Read state directly from the DOM
+// Читаем состояние напрямую из DOM
 const details = document.getElementById('myDetails');
 
-// Check state
+// Проверка состояния
 if (details.open) {
-  // Do something
+    // Что-то делаем
 }
 
-// React to change via event
+// Реагируем на изменение через событие
 details.addEventListener('toggle', () => {
-  // Use details.open for the current state
-  updateUI(details.open);
+    // Используем details.open для актуального состояния
+    updateUI(details.open);
 });
 ```
 
-#### ❌ Incorrect
+#### ❌ Неправильно
 
 ```javascript
-// Redundant state duplication
+// Избыточное дублирование состояния
 let isOpen = false;
 
 details.addEventListener('click', () => {
-  isOpen = !isOpen; // Duplicate state
-  details.open = isOpen; // Synchronize with DOM
+    isOpen = !isOpen; // Дублируем состояние
+    details.open = isOpen; // Синхронизируем с DOM
 });
 
-// Now state lives in two places
-// When changed via keyboard or browser, isOpen won't update!
+// Теперь состояние живет в двух местах
+// При изменении через клавиатуру или браузер isOpen не обновится!
 ```
 
-#### Exceptions (when duplication is justified)
+#### Исключения (когда дублирование оправдано)
 
-1. **Synchronization with external state (Redux, Pinia, URL):**
-
+1. **Синхронизация с внешним состоянием (Redux, Pinia, URL):**
    ```javascript
    // Zustand store
    const useStore = create((set) => ({
-     isOpen: false,
-     toggle: () => set((state) => ({ isOpen: !state.isOpen })),
+       isOpen: false,
+       toggle: () => set(state => ({ isOpen: !state.isOpen }))
    }));
-
-   // Component
+   
+   // Компонент
    const { isOpen, toggle } = useStore();
    return (
-     <details open={isOpen}>
-       <summary
-         onClick={(e) => {
-           e.preventDefault();
-           toggle();
-         }}
-       >
-         Heading
-       </summary>
-     </details>
+       <details open={isOpen}>
+           <summary onClick={(e) => {
+               e.preventDefault();
+               toggle();
+           }}>
+               Заголовок
+           </summary>
+       </details>
    );
    ```
+   Здесь дублирование оправдано, потому что состояние должно быть доступно в других частях приложения.
 
-   Here duplication is justified because state needs to be accessible in other parts of the application.
-
-2. **State persistence in `localStorage`:**
-
+2. **Сохранение состояния в `localStorage`:**
    ```javascript
    details.addEventListener('toggle', () => {
-     localStorage.setItem('details-open', details.open);
+       localStorage.setItem('details-open', details.open);
    });
-
-   // On load
+   
+   // При загрузке
    const savedState = localStorage.getItem('details-open') === 'true';
    if (savedState) {
-     details.open = true;
+       details.open = true;
    }
    ```
 
-3. **Analytics and tracking:**
+3. **Аналитика и трекинг:**
    ```javascript
    details.addEventListener('toggle', () => {
-     // Send data to analytics
-     if (details.open) {
-       sendAnalytics('accordion_opened');
-     }
+       // Отправляем данные в аналитику
+       if (details.open) {
+           sendAnalytics('accordion_opened');
+       }
    });
    ```
 
 ---
 
-### 4. Use the `toggle` Event Instead of Custom Click Handlers
+### 4. Используйте событие `toggle` вместо собственных обработчиков кликов
 
-#### Rule
+#### Правило
 
-To react to state changes, use the `toggle` event, not clicks on `<summary>` or other elements.
+Для реагирования на изменение состояния используйте событие `toggle`, а не клики по `<summary>` или другим элементам.
 
-#### Why
+#### Почему
 
-- **Source abstraction:** `toggle` fires on any state change method: click, keyboard, programmatic change, page search (Ctrl+F), voice control.
-- **Guaranteed state:** The event fires **after** the state change, when `details.open` already reflects the current value.
-- **Future compatibility:** If browsers add new control methods, `toggle` will work with them.
+- **Абстракция источника:** `toggle` срабатывает при любом способе изменения состояния: клик, клавиатура, программное изменение, поиск по странице (Ctrl+F), голосовое управление.
+- **Гарантированное состояние:** Событие срабатывает **после** изменения состояния, когда `details.open` уже отражает актуальное значение.
+- **Будущая совместимость:** Если браузеры добавят новые способы управления, `toggle` будет работать с ними.
 
-#### ✅ Correct
+#### ✅ Правильно
 
 ```javascript
 details.addEventListener('toggle', () => {
-  // React to state change
-  // Source of change doesn't matter
-  if (details.open) {
-    console.log('Open');
-  } else {
-    console.log('Closed');
-  }
+    // Реагируем на изменение состояния
+    // Источник изменения не важен
+    if (details.open) {
+        console.log('Открыто');
+    } else {
+        console.log('Закрыто');
+    }
 });
 ```
 
-#### ❌ Incorrect
+#### ❌ Неправильно
 
 ```javascript
-// Dangerous practice: reaction to click
+// Опасная практика: реакция на клик
 const summary = details.querySelector('summary');
 
 summary.addEventListener('click', () => {
-  // Assume state has changed
-  // But what if the click was canceled? Or the state didn't change?
-  if (details.open) {
-    // May be desynchronized
-  }
+    // Предполагаем, что состояние изменилось
+    // Но что если клик был отменен? Или состояние не изменилось?
+    if (details.open) {
+        // Может быть несинхронизировано
+    }
 });
 
-// Even worse: custom control
+// Еще хуже: собственное управление
 summary.addEventListener('click', () => {
-  details.open = !details.open; // Override native behavior
-  // Breaks keyboard control
+    details.open = !details.open; // Переопределяем нативное поведение
+    // Ломаем клавиатурное управление
 });
 ```
 
-#### Exceptions (when a click handler is needed)
+#### Исключения (когда нужен обработчик клика)
 
-1. **Additional action not related to state change:**
-
+1. **Дополнительное действие, не связанное с изменением состояния:**
    ```javascript
    summary.addEventListener('click', (e) => {
-     // Send analytics about click (regardless of result)
-     trackClick('faq_summary');
+       // Отправляем аналитику о клике (независимо от результата)
+       trackClick('faq_summary');
    });
    ```
 
-2. **Preventing opening under certain conditions:**
-
+2. **Предотвращение открытия при определенных условиях:**
    ```javascript
    let isLocked = false;
-
+   
    summary.addEventListener('click', (e) => {
-     if (isLocked) {
-       e.preventDefault(); // Block native toggle
-       showNotification('This section is temporarily unavailable');
-     }
+       if (isLocked) {
+           e.preventDefault(); // Блокируем нативное переключение
+           showNotification('Этот раздел временно недоступен');
+       }
    });
    ```
 
 ---
 
-### 5. Design Interfaces with Accessibility in Mind
+### 5. Проектируйте интерфейсы с учетом Accessibility
 
-#### Rule
+#### Правило
 
-Accessibility should not be an afterthought. Use `<details>` so that all users can interact with it.
+Доступность не должна быть послесловием. Используйте `<details>` так, чтобы все пользователи могли взаимодействовать с ним.
 
-#### Basic Requirements
+#### Базовые требования
 
-1. **Always use `<summary>`:** It should be the first child of `<details>`. Don't replace it with other tags.
+1. **Всегда используйте `<summary>`:** Это первый дочерний элемент `<details>`. Не заменяйте его на другие теги.
 
-2. **Explicit naming:** The text inside `<summary>` should be meaningful and describe the content.
+2. **Явное именование:** Текст внутри `<summary>` должен быть осмысленным и описывать содержимое.
 
-3. **Visual state indicator:** Don't rely only on the browser's triangle. Add explicit visual cues.
+3. **Визуальный индикатор состояния:** Не полагайтесь только на треугольник браузера. Добавьте явные визуальные подсказки.
 
-4. **Focus indication:** Keep `:focus-visible` for keyboard users.
+4. **Индикация фокуса:** Сохраняйте `:focus-visible` для клавиатурных пользователей.
 
-#### ✅ Correct
+#### ✅ Правильно
 
 ```html
 <details class="accordion">
-  <summary class="accordion-summary">
-    <span class="accordion-icon" aria-hidden="true">▶</span>
-    <span class="accordion-title">Technical specifications</span>
-    <span class="accordion-status" aria-live="polite">
-      <!-- This text will be announced by screen readers on change -->
-      <span class="visually-hidden"> (click to expand) </span>
-    </span>
-  </summary>
-  <div class="accordion-content">
-    <!-- Content -->
-  </div>
+    <summary class="accordion-summary">
+        <span class="accordion-icon" aria-hidden="true">▶</span>
+        <span class="accordion-title">Технические характеристики</span>
+        <span class="accordion-status" aria-live="polite">
+            <!-- Этот текст будет озвучен скринридером при изменении -->
+            <span class="visually-hidden">
+                (нажмите для раскрытия)
+            </span>
+        </span>
+    </summary>
+    <div class="accordion-content">
+        <!-- Содержимое -->
+    </div>
 </details>
 ```
 
 ```css
-/* Visual indicators */
+/* Визуальные индикаторы */
 .accordion-summary {
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px;
-  border-radius: 4px;
-  transition: background-color 0.2s;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
 }
 
 .accordion-summary:hover {
-  background-color: rgba(0, 0, 0, 0.05);
+    background-color: rgba(0, 0, 0, 0.05);
 }
 
 .accordion-summary:focus-visible {
-  outline: 2px solid #0066cc;
-  outline-offset: 2px;
+    outline: 2px solid #0066cc;
+    outline-offset: 2px;
 }
 
 .accordion-icon {
-  display: inline-block;
-  transition: transform 0.3s;
+    display: inline-block;
+    transition: transform 0.3s;
 }
 
 details[open] .accordion-icon {
-  transform: rotate(90deg);
+    transform: rotate(90deg);
 }
 
-/* Hidden text for screen readers */
+/* Скрытый текст для скринридеров */
 .visually-hidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  padding: 0;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  border: 0;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
 }
 ```
 
-#### ❌ Incorrect
+#### ❌ Неправильно
 
 ```html
-<!-- No summary -->
+<!-- Отсутствие summary -->
 <details>
-  <div class="fake-summary" role="button" tabindex="0">Heading</div>
+    <div class="fake-summary" role="button" tabindex="0">
+        Заголовок
+    </div>
 </details>
 
-<!-- Empty summary -->
+<!-- Пустой summary -->
 <details>
-  <summary>
-    <span aria-hidden="true">▼</span>
-  </summary>
+    <summary>
+        <span aria-hidden="true">▼</span>
+    </summary>
 </details>
 
-<!-- Removing focus indicator -->
+<!-- Удаление индикатора фокуса -->
 <style>
-  summary:focus {
-    outline: none;
-  }
+    summary:focus {
+        outline: none;
+    }
 </style>
 ```
 
-#### Advanced Accessibility Techniques
+#### Продвинутые техники доступности
 
-1. **Testing with real screen readers:** NVDA (Windows), VoiceOver (macOS/iOS), TalkBack (Android).
+1. **Проверка с реальными скринридерами:** NVDA (Windows), VoiceOver (macOS/iOS), TalkBack (Android).
 
-2. **Automated testing:** Use axe-core, Lighthouse, WAVE.
+2. **Автоматизированное тестирование:** Используйте axe-core, Lighthouse, WAVE.
 
-3. **Semantic structure:** Group multiple `<details>` in `<section>` with a heading.
+3. **Семантическая структура:** Группируйте несколько `<details>` в `<section>` с заголовком.
 
 ```html
 <section aria-labelledby="faq-title">
-  <h2 id="faq-title">Frequently Asked Questions</h2>
-  <details name="faq">...</details>
-  <details name="faq">...</details>
-  <details name="faq">...</details>
+    <h2 id="faq-title">Часто задаваемые вопросы</h2>
+    <details name="faq">...</details>
+    <details name="faq">...</details>
+    <details name="faq">...</details>
 </section>
 ```
 
 ---
 
-### 6. Use Modern CSS Capabilities Instead of JavaScript Animations
+### 6. Применяйте современные CSS-возможности вместо JavaScript-анимаций
 
-#### Rule
+#### Правило
 
-Use modern CSS (`interpolate-size`, `calc-size()`, `@starting-style`) for expansion animation instead of JavaScript calculations and libraries.
+Используйте современный CSS (`interpolate-size`, `calc-size()`, `@starting-style`) для анимации раскрытия вместо JavaScript-вычислений и библиотек.
 
-#### Why
+#### Почему
 
-- **Performance:** CSS animations run on the GPU and don't block the main thread.
-- **Simplicity:** Less code, fewer bugs.
-- **Accessibility:** CSS animations respect system settings (`prefers-reduced-motion`).
-- **Future:** CSS specification evolves faster than JavaScript solutions.
+- **Производительность:** CSS-анимации выполняются на GPU и не блокируют основной поток.
+- **Простота:** Меньше кода, меньше багов.
+- **Доступность:** CSS-анимации учитывают настройки системы (prefers-reduced-motion).
+- **Будущее:** CSS-спецификация развивается быстрее, чем JavaScript-решения.
 
-#### ✅ Correct
+#### ✅ Правильно
 
 ```css
 .accordion-panel {
-  interpolate-size: allow-keywords;
-  height: 0;
-  opacity: 0;
-  overflow: hidden;
-  display: none;
-  transition:
-    height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-    opacity 0.3s ease 0.1s,
-    display 0.4s;
-  transition-behavior: allow-discrete;
+    interpolate-size: allow-keywords;
+    height: 0;
+    opacity: 0;
+    overflow: hidden;
+    display: none;
+    transition: 
+        height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+        opacity 0.3s ease 0.1s,
+        display 0.4s;
+    transition-behavior: allow-discrete;
 }
 
 .accordion-panel.open {
-  height: auto;
-  opacity: 1;
-  display: block;
+    height: auto;
+    opacity: 1;
+    display: block;
 }
 
 @starting-style {
-  .accordion-panel.open {
-    height: 0;
-    opacity: 0;
-    display: block;
-  }
+    .accordion-panel.open {
+        height: 0;
+        opacity: 0;
+        display: block;
+    }
 }
 
-/* Respect user settings */
+/* Уважаем настройки пользователя */
 @media (prefers-reduced-motion: reduce) {
-  .accordion-panel {
-    transition-duration: 0.01ms;
-  }
+    .accordion-panel {
+        transition-duration: 0.01ms;
+    }
 }
 ```
 
-#### ❌ Incorrect
+#### ❌ Неправильно
 
 ```javascript
-// Outdated approach: height calculation in JavaScript
+// Устаревший подход: вычисление высоты в JavaScript
 function toggleAccordion(element) {
-  const content = element.querySelector('.content');
-  const isOpen = element.open;
-
-  if (isOpen) {
-    // Close
-    content.style.height = content.scrollHeight + 'px';
-    requestAnimationFrame(() => {
-      content.style.height = '0';
-    });
-  } else {
-    // Open
-    content.style.height = content.scrollHeight + 'px';
-    content.addEventListener(
-      'transitionend',
-      () => {
-        content.style.height = 'auto';
-      },
-      { once: true },
-    );
-  }
+    const content = element.querySelector('.content');
+    const isOpen = element.open;
+    
+    if (isOpen) {
+        // Закрываем
+        content.style.height = content.scrollHeight + 'px';
+        requestAnimationFrame(() => {
+            content.style.height = '0';
+        });
+    } else {
+        // Открываем
+        content.style.height = content.scrollHeight + 'px';
+        content.addEventListener('transitionend', () => {
+            content.style.height = 'auto';
+        }, { once: true });
+    }
 }
 ```
 
-#### When JavaScript Is Still Needed
+#### Когда все же нужен JavaScript
 
-1. **Complex animation chains:** When you need to animate multiple elements sequentially.
-2. **Integration with libraries:** If you're already using GSAP or Framer Motion for other animations.
-3. **Custom Bezier curves:** CSS supports `cubic-bezier()`, but not all complex functions.
+1. **Сложные цепочки анимаций:** Когда нужно последовательно анимировать несколько элементов.
+2. **Интеграция с библиотеками:** Если вы уже используете GSAP или Framer Motion для других анимаций.
+3. **Кастомные кривые Безье:** CSS поддерживает `cubic-bezier()`, но не все сложные функции.
 
 ---
 
-### 7. Prefer Built-in Platform Components Over Custom Implementations
+### 7. Отдавайте предпочтение встроенным компонентам платформы перед пользовательскими реализациями
 
-#### Rule
+#### Правило
 
-If functionality is implemented by a native HTML element, use it instead of a custom JavaScript component.
+Если функциональность реализуется нативным HTML-элементом, используйте его вместо кастомного компонента на JavaScript.
 
-#### Why
+#### Почему
 
-- **Less code:** Native element doesn't require writing logic, styles, or ARIA attributes.
-- **Fewer bugs:** The platform is tested by millions of users.
-- **Better performance:** The browser implements the element at the engine level.
-- **Future compatibility:** The element will automatically receive new capabilities.
-- **Accessibility:** The browser provides accessibility out of the box.
+- **Меньше кода:** Нативный элемент не требует написания логики, стилей и ARIA-атрибутов.
+- **Меньше багов:** Платформа протестирована миллионами пользователей.
+- **Лучшая производительность:** Браузер реализует элемент на уровне движка.
+- **Будущая совместимость:** Элемент будет получать новые возможности автоматически.
+- **Доступность:** Браузер обеспечивает доступность из коробки.
 
-#### Comparison
+#### Сравнение
 
-| Functionality | Native Solution | Custom Solution             |
-| ------------- | --------------- | --------------------------- |
-| Accordion     | `<details>`     | React/Vue/Angular component |
-| Modal window  | `<dialog>`      | Custom overlay              |
-| Dropdown menu | `<select>`      | Custom dropdown             |
-| Tooltips      | `<popover>`     | Custom tooltip              |
-| Progress bar  | `<progress>`    | Custom indicator            |
+| Функциональность | Нативное решение | Кастомное решение |
+|------------------|------------------|-------------------|
+| Аккордеон | `<details>` | React/Vue/Angular компонент |
+| Модальное окно | `<dialog>` | Кастомный overlay |
+| Выпадающее меню | `<select>` | Кастомный дропдаун |
+| Всплывающие подсказки | `<popover>` | Кастомный тултип |
+| Прогресс-бар | `<progress>` | Кастомный индикатор |
 
-#### Exceptions
+#### Исключения
 
-1. **Design system:** If your design system requires strict control over every pixel and the native element isn't customizable enough.
+1. **Дизайн-система:** Если ваша система дизайна требует строгого контроля над каждой пикселем, и нативный элемент не поддается кастомизации.
 
-2. **Complex behavior:** If the native element doesn't support the needed functionality.
+2. **Сложное поведение:** Если нативный элемент не поддерживает нужную функциональность.
 
-3. **Legacy support:** If support for old browsers is required.
+3. **Обратная совместимость:** Если нужна поддержка старых браузеров.
 
-#### Practical Decision Algorithm
+#### Практический алгоритм принятия решения
 
 ```javascript
-// Selection algorithm: native vs custom
+// Алгоритм выбора: нативный vs кастомный
 function shouldUseNative(requirement) {
-  // 1. Does a native element exist?
-  if (!hasNativeElement(requirement)) return false;
-
-  // 2. Does it meet design requirements?
-  if (!meetsDesignRequirements(requirement)) return false;
-
-  // 3. Is it supported in target browsers?
-  if (!isSupportedInTargetBrowsers(requirement)) return false;
-
-  // 4. Is complex customization needed?
-  if (needsComplexCustomization(requirement)) return false;
-
-  // 5. All checks passed → use native
-  return true;
+    // 1. Существует ли нативный элемент?
+    if (!hasNativeElement(requirement)) return false;
+    
+    // 2. Соответствует ли он требованиям дизайна?
+    if (!meetsDesignRequirements(requirement)) return false;
+    
+    // 3. Поддерживается ли в целевых браузерах?
+    if (!isSupportedInTargetBrowsers(requirement)) return false;
+    
+    // 4. Нужна ли сложная кастомизация?
+    if (needsComplexCustomization(requirement)) return false;
+    
+    // 5. Все проверки пройдены → используем нативный
+    return true;
 }
 ```
 
 ---
 
-### Full Checklist: Quality Assurance for Using `<details>`
+### Полный чек-лист: проверка качества использования `<details>`
 
-Before implementing `<details>` in your project, check yourself against this checklist:
+Перед тем как внедрить `<details>` в ваш проект, проверьте себя по этому чек-листу:
 
-#### Semantics and Structure
+#### Семантика и структура
+- [ ] Используется только для раскрытия дополнительной информации
+- [ ] `<summary>` присутствует как первый дочерний элемент
+- [ ] Текст внутри `<summary>` осмысленный и уникальный
+- [ ] Атрибут `name` используется для группировки (если нужно)
 
-- [ ] Used only for disclosing additional information
-- [ ] `<summary>` is present as the first child
-- [ ] Text inside `<summary>` is meaningful and unique
-- [ ] `name` attribute is used for grouping (if needed)
-
-#### Accessibility
-
-- [ ] `:focus-visible` focus indicator is preserved
-- [ ] Visual state indicator (open/closed) is present
-- [ ] Screen reader announces state (tested on real device)
-- [ ] Keyboard navigation works (Space/Enter for toggle, Tab for navigation)
+#### Доступность
+- [ ] Индикатор фокуса `:focus-visible` сохранен
+- [ ] Визуальный индикатор состояния (открыт/закрыт) присутствует
+- [ ] Скринридер озвучивает состояние (проверено на реальном устройстве)
+- [ ] Навигация с клавиатуры работает (Space/Enter для переключения, Tab для навигации)
 
 #### CSS
-
-- [ ] Modern CSS capabilities (`interpolate-size`, `calc-size()`) are used
-- [ ] User preferences (`prefers-reduced-motion`) are respected
-- [ ] Marker customization via `::marker` or `list-style` is done
+- [ ] Современные CSS-возможности (`interpolate-size`, `calc-size()`) используются
+- [ ] Учтены настройки пользователя (`prefers-reduced-motion`)
+- [ ] Кастомизация маркера выполнена через `::marker` или `list-style`
 
 #### JavaScript
+- [ ] Событие `toggle` используется для реагирования на изменения
+- [ ] Состояние не дублируется без необходимости
+- [ ] Программное изменение через `details.open` используется правильно
+- [ ] Нет избыточных обработчиков кликов
 
-- [ ] The `toggle` event is used to react to changes
-- [ ] State is not duplicated unnecessarily
-- [ ] Programmatic change via `details.open` is used correctly
-- [ ] No redundant click handlers
-
-#### Performance and Future
-
-- [ ] No redundant JavaScript logic for state management
-- [ ] Native capabilities are used instead of custom implementations
-- [ ] Code will work with JavaScript disabled
-- [ ] Support in target browsers is considered
+#### Производительность и будущее
+- [ ] Нет избыточной JavaScript-логики для управления состоянием
+- [ ] Используются нативные возможности вместо кастомных реализаций
+- [ ] Код будет работать при отключенном JavaScript
+- [ ] Учтена поддержка в целевых браузерах
 
 ---
 
-### Final Conclusion
+### Итоговый вывод
 
-`<details>` is not just a tag. It is an **architectural decision** that reflects the maturity of the web platform. By using it correctly, you:
+`<details>` — это не просто тег. Это **архитектурное решение**, которое отражает зрелость веб-платформы. Используя его правильно, вы:
 
-1. **Reduce code:** Replace hundreds of lines of JavaScript with a few lines of HTML.
-2. **Improve accessibility:** Get free ARIA roles and keyboard control.
-3. **Boost performance:** The browser works faster than any JavaScript.
-4. **Ensure a future:** Your code will work with new browser versions without changes.
+1. **Сокращаете код:** Заменяете сотни строк JavaScript на несколько строк HTML.
+2. **Улучшаете доступность:** Получаете бесплатные ARIA-роли и управление клавиатурой.
+3. **Повышаете производительность:** Браузер работает быстрее любого JavaScript.
+4. **Обеспечиваете будущее:** Ваш код будет работать с новыми версиями браузеров без изменений.
 
-**The golden rule of this chapter:**
+**Золотое правило этой главы:**
 
-> In web development, often the best solution is one that's already built into the platform. Use `<details>` not as a compromise, but as a conscious choice for simplicity, reliability, and accessibility.
-
----
-
-## 6.14. Why This Chapter Is Relevant in 2026
-
-In 2026, `<details>` has definitively ceased to be just an element for FAQ.
-
-Today, it is part of the new browser architecture.
-
-It demonstrates several global trends in HTML development:
-
-- the browser manages component state itself;
-- HTML is becoming a declarative user interface API;
-- modern CSS allows animating native components without JavaScript;
-- frameworks are starting to use built-in platform capabilities instead of their own implementations;
-- client-side JavaScript volume is decreasing;
-- the role of Progressive Enhancement and Baseline is growing.
-
-`<details>` has become one of the most telling examples of how the Web Platform is gradually taking over tasks that, just a few years ago, were completely handled by custom JavaScript.
+> В веб-разработке часто лучшее решение — то, которое уже встроено в платформу. Используйте `<details>` не как компромисс, а как осознанный выбор в пользу простоты, надежности и доступности.
 
 ---
 
-## Chapter Conclusion — The Evolution of `<details>`: From Tag to Component
+## 6.14. Почему эта глава актуальна именно в 2026 году
 
-We began this chapter with a simple question: "What is `<details>`?" And the answer evolved as we delved deeper into the material. Let's trace this path — it reflects not only the evolution of one element but the evolution of the entire web platform.
+Именно в 2026 году `<details>` окончательно перестал быть элементом для FAQ.
+
+Сегодня он является частью новой архитектуры браузеров.
+
+Он показывает сразу несколько глобальных тенденций развития HTML:
+
+- браузер сам управляет состоянием компонентов;
+- HTML становится декларативным API пользовательского интерфейса;
+- современные CSS позволяют анимировать нативные компоненты без JavaScript;
+- фреймворки начинают использовать встроенные возможности платформы вместо собственных реализаций;
+- уменьшается объем клиентского JavaScript;
+- растет роль Progressive Enhancement и Baseline.
+
+`<details>` стал одним из наиболее показательных примеров того, как Web Platform постепенно берет на себя задачи, которые еще несколько лет назад полностью решались пользовательским JavaScript.
 
 ---
 
-### The Path of Transformation
+Вот доработанное заключение главы. Я выстроил эволюционную линию, подвел философский итог и соединил все нити главы в единую архитектурную концепцию.
 
-#### FAQ (1990s — 2000s)
+---
 
-In the early internet, disclosure blocks were implemented via JavaScript hacks: `display: none` and `onclick` on headings. Each implementation was unique, buggy, and inaccessible. Questions and answers (FAQ) became the first pattern where such functionality was needed.
+## Заключение главы — Эволюция `<details>`: от тега к компоненту
+
+Мы начали эту главу с простого вопроса: "Что такое `<details>`?". И ответ на него менялся по мере того, как мы погружались в материал. Давайте проследим этот путь — он отражает не только эволюцию одного элемента, но и эволюцию всей веб-платформы.
+
+---
+
+### Путь трансформации
+
+#### FAQ (1990-е — 2000-е)
+
+В начале интернета раскрывающиеся блоки реализовывались через JavaScript-хаки: `display: none` и `onclick` на заголовках. Каждая реализация была уникальной, багованной и недоступной. Вопросы и ответы (FAQ) стали первым паттерном, где потребовалась такая функциональность.
 
 ```html
-<!-- The era of hacks -->
+<!-- Эпоха хаков -->
 <div onclick="toggle(this)" style="cursor:pointer">
-  <span class="arrow">▶</span> Question
+    <span class="arrow">▶</span> Вопрос
 </div>
-<div id="answer" style="display:none">Answer</div>
+<div id="answer" style="display:none">
+    Ответ
+</div>
 ```
 
 #### Disclosure Widget (2008-2010)
 
-With the advent of ARIA (Accessible Rich Internet Applications), came the understanding that disclosure blocks must be accessible. **Disclosure (Show/Hide)** patterns emerged. But implementation still required JavaScript and manual ARIA attribute management.
+С появлением ARIA (Accessible Rich Internet Applications) пришло понимание, что раскрывающиеся блоки должны быть доступными. Появились паттерны **Disclosure (Show/Hide)**. Но реализация все еще требовала JavaScript и ручного управления ARIA-атрибутами.
 
 ```html
-<!-- The era of ARIA -->
-<button aria-expanded="false" aria-controls="panel">Heading</button>
-<div id="panel" role="region" hidden>Content</div>
+<!-- Эпоха ARIA -->
+<button aria-expanded="false" aria-controls="panel">
+    Заголовок
+</button>
+<div id="panel" role="region" hidden>
+    Содержимое
+</div>
 ```
 
 #### Accordion (2010-2014)
 
-UI libraries (jQuery UI, Bootstrap) standardized the accordion as a component. Conventions about structure, styles, and behavior emerged. But each library implemented it differently, and bundles grew.
+UI-библиотеки (jQuery UI, Bootstrap) стандартизировали аккордеон как компонент. Появились соглашения о структуре, стилях и поведении. Но каждая библиотека реализовывала его по-своему, и бандлы росли.
 
 ```html
-<!-- The era of libraries -->
+<!-- Эпоха библиотек -->
 <div class="accordion">
-  <div class="accordion-item">
-    <h3 class="accordion-header">
-      <button class="accordion-button" data-bs-toggle="collapse">
-        Heading
-      </button>
-    </h3>
-    <div class="accordion-collapse collapse">
-      <div class="accordion-body">Content</div>
+    <div class="accordion-item">
+        <h3 class="accordion-header">
+            <button class="accordion-button" data-bs-toggle="collapse">
+                Заголовок
+            </button>
+        </h3>
+        <div class="accordion-collapse collapse">
+            <div class="accordion-body">
+                Содержимое
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 ```
 
 #### State Machine (2014-2018)
 
-Frameworks (React, Vue, Angular) brought state management. The accordion became a component with a clear lifecycle, props, and events. But each framework reimplemented it from scratch.
+Фреймворки (React, Vue, Angular) принесли управление состоянием. Аккордеон стал компонентом с четким жизненным циклом, пропсами и событиями. Но каждый фреймворк реализовывал его заново.
 
 ```jsx
-// The era of frameworks
+// Эпоха фреймворков
 function Accordion({ title, children }) {
-  const [isOpen, setIsOpen] = useState(false);
-  // ... 30 lines of logic
+    const [isOpen, setIsOpen] = useState(false);
+    // ... 30 строк логики
 }
 ```
 
 #### Native UI Component (2018-2024)
 
-Browsers finally got `<details>` and `<summary>` with accessibility support, keyboard navigation, and events. But developers long ignored them, considering them "not flexible enough." CSS hacks with `max-height` appeared, but they were a compromise.
+Браузеры наконец получили `<details>` и `<summary>` с поддержкой доступности, клавиатурной навигации и событий. Но разработчики долго игнорировали их, считая "недостаточно гибкими". Появились CSS-хаки с `max-height`, но они были компромиссом.
 
 ```html
-<!-- The era of nativity -->
+<!-- Эпоха нативности -->
 <details>
-  <summary>Heading</summary>
-  <p>Content</p>
+    <summary>Заголовок</summary>
+    <p>Содержимое</p>
 </details>
 ```
 
-#### Modern HTML 2026 (Today)
+#### Modern HTML 2026 (Сегодня)
 
-Today, `<details>` is a full-fledged platform component. It has:
+Сегодня `<details>` — это полноценный компонент платформы. Он имеет:
 
-- **Built-in state** via the `open` attribute.
-- **Events** (`toggle`) for reactivity.
-- **Accessibility** out of the box (ARIA, keyboard, screen readers).
-- **Grouping** via the `name` attribute.
-- **CSS integration** (pseudo-classes, animations, `interpolate-size`, `calc-size()`).
-- **Search integration** (Ctrl+F automatically opens the relevant block).
-- **Zero-JS mode** — works without JavaScript.
-- **Framework integration** — used in React, Vue, Angular, Svelte, Qwik, Astro.
+- **Встроенное состояние** через атрибут `open`.
+- **События** (`toggle`) для реактивности.
+- **Доступность** из коробки (ARIA, клавиатура, скринридеры).
+- **Группировку** через атрибут `name`.
+- **Интеграцию с CSS** (псевдоклассы, анимации, `interpolate-size`, `calc-size()`).
+- **Интеграцию с поиском** (Ctrl+F автоматически раскрывает нужный блок).
+- **Zero-JS режим** — работает без JavaScript.
+- **Интеграцию с фреймворками** — используется в React, Vue, Angular, Svelte, Qwik, Astro.
 
 ```html
-<!-- Modern approach: everything is built in -->
+<!-- Современный подход: все встроено -->
 <details name="faq" class="accordion">
-  <summary class="accordion-summary">
-    <span class="icon">▶</span>
-    A question everyone cares about
-  </summary>
-  <div class="accordion-content">An answer that solves the problem</div>
+    <summary class="accordion-summary">
+        <span class="icon">▶</span>
+        Вопрос, который волнует всех
+    </summary>
+    <div class="accordion-content">
+        Ответ, который решает проблему
+    </div>
 </details>
 ```
 
 ```css
-/* Modern CSS: smooth, accessible, performant */
+/* Современный CSS: плавно, доступно, производительно */
 .accordion-content {
-  interpolate-size: allow-keywords;
-  height: 0;
-  overflow: hidden;
-  transition: height 0.4s ease;
+    interpolate-size: allow-keywords;
+    height: 0;
+    overflow: hidden;
+    transition: height 0.4s ease;
 }
 
 details[open] .accordion-content {
-  height: auto;
+    height: auto;
 }
 ```
 
 ```javascript
-// Modern JavaScript: only additional logic
-document.querySelectorAll('details[name="faq"]').forEach((details) => {
-  details.addEventListener('toggle', () => {
-    if (details.open) {
-      // Send analytics
-      trackEvent('faq_opened', details.id);
-    }
-  });
+// Современный JavaScript: только дополнительная логика
+document.querySelectorAll('details[name="faq"]').forEach(details => {
+    details.addEventListener('toggle', () => {
+        if (details.open) {
+            // Отправляем аналитику
+            trackEvent('faq_opened', details.id);
+        }
+    });
 });
 ```
 
 ---
 
-### The Main Idea of the Chapter
+### Главная идея главы
 
-> **`<details>` can no longer be perceived as a "disclosure block." In the modern Web Platform, it is a full-fledged declarative browser component with built-in state, events, accessibility, CSS integration, and architecture that is gradually replacing thousands of lines of custom JavaScript.**
+> **`<details>` больше нельзя воспринимать как "раскрывающийся блок". В современной Web Platform это полноценный декларативный компонент браузера со встроенным состоянием, событиями, доступностью, интеграцией с CSS и архитектурой, которая постепенно заменяет тысячи строк пользовательского JavaScript.**
 
-This is not just a technical improvement. It's a paradigm shift:
+Это не просто техническое улучшение. Это смена парадигмы:
 
-1. **From imperativeness to declarativeness:** You don't write _how_ to open a block; you describe _what_ should open. The browser handles the implementation.
+1. **От императивности к декларативности:** Вы не пишете *как* открыть блок, вы описываете *что* должно открываться. Браузер берет на себя реализацию.
 
-2. **From frameworks to platform:** Instead of loading heavy libraries for an accordion, you use what's already in the browser.
+2. **От фреймворков к платформе:** Вместо того чтобы подключать тяжелые библиотеки ради аккордеона, вы используете то, что уже есть в браузере.
 
-3. **From accessibility as an option to accessibility as default:** `<details>` makes interfaces accessible without extra effort.
+3. **От доступности как опции к доступности как умолчанию:** `<details>` делает интерфейсы доступными без дополнительных усилий.
 
-4. **From JavaScript-first to HTML-first:** The modern approach starts with semantic markup, and JavaScript is only added for additional logic.
-
----
-
-### Final Summary of the Chapter
-
-Throughout this chapter, we:
-
-1. **Analyzed the semantics and structure** of `<details>` and `<summary>`.
-2. **Studied events** `toggle`, `change`, `submit`, `invalid`, `formdata`, `reset`.
-3. **Delved into accessibility** — what the browser does automatically and what requires developer attention.
-4. **Mastered modern CSS animations** with `interpolate-size`, `calc-size()`, and `transition-behavior`.
-5. **Understood search integration** (Ctrl+F) and why it's impossible to emulate in JavaScript.
-6. **Considered `<details>` as a component** with state, API, events, and lifecycle.
-7. **Analyzed framework integration** and understood when the native element beats the custom one.
-8. **Formulated practical recommendations** and architectural rules.
+4. **От JavaScript-first к HTML-first:** Современный подход начинается с семантической разметки, а JavaScript добавляется только для дополнительной логики.
 
 ---
 
-### Philosophical Conclusion
+### Итоговое резюме главы
 
-The web platform is evolving. Every new standard, every new element, every new CSS capability is a step toward making complex things simple.
+За время работы над этой главой мы:
 
-`<details>` is a micro-universe that reflects all the principles of **Modern HTML 2026**:
-
-- **Semantics** — correct markup solves most problems.
-- **Accessibility** — built-in, not bolted on.
-- **Performance** — native, not emulated.
-- **Declarativeness** — description, not instructions.
-- **Resilience** — works without JavaScript.
-- **Future** — evolves with the platform.
-
-**Remember:** The best code is the code you don't have to write. `<details>` brings this principle to life. Use it not as a compromise, but as a conscious choice in favor of the platform.
+1. **Разобрали семантику и структуру** `<details>` и `<summary>`.
+2. **Изучили события** `toggle`, `change`, `submit`, `invalid`, `formdata`, `reset`.
+3. **Погрузились в доступность** — что браузер делает автоматически, а что требует внимания разработчика.
+4. **Освоили современные CSS-анимации** с `interpolate-size`, `calc-size()` и `transition-behavior`.
+5. **Поняли интеграцию с поиском** (Ctrl+F) и почему это невозможно эмулировать на JavaScript.
+6. **Рассмотрели `<details>` как компонент** с состоянием, API, событиями и жизненным циклом.
+7. **Проанализировали интеграцию с фреймворками** и поняли, когда нативный элемент побеждает кастомный.
+8. **Сформулировали практические рекомендации** и архитектурные правила.
 
 ---
 
-### What's Next
+### Философский вывод
 
-This chapter was dedicated to a single element. But its lessons apply to all of HTML:
+Веб-платформа эволюционирует. Каждый новый стандарт, каждый новый элемент, каждая новая CSS-возможность — это шаг к тому, чтобы делать сложные вещи простыми.
 
-- Look for native solutions before writing your own.
-- Trust the platform.
-- Write semantic code.
-- Test for accessibility.
-- Follow the evolution of web standards.
+`<details>` — это микро-вселенная, в которой отражаются все принципы **Modern HTML 2026**:
 
-Because **Modern HTML 2026** is not just a book about tags. It's a manifesto on how to build interfaces that work for everyone, everywhere, always.
+- **Семантика** — правильная разметка решает большинство проблем.
+- **Доступность** — встроенная, а не надстроенная.
+- **Производительность** — нативная, а не эмулированная.
+- **Декларативность** — описание, а не инструкции.
+- **Устойчивость** — работа без JavaScript.
+- **Будущее** — эволюция вместе с платформой.
+
+**Помните:** Лучший код — это код, который не нужно писать. `<details>` воплощает этот принцип в жизнь. Используйте его не как компромисс, а как осознанный выбор в пользу платформы.
 
 ---
 
-> _"The most reliable component is the one already built into the browser. The most performant code is the code you don't have to write. The most accessible markup is the markup you don't have to fix."_
+### Что дальше
+
+Эта глава была посвящена одному элементу. Но ее уроки применимы ко всему HTML:
+
+- Ищите нативные решения прежде, чем писать свои.
+- Доверяйте платформе.
+- Пишите семантический код.
+- Тестируйте доступность.
+- Следите за эволюцией веб-стандартов.
+
+Потому что **Modern HTML 2026** — это не просто книга о тегах. Это манифест о том, как строить интерфейсы, которые работают для всех, всегда и везде.
+
+---
+
+> *"Самый надежный компонент — тот, который уже встроен в браузер. Самый производительный код — тот, который не нужно писать. Самая доступная разметка — та, которую не нужно исправлять."*
 >
-> — From the archive of Modern HTML 2026 architectural principles
+> — Из архива архитектурных принципов Modern HTML 2026

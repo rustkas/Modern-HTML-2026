@@ -1,38 +1,38 @@
-# Chapter 3. HTML as a Browser API
+# Глава 3. HTML как API браузера
 
-> **The most significant change in recent years is not the emergence of new HTML elements, but the transformation of HTML's role. If HTML was once a language for describing documents and JavaScript was a language for behavior, the modern Web Platform is increasingly moving behavior to the declarative level. HTML is becoming a high-level platform API, and the browser is becoming an intelligent runtime environment that independently implements more and more features that previously required custom JavaScript.**
+> **Самое важное изменение последних лет заключается не в появлении новых HTML-элементов, а в изменении роли HTML. Если раньше HTML был языком описания документа, а JavaScript — языком поведения, то современная Web Platform всё чаще переносит поведение на декларативный уровень. HTML становится высокоуровневым API платформы, а браузер — интеллектуальной средой выполнения, которая самостоятельно реализует всё больше функций, ранее требовавших пользовательского JavaScript.**
 
-It is this paradigm shift—not the list of new tags and attributes—that makes HTML 2026 qualitatively different from HTML of 2015 or even 2022.
+Именно эта смена парадигмы, а не список новых тегов и атрибутов, делает HTML 2026 качественно отличным от HTML образца 2015 или даже 2022 года.
 
-## Why This Chapter Is Relevant in 2026
+## Почему эта глава актуальна именно в 2026 году
 
-If you open a HTML book from ten years ago, you'll notice an interesting pattern.
+Если открыть книгу по HTML десятилетней давности, можно заметить интересную закономерность.
 
-HTML is described as a language for document structure.
+HTML описывается как язык структуры документа.
 
-CSS is responsible for presentation.
+CSS отвечает за оформление.
 
-JavaScript implements all interface behavior.
+JavaScript реализует всё поведение интерфейса.
 
-This division was long considered a fundamental principle of web development.
+Такое разделение долгое время считалось фундаментальным принципом веб-разработки.
 
-However, over the past few years, the Web Platform has begun to develop in a different direction.
+Однако за последние несколько лет Web Platform начала развиваться в другом направлении.
 
-Modern browsers are increasingly providing ready-made capabilities directly at the HTML level.
+Современные браузеры всё чаще предоставляют готовые возможности непосредственно на уровне HTML.
 
-Dialog windows, popover panels, built-in form validation, lazy-loaded images, resource loading priorities, Declarative Shadow DOM, Popover API, and many other mechanisms no longer require writing custom infrastructure in JavaScript.
+Диалоговые окна, всплывающие панели, встроенная валидация форм, ленивые изображения, приоритеты загрузки ресурсов, Declarative Shadow DOM, Popover API и многие другие механизмы больше не требуют написания собственной инфраструктуры на JavaScript.
 
-As a result, HTML is gradually transforming from a structure description language into a high-level declarative browser API.
+В результате HTML постепенно превращается из языка описания структуры в высокоуровневый декларативный API браузера.
 
-This is one of the most important changes in the modern Web Platform.
+Это одно из самых важных изменений современной Web Platform.
 
-In this chapter, we will examine HTML precisely from this perspective.
+В этой главе мы будем рассматривать HTML именно с этой точки зрения.
 
 ---
 
-## 3.1. Evolution of HTML Living Standard
+## 3.1. Эволюция HTML Living Standard
 
-## Evolution of the Web Platform
+## Эволюция Web Platform
 
 ```
 1995
@@ -41,7 +41,7 @@ HTML
 
 ↓
 
-Documents
+Документы
 ```
 
 ↓
@@ -53,7 +53,7 @@ HTML
 
 ↓
 
-Documents
+Документы
 
 +
 
@@ -100,59 +100,65 @@ Native Components
 Web Platform
 ```
 
-Historically, HTML evolved through discrete versions (HTML4, XHTML, HTML5), each requiring multi-year cycles of consortium approval, standard releases, and long waits for browser support. The modern landscape of web standards is radically different, organized around the concept of a **Living Standard**.
+Исторически HTML развивался дискретными версиями (HTML4, XHTML, HTML5), каждая из которых требовала многолетних циклов согласования консорциумами, выпуска стандартов и долгого ожидания поддержки в браузерах. Современный ландшафт веб-стандартов кардинально иным образом организован вокруг концепции **Living Standard** (Живой стандарт).
 
-### The Split and Reunification of WHATWG and W3C
+### Разрыв и воссоединение WHATWG и W3C
 
-In 2011, a strategic rift occurred in the developer community. The **W3C** consortium attempted to freeze the specification into monolithic versions (such as the planned HTML5.x and XHTML2), while the **WHATWG** (Web Hypertext Application Technology Working Group), consisting of engineers from leading browser vendors (Apple, Google, Mozilla, Microsoft), insisted on continuous updates to the specification as real web needs emerged and bugs were fixed.
+Как уже говорилось в главе 1, сам **WHATWG** был образован в 2004 году усилиями Apple, Mozilla и Opera — в ответ на решение W3C свернуть развитие HTML в пользу XML-совместимой XHTML. Несколько лет спустя, в 2007 году, W3C изменил курс и начал параллельно публиковать собственную копию спецификации, работая с WHATWG над общим текстом под названием HTML5.
 
-In 2019, the organizations reached a historic agreement: the W3C officially recognized the WHATWG Living Standard as the sole authoritative specification for HTML and DOM. This approach is based on three fundamental principles:
+Дальше пути разошлись во второй раз, но уже по другой причине. К 2009 году W3C фактически свернул отдельную инициативу XHTML 2.0 — это был самостоятельный, не связанный с HTML5 проект, который к тому моменту так и не вышел из статуса черновика. А в 2011–2012 годах обнаружилось более глубокое расхождение целей уже внутри самой работы над HTML5: W3C стремился зафиксировать «завершённую» версию спецификации (HTML5 как рекомендация с номером версии), тогда как WHATWG настаивал на модели **Living Standard** — непрерывно обновляемого документа без версионирования. Официально о разделении редакторских обязанностей группы объявили в июле 2012 года.
 
-1. **Backward Compatibility:** Innovations must under no circumstances "break" the millions of existing web pages on the internet. Old sites must render correctly in new browsers.
-2. **Implementation-Driven Standards:** The specification describes how browsers actually work in the real world, not theoretical abstractions. If the standard diverges from the behavior of popular browsers, the standard adapts to reality.
-3. **Continuous Updates:** The specification evolves daily. As soon as a feature passes all testing stages and is implemented in engines (Blink, Gecko, WebKit), it becomes part of the standard without waiting for major platform releases.
+В 2019 году организации пришли к историческому соглашению: W3C официально признал Living Standard от WHATWG единственной актуальной спецификацией HTML и DOM. Этот подход базируется на трёх фундаментальных принципах:
+
+1. **Обратная совместимость (Backward Compatibility):** Нововведения ни при каких условиях не должны «ломать» существующие миллионы веб-страниц в интернете. Старые сайты обязаны корректно рендериться в новых браузерах.
+2. **Соответствие реализации (Implementation-Driven Standards):** Спецификация описывает то, как браузеры фактически работают в реальном мире, а не теоретические абстракции. Если стандарт расходится с поведением популярных браузеров, стандарт адаптируется под реальность.
+3. **Непрерывность обновлений:** Спецификация эволюционирует ежедневно. Как только фича проходит все стадии тестирования и внедряется в движки (Blink, Gecko, WebKit), она становится частью стандарта без ожидания мажорных релизов платформы.
 
 ---
 
-## 3.2. Native Components Instead of Libraries: The Era of Baseline
+## 3.2. Нативные компоненты вместо библиотек: Эра Baseline
 
-Thanks to the continuous update model, the modern browser platform is regularly enriched with powerful native tools. What developers spent decades implementing with heavy third-party JavaScript libraries (modal windows, tooltips, accordions, form validation) can now be handled declaratively by the browser itself.
+Благодаря модели непрерывного обновления, современная браузерная платформа регулярно пополняется мощными нативными инструментами. То, для чего десятилетиями подключались тяжелые сторонние библиотеки на JavaScript (модальные окна, тултипы, аккордеоны, валидация форм), теперь решается декларативно силами самого браузера.
 
-### The Baseline Status
+### Статус Baseline
 
-The **Baseline** concept, supported by the W3C and the Baseline Working Group, classifies web platform features into two categories:
+Концепция **Baseline** развивается **WebDX Community Group** — рабочей группой сообщества при W3C, объединяющей представителей всех основных браузерных вендоров (Google, Mozilla, Apple, Microsoft) и изначально выросшей из внутренней инициативы команды Chrome (Google I/O 2023). Baseline классифицирует веб-платформенные функции на две категории:
 
-- **Baseline Newly available:** The feature is supported by all major browsers (Chrome, Safari, Firefox, Edge).
-- **Baseline Widely available:** The feature has been universally available for at least 30 months.
+- **Baseline Newly available:** Функция поддерживается всеми основными браузерами (Chrome, Safari, Firefox, Edge) в их актуальных стабильных версиях.
+- **Baseline Widely available:** Функция была Newly available и остаётся стабильно поддерживаемой на протяжении как минимум 30 месяцев.
 
-### Key Native HTML APIs
+### Ключевые нативные API в HTML (HTML Native API)
 
-#### 1. The `<dialog>` Element
+#### 1. Элемент `<dialog>`
 
-Introduced into widespread practice in 2022, the `<dialog>` element radically changed the approach to creating modal windows and dialogs. Previously, developers had to manually manage focus, recalculate z-index, attach click-outside listeners, and implement focus trapping for accessibility (a11y).
+Внедренный в широкую практику в 2022 году, элемент `<dialog>` кардинально изменил подход к созданию модальных окон и диалогов (Baseline *Widely available* с марта 2022 года — на сегодня это самая зрелая технология из рассматриваемых в этой главе). Раньше разработчикам приходилось вручную управлять фокусом, пересчитывать z-index, вешать слушатели кликов вне окна и реализовывать изоляцию фокуса (focus trap) для доступности (a11y).
 
-`<dialog>` is not just an element.
+```
+<dialog>
+```
 
-It is a
+не является просто элементом.
+
+Он является
 
 > Native Dialog API
 
-`<dialog>` handles all this complex logic at the platform level:
+`<dialog>` берет на себя всю эту сложнейшую логику на уровне платформы:
 
-- **Screen Reader Integration:** Automatically notifies assistive technologies when a modal layer appears.
-- **Background Page Blocking (Inertness):** When opened via the `.showModal()` method, background content becomes inaccessible to clicks and keyboard input.
-- **Focus Management:** Automatically moves focus to the first interactive element inside the dialog and returns it to the calling button when closed.
+- **Интеграция со скринридерами:** Автоматически сообщает вспомогательным технологиям о появлении модального слоя.
+- **Блокировка остальной страницы (Inertness):** При открытии через метод `.showModal()` фоновый контент становится неактивным для кликов и клавиатурного ввода.
+- **Управление фокусом:** Автоматически переносит фокус на первый интерактивный элемент внутри диалога и возвращает его на вызывавшую кнопку при закрытии.
 
 ```html
-<button id="open-btn">Open Settings</button>
+<button id="open-btn">Открыть настройки</button>
 
 <dialog id="settings-dialog">
   <form method="dialog">
-    <h2>System Settings</h2>
-    <p>Manage performance engine parameters.</p>
+    <h2>Системные настройки</h2>
+    <p>Управление параметрами производительности движка.</p>
     <menu>
-      <button value="cancel">Cancel</button>
-      <button value="save">Save</button>
+      <button value="cancel">Отмена</button>
+      <button value="save">Сохранить</button>
     </menu>
   </form>
 </dialog>
@@ -160,65 +166,75 @@ It is a
 <script>
   const dialog = document.getElementById('settings-dialog');
   document.getElementById('open-btn').addEventListener('click', () => {
-    dialog.showModal(); // Imperative call to the native browser API
+    dialog.showModal(); // Императивный вызов нативного API браузера
   });
 </script>
 ```
 
 #### 2. Popover API
 
-Having appeared in the specification and reached Baseline status, the **Popover API** allows creating floating interface elements (context menus, filter panels, tooltips, popup profiles) with a minimal set of attributes.
+**Popover API** достиг статуса Baseline *Newly available* в январе 2025 года и позволяет создавать всплывающие элементы интерфейса (контекстные меню, панели фильтров, подсказки, всплывающие профили) с помощью минимального набора атрибутов. Стоит иметь в виду: до статуса *Widely available* (устойчивая поддержка на протяжении 30 месяцев) технология дойдёт ориентировочно к середине 2027 года, так что для проектов с широкой поддержкой старых версий браузеров стоит закладывать progressive enhancement.
 
-`popover`
+```
+popover
+```
 
 —
 
 > Native Overlay API
 
-The main achievement of the Popover API is the concept of **Light Dismiss** and layer management (Top Layer). The browser independently moves the popup element to a separate top layer above all other content, freeing the developer from z-index issues, and automatically closes the popover when clicking outside it or pressing the `Escape` key.
+Главное достижение Popover API — концепция **Light Dismiss** (легкое закрытие) и управление слоями (Top Layer). Браузер самостоятельно выносит всплывающий элемент в отдельный верхний слой поверх остального контента, избавляя разработчика от проблем с `z-index`, а также автоматически закрывает попover при клике вне его области или нажатии клавиши `Escape`.
 
 ```html
-<!-- Popover control button -->
-<button popovertarget="my-popover">Open Panel</button>
+<!-- Кнопка управления попловером -->
+<button popovertarget="my-popover">Открыть панель</button>
 
-<!-- The popover element itself -->
+<!-- Сам попover элемент -->
 <div id="popover" popover>
-  <h3>Quick Menu</h3>
-  <p>This block renders above other content in the browser's Top Layer.</p>
+  <h3>Быстрое меню</h3>
+  <p>Этот блок рендерится поверх остального контента в Top Layer браузера.</p>
 </div>
 ```
 
-#### 3. Performance Management at the Markup Level
+#### 3. Управление производительностью на уровне разметки
 
-`loading="lazy"`
+```
+loading="lazy"
+```
 
 —
 
 > Native Lazy Loading API
 
-`fetchpriority`
+```
+fetchpriority
+```
 
 —
 
 > Native Network Scheduling API
 
-The HTML specification provides powerful declarative levers for optimizing rendering and network activity:
+Спецификация HTML предоставляет мощные декларативные рычаги оптимизации рендеринга и сетевой активности:
 
-- `loading="lazy"`: Built-in lazy loading of images and frames, performed at the engine level before pixels enter the viewport.
-- `fetchpriority="high" / "low"`: Instructing the browser on the loading priority of critical resources (for example, the main banner image above the fold).
-- `rel="modulepreload"`: Preloading and pre-compiling ECMAScript modules.
+- `loading="lazy"`: Встроенная отложенная загрузка изображений и фреймов, выполняемая на уровне движка браузера до загрузки пикселей в зону видимости (viewport).
+- `fetchpriority="high" / "low"`: Указание браузеру приоритета загрузки критических ресурсов (например, главного изображения баннера на первом экране).
+- `rel="modulepreload"`: Предзагрузка и предварительная компиляция ECMAScript модулей.
 
-#### 4. Component Templates
+#### 4. Шаблоны компонентов
 
-`template shadowrootmode`
+```
+template shadowrootmode
+```
 
 —
 
 > Native Component API
 
+Declarative Shadow DOM (атрибут `shadowrootmode`) достиг Baseline *Newly available* в августе 2024 года. Напомним важный нюанс из предыдущих глав: изначально в Chrome 90–110 использовался нестандартный атрибут `shadowroot`, который позже был заменён на стандартизированный `shadowrootmode` — старые примеры кода с `shadowroot` описывают уже удалённое, нестандартное поведение.
+
 #### 5. Browser Runtime
 
-Today, the browser is already a fully-featured runtime environment.
+Сегодня браузер уже является полноценной средой выполнения.
 
 ```text
 Browser Runtime
@@ -248,78 +264,78 @@ Browser Runtime
 └── Security Sandbox
 ```
 
-And HTML is becoming a way to interface with almost all of these subsystems.
+И HTML становится способом обращаться практически ко всем этим подсистемам.
 
 ---
 
-## 3.3. HTML as a Declarative Web Platform API
+## 3.3. HTML как декларативный API Web Platform
 
-Today, an interesting trend is emerging.
+Сегодня появляется интересная тенденция.
 
-Previously,
+Раньше
 
-JavaScript told the browser:
-
-```
-Do this.
-```
-
-Now HTML increasingly tells the browser:
+JavaScript говорил браузеру
 
 ```
-Here is what should exist.
+Сделай это.
 ```
 
-And the browser itself decides:
+Теперь HTML всё чаще говорит браузеру
 
-- when to create;
-- when to load;
-- when to animate;
-- when to close;
-- when to free memory;
-- how to ensure accessibility.
+```
+Вот что должно существовать.
+```
 
-This is a very significant change in the Web Platform philosophy.
+А браузер уже сам решает
 
-The philosophy of modern HTML is built on the separation of responsibilities: **declaration of essence vs. imperative description of process**.
+- когда создавать;
+- когда загружать;
+- когда анимировать;
+- когда закрывать;
+- когда освобождать память;
+- как обеспечить accessibility.
 
-### HTML as Declarative Browser Configuration
+Это очень серьёзное изменение философии Web Platform.
+
+Философия современного HTML строится на разделении ответственности: **декларация сути против императивного описания процесса**.
+
+### HTML как декларативная конфигурация браузера
 
 ```html
 <img loading="lazy" fetchpriority="high" decoding="async" />
 ```
 
-Previously, all of this was written in JavaScript.
+Раньше всё это писалось JavaScript.
 
-Now the developer simply configures the browser.
+Теперь разработчик просто конфигурирует браузер.
 
-The same applies to:
+То же самое
 
 ```html
 <link rel="modulepreload" />
 ```
 
-or
+или
 
 ```html
 <dialog>...</dialog>
 ```
 
-or
+или
 
 ```html
 <div popover>...</div>
 ```
 
-It turns out that HTML is becoming similar to a declarative DSL.
+Получается, что HTML становится похож на декларативный DSL.
 
-### HTML as a Declarative Web Platform API
+### HTML как декларативный API Web Platform
 
-HTML is becoming an API not only for the browser.
+HTML становится API не только браузера.
 
-It is becoming an API for other programs.
+Он становится API для других программ.
 
-For example:
+Например
 
 ```
 SSR
@@ -369,13 +385,13 @@ Browser Extension
 HTML
 ```
 
-So
+Получается
 
 HTML —
 
-is the interface for interaction between multiple systems simultaneously.
+это интерфейс взаимодействия сразу между множеством систем.
 
-HTML is read by:
+HTML читают:
 
 - Browser Engine;
 - Rendering Engine;
@@ -389,22 +405,22 @@ HTML is read by:
 - Navigation API;
 - Declarative Shadow DOM.
 
-That is, it is more accurate to speak not of a **Browser API**, but of a **Web Platform API**.
+То есть правильнее говорить уже не **Browser API**, а **Web Platform API**.
 
-### Declarative vs. Imperative Approach
+### Декларативный vs Императивный подход
 
-| Criterion                | Declarative Approach (HTML)                                                | Imperative Approach (JavaScript)                                              |
-| :----------------------- | :------------------------------------------------------------------------- | :---------------------------------------------------------------------------- |
-| **Core Question**        | _What_ should be done/shown?                                               | _How exactly_ should this be done step by step?                               |
-| **State Management**     | The browser manages state itself (e.g., the `open` state of `<dialog>`).   | The developer manually stores and synchronizes state in script memory.        |
-| **Performance**          | Optimized at the native C++/Rust code level of the browser engine.         | Depends on the JS interpreter's efficiency and garbage collector allocations. |
-| **Accessibility (A11y)** | Built-in by default (semantics and ARIA roles at the specification level). | Requires manual focus management, ARIA attributes, and event listeners.       |
+| Критерий                  | Декларативный подход (HTML)                                                | Императивный подход (JavaScript)                                        |
+| :------------------------ | :------------------------------------------------------------------------- | :---------------------------------------------------------------------- |
+| **Основной вопрос**       | _Что_ должно быть сделано/показано?                                        | _Как именно_ пошагово это выполнить?                                    |
+| **Управление состоянием** | Браузер берет состояние на себя (например, состояние `open` у `<dialog>`). | Разработчик вручную хранит и синхронизирует стейт в памяти скрипта.     |
+| **Производительность**    | Оптимизировано на уровне нативного C++/Rust-кода движка браузера.          | Зависит от эффективности JS-интерпретатора и аллокаций сборщика мусора. |
+| **Доступность (A11y)**    | Встроено по умолчанию (семантика и роли ARIA на уровне спецификации).      | Требует ручной установки фокуса, ARIA-атрибутов и слушателей событий.   |
 
-### Declarative Shadow DOM
+### Декларативный Shadow DOM
 
-A crucial milestone in HTML's evolution is **Declarative Shadow DOM (DSD)**. Previously, encapsulating styles and markup via Shadow DOM was only possible through JavaScript: creating a host, calling `attachShadow({ mode: 'open' })`, and dynamically inserting a template. This led to Flash of Unstyled Content (FOUC) and degraded Server-Side Rendering (SSR) performance.
+Важнейшей вехой эволюции HTML стал **Declarative Shadow DOM (DSD)**. Ранее инкапсуляция стилей и разметки через Теневой DOM (Shadow DOM) была возможна исключительно через JavaScript: создание хоста, вызов `attachShadow({ mode: 'open' })` и динамическая вставка шаблона. Это приводило к миганию нестилизованного контента (FOUC) и ухудшало серверный рендеринг (SSR).
 
-With the introduction of the `shadowrootmode` attribute on the `<template>` tag, developers gained the ability to describe encapsulated structure directly in the HTML document sent from the server:
+С появлением атрибута `shadowrootmode` в теге `<template>` разработчики получили возможность описывать инкапсулированную структуру прямо в HTML-документе, приходящем с сервера:
 
 ```html
 <user-card>
@@ -422,27 +438,27 @@ With the introduction of the `shadowrootmode` attribute on the `<template>` tag,
       }
     </style>
     <div class="card">
-      <h3>Anatoly Kosorukov</h3>
-      <p>Distributed Systems Architect and Systems Developer.</p>
+      <h3>Анатолий Косоруков</h3>
+      <p>Архитектор распределенных систем и системный разработчик.</p>
     </div>
   </template>
 </user-card>
 ```
 
-The browser parses and mounts the shadow tree instantly during the HTML stream reading process, ensuring maximum SSR performance and complete absence of script delays.
+Браузер парсит и монтирует теневое дерево мгновенно в процессе чтения потока HTML, обеспечивая максимальную производительность серверного рендеринга и полное отсутствие задержек скриптов.
 
 ---
 
-## 3.4. Architectural Advantages and the Future of HTML APIs
+## 3.4. Архитектурные преимущества и будущее HTML API
 
-The modern web platform follows the golden rule of development: **"Use built-in platform capabilities whenever possible."**
+Современная веб-платформа следует золотому правилу разработки: **«Используйте встроенные возможности платформы всегда, когда это возможно»**.
 
-1. **Codebase Minimization:** Moving interface logic to the native tag level reduces client-side JavaScript volumes, decreasing bundle sizes and parse/compile time.
-2. **Reliability and Fault Tolerance:** Native browser code is tested by billions of users and doesn't crash due to bugs in third-party NPM packages or memory management errors in JS.
-3. **Energy Efficiency:** Native components are optimized at a low level by browser engine creators, reducing CPU load on mobile devices and saving battery life.
+1. **Минимизация кодовой базы:** Перенос логики интерфейсов на уровень нативных тегов сокращает объемы клиентского JavaScript, уменьшая размер бандлов и время синтаксического анализа (Parse/Compile time).
+2. **Надежность и отказоустойчивость:** Нативный код браузера протестирован миллиардами пользователей и не падает из-за багов в сторонних NPM-пакетах или ошибок управления памятью в JS.
+3. **Энергоэффективность:** Нативные компоненты оптимизированы на низком уровне силами создателей браузерных движков, что снижает нагрузку на процессор мобильных устройств и экономит батарею.
 
----
+![иллюстрация](images/chapter-03.png)
 
-### Chapter Conclusion
+### Заключение главы
 
-HTML in the modern ecosystem is a high-level declarative browser API. Understanding its hidden capabilities allows engineers to build fast, reliable, accessible, and easily maintainable application architectures without unnecessarily bloating the codebase with scripts.
+HTML в современной экосистеме — это высокоуровневый декларативный API браузера. Понимание его скрытых возможностей позволяет инженерам создавать быстрые, надежные, доступные и легко поддерживаемые архитектуры приложений без избыточного усложнения кодовой базы скриптами. При этом, как мы увидели на примере `<dialog>`, Popover API и Declarative Shadow DOM, зрелость этих технологий заметно различается — прежде чем полагаться на них в продакшне, стоит свериться с их текущим Baseline-статусом.

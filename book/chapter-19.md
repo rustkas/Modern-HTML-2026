@@ -1,49 +1,47 @@
-# Part VI. Web Components
+# Часть VI. Web Components
 
-## Chapter 19. Web Components in the Ecosystem of Modern Frameworks
+## Глава 19. Web Components в экосистеме современных фреймворков
 
-**Web Components** technology represents a set of native browser standards (Custom Elements, Shadow DOM, and HTML Templates) that allow creating isolated, reusable interface elements. This makes them an ideal "universal format" for creating unified design systems and sharing components across completely different technology stacks and frameworks.
-
----
-
-## 19.1. Web Components as a Universal Platform Standard
-
-The main philosophical goal of introducing Web Components into the web platform is its **rationalization**. Instead of building isolated components on top of proprietary abstractions of specific libraries, developers gain access to the browser's low-level primitives.
-
-Since custom elements are registered in the global system registry via `customElements.define()`, they become full-fledged citizens of the DOM tree. The browser perceives them exactly the same way as built-in tags like `<div>` or `<button>`, erasing the boundaries between third-party libraries and native HTML.
+Технология **Web Components** представляет собой набор нативных стандартов браузера (Custom Elements, Shadow DOM и HTML Templates), которые позволяют создавать изолированные, переиспользуемые элементы интерфейса. Это делает их идеальным «универсальным форматом» для создания единых дизайн-систем и обмена компонентами между самыми разными технологическими стеками и фреймворками.
 
 ---
 
-## 19.2. Integration with Popular Frameworks
+## 19.1. Web Components как универсальный стандарт платформы
 
-Modern JavaScript frameworks interact with Web Components standards in different ways, gradually improving cross-platform compatibility:
+Главная философская цель внедрения Web Components в веб-платформу — ее **рационализация** (*platform rationalization*). Вместо того чтобы строить изолированные компоненты поверх проприетарных абстракций конкретных библиотек, разработчики получают доступ к низкоуровневым примитивам самого браузера.
 
-- **React:** Historically, React handled element properties and attributes in a non-standard way, making passing complex data to Custom Elements require wrappers. However, in current versions of the ecosystem, native web component support has been significantly improved and enhanced.
-- **Vue.js:** Traditionally one of the most standards-friendly frameworks. Vue allows both seamless integration of third-party Custom Elements into templates and compilation of its own components into this native format "out of the box."
-- **Angular (Angular Elements):** The special `@angular/elements` package allows packaging standard Angular components as Custom Elements. This is indispensable for micro-frontend architectures and gradual migration of legacy monoliths.
-- **Svelte:** The Svelte compiler can build components directly into standard web components. Thanks to the absence of a heavy client-side runtime, the resulting packages are extremely compact and performant.
+Поскольку пользовательские элементы регистрируются в глобальном системном реестре через `customElements.define()`, они становятся полноценными гражданами дерева DOM. Браузер воспринимает их точно так же, как встроенные теги `<div>` или `<button>`, стирая границы между сторонними библиотеками и нативным HTML.
 
 ---
 
-## 19.3. Specialized Libraries: Lit and Stencil
+## 19.2. Интеграция с популярными фреймворками
 
-Although pure Web Components can be written in "vanilla" JavaScript, specialized ecosystem tools are often used to accelerate the development of complex interfaces:
+Современные JavaScript-фреймворки по-разному взаимодействуют со стандартами Web Components, постепенно улучшая межплатформенную совместимость:
 
-- **Lit (by Google):** A lightweight library that provides reactive properties, a declarative templating system, and efficient rendering on top of native Custom Elements. Lit is as close to the specification as possible and does not add unnecessary abstraction.
-- **Stencil (by Ionic):** A component build toolkit that uses TypeScript and JSX syntax familiar to developers. Stencil generates pure Web Components at compile time, automatically enriching them with advanced optimizations, including Server-Side Rendering (SSR) support.
-
----
-
-## 19.4. Cross-Framework Interaction and Design Systems
-
-The main practical value of implementing Web Components at scale in large corporate ecosystems is creating **unified design systems** that are not tied to a specific technology stack:
-
-- **Style Protection:** Thanks to Shadow DOM boundaries, the internal styling rules of a component will never conflict with the host application's global style sheets.
-- **Transparent Events:** Inter-component communication is built on standard `CustomEvent` interfaces, which are equally easy to intercept in React, Vue, or vanilla JS.
-- **Unified Contract:** All components inherit the base `HTMLElement`, guaranteeing a unified lifecycle and predictable behavior in any environment.
+* **React:** Исторически React обрабатывал свойства (`properties`) и атрибуты (`attributes`) элементов нестандартным образом, из-за чего передача сложных данных в Custom Elements требовала оберток. Однако в актуальных версиях экосистемы поддержка нативных веб-компонентов была существенно доработана и улучшена.
+* **Vue.js:** Традиционно один из самых дружелюбных к стандартам фреймворков. Vue позволяет как беспрепятственно встраивать сторонние Custom Elements в шаблоны, так и компилировать собственные компоненты в этот нативный формат «из коробки».
+* **Angular (Angular Elements):** Специальный пакет `@angular/elements` позволяет упаковывать стандартные компоненты Angular в Custom Elements. Это незаменимо для микрофреймворк-архитектур и постепенной миграции устаревших монолитов.
+* **Svelte:** Компилятор Svelte умеет собирать компоненты напрямую в стандартные веб-компоненты. Благодаря отсутствию тяжелого клиентского рантайма результирующие пакеты получаются экстремально компактными и производительными.
 
 ---
 
-## Chapter Conclusion
+## 19.3. Специализированные библиотеки: Lit и Stencil
 
-Web Components elevate interface development to the level of independent platform standards. Using native components allows large organizations and distributed teams to create durable, truly reusable code that will not become obsolete with the release of a new framework and will work equally effectively in any architecture.
+Хотя чистые Web Components можно писать на «ванильном» JavaScript, для ускорения разработки сложных интерфейсов часто используются специализированные экосистемные инструменты:
+
+* **Lit (от Google):** Легковесная библиотека, предоставляющая реактивные свойства, декларативный шаблонизатор и эффективный рендеринг поверх нативных Custom Elements. Lit максимально близок к спецификации и не добавляет лишней абстракции.
+* **Stencil (от Ionic):** Инструментарий для сборки компонентов, использующий привычный разработчикам TypeScript и синтаксис JSX. Stencil на этапе компиляции генерирует чистые Web Components, автоматически обогащая их продвинутыми оптимизациями, включая поддержку Server-Side Rendering (SSR).
+
+---
+
+## 19.4. Межфреймворковое взаимодействие и дизайн-системы
+
+Главная практическая ценность внедрения Web Components в масштабах крупных корпоративных экосистем — это создание **единых дизайн-систем**, не привязанных к конкретному технологическому стеку:
+
+* **Защита стилей:** Благодаря границам Shadow DOM, внутренние правила оформления компонента никогда не вступят в конфликт с глобальными таблицами стилей хост-приложения.
+* **Прозрачные события:** Межкомпонентная коммуникация строится на базе стандартных интерфейсов `CustomEvent`, которые одинаково легко перехватываются как в React, так и во Vue или чистом JS.
+* **Единый контракт:** Все компоненты наследуют базовый `HTMLElement`, гарантируя единый жизненный цикл и предсказуемое поведение в любой среде.
+
+### Заключение главы
+
+Web Components выводят разработку интерфейсов на уровень независимых стандартов платформы. Использование нативных компонентов позволяет крупным организациям и распределенным командам создавать долговечный, по-настоящему переиспользуемый код, который не устареет с выходом нового фреймворка и будет одинаково эффективно работать в любой архитектуре.

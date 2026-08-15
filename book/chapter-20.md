@@ -1,66 +1,64 @@
-# Part VII. HTML and Performance
+# Часть VII. HTML и производительность
 
-## Chapter 20. Critical Rendering Path
+## Глава 20. Critical Rendering Path (Критический путь рендеринга)
 
-**Critical Rendering Path** is the sequence of steps that the browser sequentially performs to transform source code (HTML, CSS, and JavaScript) into physical pixels on the user's device screen. Thorough optimization of each stage of this process is a crucial factor for achieving maximum performance, instant interface responsiveness, and high Core Web Vitals scores.
+**Critical Rendering Path** (критический путь рендеринга) — это последовательность шагов, которые браузер последовательно выполняет для преобразования исходного кода (HTML, CSS и JavaScript) в физические пиксели на экране устройства пользователя. Тщательная оптимизация каждого этапа этого процесса является важнейшим фактором для достижения максимальной производительности, мгновенной отзывчивости интерфейса и высоких показателей Core Web Vitals.
 
 ---
 
-## 20.1. HTML Parser and DOM Construction
+## 20.1. HTML Parser и построение DOM
 
-The rendering process begins with the HTML parser, which sequentially analyzes the incoming byte stream of markup over the network, decodes it into characters, combines them into tokens, and transforms them into a hierarchical **DOM** (Document Object Model) tree.
+Процесс рендеринга начинается с работы HTML-парсера, который последовательно анализирует поступающий по сети байтовый поток разметки, декодирует его в символы, объединяет в токены и превращает в иерархическое дерево **DOM** (_Document Object Model_).
 
-The DOM is a tree of objects in the browser's memory, consisting of nodes of various types (elements, text blocks, comments). It is important to consider the features of this stage:
+DOM представляет собой дерево объектов в памяти браузера, состоящее из узлов различных типов (элементы, текстовые блоки, комментарии). Важно учитывать особенности этого этапа:
 
-- **Blocking Resources:** HTML parsing is streaming, but it can be interrupted or slowed down by synchronous scripts and external style sheets that the browser must download, parse, and execute (or apply) before continuing to parse the document.
-- **Incrementality:** The browser is capable of rendering content to the screen in parts (progressive rendering) without waiting for the entire document to finish loading, provided the critical path is not blocked by heavy scripted dependencies.
+- **Блокирующие ресурсы:** Парсинг HTML является потоковым, но он может прерываться или замедляться синхронными скриптами и внешними таблицами стилей, которые браузер обязан скачать, распарсить и выполнить (или применить) перед продолжением разбора документа.
+- **Инкрементальность:** Браузер способен выводить контент на экран частями (_progressive rendering_), не дожидаясь окончания загрузки всего документа целиком, если критический путь не заблокирован тяжелыми скриптируемыми зависимостями.
 
 ---
 
 ## 20.2. CSSOM (CSS Object Model)
 
-In parallel with HTML parsing, the browser processes styles, forming the **CSSOM** (CSS Object Model). This is a tree structure reflecting all cascading style sheet rules, including inline styles, external files, and rules imported via the `@import` directive.
+Параллельно с разбором HTML браузер обрабатывает стили, формируя **CSSOM** (_CSS Object Model_). Это древовидная структура, отражающая все правила каскадных таблиц стилей, включая встроенные стили, внешние файлы и правила, импортированные через директиву `@import`.
 
-The main property of CSSOM is that style sheets are **render-blocking resources**. Since the browser fundamentally cannot start rendering the page without knowing the exact visual styling of elements (otherwise the user would have to observe ugly interface jumps when styles are applied), render tree construction is delayed until CSSOM is fully formed.
-
----
-
-## 20.3. Render Tree
-
-After the browser has successfully built the base DOM tree and the parallel CSSOM, it combines them into a single structure — the **Render Tree**.
-
-- **Node Filtering:** Unlike the DOM, the render tree contains exclusively those elements that will actually be displayed on the screen.
-- **Exclusion of Invisible Elements:** Nodes that are hidden programmatically or via CSS (for example, elements with `display: none`) are completely excluded from the Render Tree. At the same time, elements with `visibility: hidden` or `opacity: 0` are included in the tree, as they continue to occupy physical space in the layout.
+Главное свойство CSSOM заключается в том, что таблицы стилей являются **ресурсами, блокирующими отрисовку** (_render-blocking_). Поскольку браузер принципиально не может запустить отрисовку страницы, не зная точного визуального оформления элементов (иначе пользователю придется наблюдать некрасивые скачки интерфейса при применении стилей), построение дерева отрисовки задерживается до полного формирования CSSOM.
 
 ---
 
-## 20.4. Layout
+## 20.3. Render Tree (Дерево отрисовки)
 
-At the **Layout** stage (also referred to in literature as *Reflow*), the browser performs mathematical calculations of geometric parameters for each visible element: determining its exact position (*x* and *y* coordinates) and pixel dimensions relative to the viewport.
+После того как браузер успешно сформировал базовое DOM-дерево и параллельный CSSOM, он объединяет их в единую структуру — **Render Tree** (дерево отрисовки).
 
-- **Preventing Unnecessary Recalculations:** If the dimensions of resources (for example, `<img>` or `<video>` tags) are not explicitly specified in the HTML markup via `width` and `height` attributes, the browser has to perform repeated layout recalculations (reflows) as images load and change the geometry of surrounding text.
-- **Optimization:** Clearly specifying element proportions and sizes at the markup stage allows eliminating expensive dynamic recalculation operations and minimizing CPU load.
-
----
-
-## 20.5. Paint
-
-The **Paint** (rasterization) stage is the process of actually filling pixels on the screen based on pre-calculated layout data. The browser translates element geometry into raster images (color fills, border rendering, shadows, text).
-
-- **Thread Performance:** Executing heavy visual effects or synchronous resource-intensive operations in the browser's main thread (for example, synchronous decoding of large images) can lead to dropped frames and noticeable micro-lags in the interface.
-- **Asynchronous Methods:** Using modern optimization attributes such as `decoding="async"` for images allows offloading the decoding process to a background thread and accelerating the paint stage.
+- **Фильтрация узлов:** В отличие от DOM, дерево отрисовки содержит исключительно те элементы, которые действительно будут отображены на экране.
+- **Исключение невидимых элементов:** Узлы, скрытые программно или с помощью CSS (например, элементы со свойством `display: none`), полностью исключаются из Render Tree. При этом элементы с `visibility: hidden` или `opacity: 0` в дерево попадают, так как они продолжают занимать физическое пространство в макете.
 
 ---
 
-## 20.6. Composite
+## 20.4. Layout (Макет и геометрия)
 
-The final stage of the critical path is **Composite** (composition). At this step, the various rendered layers of the page are combined together and output to the screen by the graphics card through the graphics pipeline.
+На этапе **Layout** (в литературе также встречается название _Reflow_) браузер производит математические расчеты геометрических параметров для каждого видимого элемента: определяет его точное положение (_x_ и _y_ координаты) и размеры в пикселях относительно области просмотра (_viewport_).
 
-- **Smooth Animations:** The browser distributes visual elements across separate graphics layers. This allows hardware acceleration for properties such as `transform` and `opacity`, ensuring flawlessly smooth animations without passing through the Layout and Paint stages again.
-- **Low-Level Optimization:** Using advanced programmatic interfaces such as `ImageBitmapRenderingContext` allows optimizing composition by eliminating unnecessary intermediate processing and memory copy stages.
+- **Предотвращение лишних пересчетов:** Если размеры ресурсов (например, тегов `<img>` или `<video>`) явно не указаны в HTML-разметке через атрибуты `width` и `height`, браузеру приходится выполнять повторные пересчеты макета (_reflow_) по мере того, как изображения подгружаются и изменяют геометрию окружающего текста.
+- **Оптимизация:** Четкое задание пропорций и размеров элементов на этапе разметки позволяет исключить дорогостоящие операции динамического пересчета и минимизировать нагрузку на процессор.
 
 ---
 
-## Chapter Conclusion
+## 20.5. Paint (Отрисовка пикселей)
 
-Skillful and conscious management of each stage of the Critical Rendering Path allows developers to "negotiate" with the browser, reduce time to first content display, and ensure instant, smooth interface response to any user actions.
+Этап **Paint** (растеризация) представляет собой процесс фактического заполнения пикселей на экране на основе предварительно вычисленных данных макета. Браузер переводит геометрию элементов в растровые изображения (заливка цветов, отрисовка границ, теней, текста).
+
+- **Производительность потока:** Выполнение тяжелых визуальных эффектов или синхронных ресурсоемких операций в основном потоке браузера (например, синхронное декодирование больших изображений) может привести к пропуску кадров (_dropped frames_) и заметным микролагам в интерфейсе.
+- **Асинхронные методы:** Использование современных атрибутов оптимизации, таких как `decoding="async"` для изображений, позволяет перенести процесс декодирования в фоновый поток и ускорить этап отрисовки.
+
+---
+
+## 20.6. Composite (Композиция слоев)
+
+Финальным этапом критического пути является **Composite** (композиция). На этом шаге различные отрисованные слои страницы объединяются вместе и выводятся на экран видеокартой через графический конвейер.
+
+- **Плавность анимаций:** Браузер распределяет визуальные элементы по отдельным графическим слоям. Это позволяет выполнять аппаратное ускорение для таких свойств, как `transform` и `opacity`, обеспечивая безупречно плавные анимации без повторного прохождения этапов Layout и Paint.
+- **Низкоуровневая оптимизация:** Применение продвинутых программных интерфейсов, таких как `ImageBitmapRenderingContext`, позволяет оптимизировать композицию за счет исключения лишних этапов промежуточной обработки и копирования данных в памяти.
+
+### Заключение главы
+
+Грамотное и осознанное управление каждым из этапов Critical Rendering Path позволяет разработчикам «договориться» с браузером, сократить время до первого отображения контента и обеспечить мгновенную, плавную реакцию интерфейса на любые действия пользователя.
